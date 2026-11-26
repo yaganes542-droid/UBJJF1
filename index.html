@@ -2407,53 +2407,35 @@ function pressBlue(){
   F.feintBonus = 0;
 
   if(fightMode==='online'){
-    if(ph==='stand' && dir==='left'){
-      fSetPhase('closed_guard_bottom');
-      fLog('🥋 Pulled Closed Guard!');
-      fRef('🥋 GUARD PULLED');
-      onSendAction({type:'sync', phase:F.phase, pts:F.p1.pts, hp:F.p2.hp});
-      setTimeout(()=>{ fLockTechs(false); }, 400);
-      return;
-    }
-    if(ph==='clinch' && dir==='left'){
-      fSetPhase('closed_guard_bottom');
-      fLog('🥋 Pulled Closed Guard from clinch!');
-      fRef('🥋 CLOSED GUARD');
-      onSendAction({type:'sync', phase:F.phase, pts:F.p1.pts, hp:F.p2.hp});
-      setTimeout(()=>{ fLockTechs(false); }, 400);
-      return;
-    }
-    if(ph==='back_control'){
-      fLog('Body triangle tightened on opponent\'s back!');
-      setTimeout(()=>{ fLockTechs(false); }, 400);
-      return;
-    }
-
-    let moveName='Clinch (Collar Tie)', nextPhase='clinch', ptsAdd=0, speed=1.35, winHalf=0.15;
+    let moveName='Clinch (Collar Tie)', nextPhase='clinch', ptsAdd=0;
     if(ph==='stand'){
-      if(dir==='neutral'){ moveName='Clinch (Collar Tie)'; nextPhase='clinch'; ptsAdd=0; speed=1.3; winHalf=0.16; }
-      else if(dir==='up'){ moveName='Judo Throw'; nextPhase='side_control'; ptsAdd=2; speed=1.55; winHalf=0.14; }
-      else if(dir==='down'){ moveName='Single Leg Takedown'; nextPhase='closed_guard_top'; ptsAdd=2; speed=1.45; winHalf=0.15; }
-      else { moveName='Double Leg Takedown'; nextPhase='closed_guard_top'; ptsAdd=2; speed=1.45; winHalf=0.15; }
+      if(dir==='neutral'){ moveName='Clinch (Collar Tie)'; nextPhase='clinch'; ptsAdd=0; }
+      else if(dir==='left'){ moveName='Pull Closed Guard'; nextPhase='closed_guard_bottom'; ptsAdd=0; }
+      else if(dir==='up'){ moveName='Judo Throw'; nextPhase='side_control'; ptsAdd=2; }
+      else if(dir==='down'){ moveName='Single Leg Takedown'; nextPhase='closed_guard_top'; ptsAdd=2; }
+      else { moveName='Double Leg Takedown'; nextPhase='closed_guard_top'; ptsAdd=2; }
     } else if(ph==='clinch'){
-      if(dir==='up'){ moveName='Uchi-Mata Judo Throw'; nextPhase='side_control'; ptsAdd=2; speed=1.55; winHalf=0.14; }
-      else if(dir==='down'){ moveName='Single Leg Takedown'; nextPhase='closed_guard_top'; ptsAdd=2; speed=1.45; winHalf=0.15; }
-      else if(dir==='right'){ moveName='Double Leg Takedown'; nextPhase='closed_guard_top'; ptsAdd=2; speed=1.45; winHalf=0.15; }
-      else { moveName='Inside Trip'; nextPhase='closed_guard_top'; ptsAdd=2; speed=1.4; winHalf=0.15; }
+      if(dir==='left'){ moveName='Pull Closed Guard'; nextPhase='closed_guard_bottom'; ptsAdd=0; }
+      else if(dir==='up'){ moveName='Uchi-Mata Judo Throw'; nextPhase='side_control'; ptsAdd=2; }
+      else if(dir==='down'){ moveName='Single Leg Takedown'; nextPhase='closed_guard_top'; ptsAdd=2; }
+      else if(dir==='right'){ moveName='Double Leg Takedown'; nextPhase='closed_guard_top'; ptsAdd=2; }
+      else { moveName='Inside Trip'; nextPhase='closed_guard_top'; ptsAdd=2; }
     } else if(ph==='closed_guard_top'){
-      moveName='Knee-Cut Guard Pass'; nextPhase='half_guard'; ptsAdd=0; speed=1.4; winHalf=0.15;
+      moveName='Knee-Cut Guard Pass'; nextPhase='half_guard'; ptsAdd=0;
     } else if(ph==='half_guard'){
-      moveName='Guard Pass to Side Control'; nextPhase='side_control'; ptsAdd=3; speed=1.45; winHalf=0.14;
+      moveName='Guard Pass to Side Control'; nextPhase='side_control'; ptsAdd=3;
     } else if(ph==='side_control'){
       moveName = dir==='right' ? 'Back Take' : 'Step to Full Mount';
       nextPhase = dir==='right' ? 'back_control' : 'full_mount';
-      ptsAdd=4; speed=1.5; winHalf=0.14;
+      ptsAdd=4;
     } else if(ph==='full_mount'){
-      moveName='Back Take Transition'; nextPhase='back_control'; ptsAdd=4; speed=1.5; winHalf=0.14;
+      moveName='Back Take Transition'; nextPhase='back_control'; ptsAdd=4;
+    } else if(ph==='back_control'){
+      moveName='Body Triangle Transition'; nextPhase='back_control'; ptsAdd=1;
     } else if(ph==='closed_guard_bottom'){
-      moveName='Hip Bump Sweep'; nextPhase='full_mount'; ptsAdd=2; speed=1.45; winHalf=0.15;
+      moveName='Hip Bump Sweep'; nextPhase='full_mount'; ptsAdd=2;
     } else if(ph==='bottom_pinned'){
-      moveName='Shrimp Guard Recovery'; nextPhase='closed_guard_bottom'; ptsAdd=0; speed=1.4; winHalf=0.16;
+      moveName='Shrimp Guard Recovery'; nextPhase='closed_guard_bottom'; ptsAdd=0;
     }
 
     F.pendingOnlineAtk = { kind:'pos', moveName, nextPhase, ptsAdd };
@@ -2465,10 +2447,10 @@ function pressBlue(){
         fLockTechs(false);
         fLog('No response from opponent — ready.');
       }
-    }, 6500);
-    fLog('⏳ Attempting ' + moveName + ' — opponent is defending!');
-    fRef('⚡ OPPONENT DEFENDING...');
-    onSendAction({ type:'incoming_atk', kind:'pos', moveName, nextPhase, ptsAdd, speed, winHalf });
+    }, 4500);
+    fLog('⏳ Attempting ' + moveName + ' — opponent has 3s to defend!');
+    fRef('⚡ OPPONENT DEFENDING (3s)...');
+    onSendAction({ type:'incoming_atk', kind:'pos', moveName, nextPhase, ptsAdd, speed:1.4, winHalf:0.14, duration:3 });
     return;
   }
 
@@ -2599,7 +2581,7 @@ function pressRed(){
     return;
   }
 
-  if(dir==='neutral'){
+  if(dir==='neutral' && fightMode!=='online'){
     if(F.p1.fat < 5){ fLog('Too exhausted to feint!'); return; }
     F.p1.fat = Math.max(0, F.p1.fat - 4);
     F.feintBonus = 0.22;
@@ -2620,9 +2602,10 @@ function pressRed(){
   if(ph==='stand' || ph==='clinch'){
     const flyName = dir==='up' ? 'Flying Triangle Choke' : (dir==='left' ? 'Imanari Heel Hook' : (dir==='down' ? 'Flying Guillotine' : 'Flying Armbar'));
     if(fightMode==='online'){
+      const onlineFlyName = dir==='neutral' ? 'Snap-Down Guillotine Choke' : flyName;
       F.submitting = true;
       fLockTechs(true);
-      F.pendingOnlineAtk = { kind:'sub', moveName:flyName, isFlying:true };
+      F.pendingOnlineAtk = { kind:'sub', moveName:onlineFlyName, isFlying:true };
       if(F.pendingOnlineTimer) clearTimeout(F.pendingOnlineTimer);
       F.pendingOnlineTimer = setTimeout(()=>{
         if(F && F.pendingOnlineAtk){
@@ -2630,10 +2613,10 @@ function pressRed(){
           F.submitting = false;
           fLockTechs(false);
         }
-      }, 6500);
-      fLog('🦅 Flying ' + flyName + '! Opponent is defending...');
-      fRef('⚡ OPPONENT DEFENDING SUBMISSION...');
-      onSendAction({ type:'incoming_atk', kind:'sub', moveName:flyName, isFlying:true, speed:1.75, winHalf:0.13 });
+      }, 4500);
+      fLog('🔥 ' + onlineFlyName + '! Opponent has 3s to defend!');
+      fRef('⚡ OPPONENT DEFENDING SUBMISSION (3s)...');
+      onSendAction({ type:'incoming_atk', kind:'sub', moveName:onlineFlyName, isFlying:true, speed:1.4, winHalf:0.14, duration:3 });
       return;
     }
     F.submitting = true;
@@ -2723,10 +2706,10 @@ function pressRed(){
         F.submitting = false;
         fLockTechs(false);
       }
-    }, 6500);
-    fLog('🔥 Attempting ' + subName + ' — opponent is defending!');
-    fRef('⚡ OPPONENT DEFENDING SUBMISSION...');
-    onSendAction({ type:'incoming_atk', kind:'sub', moveName:subName, isFlying:false, speed:1.55, winHalf:0.14 });
+    }, 4500);
+    fLog('🔥 Attempting ' + subName + ' — opponent has 3s to defend!');
+    fRef('⚡ OPPONENT DEFENDING SUBMISSION (3s)...');
+    onSendAction({ type:'incoming_atk', kind:'sub', moveName:subName, isFlying:false, speed:1.4, winHalf:0.14, duration:3 });
     return;
   }
 
@@ -2906,8 +2889,8 @@ function fAiAttack(){
     }
 
     fLockTechs(true);
-    fShowDef('Defend '+moveName+'!', DIFF_CFG[fDiff].defSpd, fDefWin,
-      ()=>{ fLog('Escaped '+moveName+'!'); fLockTechs(false); fScheduleAI(); },
+    fShowDef('Defend '+moveName+' — Vise le VERT !', DIFF_CFG[fDiff].defSpd, fDefWin,
+      ()=>{ fLog('✅ Défendu & échappé à '+moveName+' !'); fRef('🛡 DÉFENDU !'); fLockTechs(false); fScheduleAI(); },
       ()=>{
         let d = isStand ? DIFF_CFG[fDiff].dmg : Math.round(DIFF_CFG[fDiff].dmg*2.1);
         if(fightMode==='career'&&C) d=Math.max(1,Math.round(d*(1-C.gymStats.endurance*0.015)));
@@ -3032,7 +3015,8 @@ function fSetPhase(ph){
 }
 
 // ── DEFEND / SUBMISSION TIMING GAUGE ──
-function fShowDef(hint, speed, winHalf, onOk, onFail){
+function fShowDef(hint, speed, winHalf, onOk, onFail, durationSec){
+  const dur = (typeof durationSec === 'number' && durationSec > 0) ? durationSec : 5;
   document.getElementById('fight-def-wrap').style.display='block';
   document.getElementById('fight-def-hint').textContent=hint;
   document.getElementById('fight-def-btn').disabled=false;
@@ -3046,7 +3030,7 @@ function fShowDef(hint, speed, winHalf, onOk, onFail){
     if(fDef.pos<=0){fDef.pos=0;fDef.dir=1;}
     document.getElementById('fight-def-cur').style.left=fDef.pos.toFixed(1)+'%';
   },16);
-  fDef.cd=5; document.getElementById('fight-def-cd').textContent=5;
+  fDef.cd=dur; document.getElementById('fight-def-cd').textContent=dur;
   if(fDef.cdInt) clearInterval(fDef.cdInt);
   fDef.cdInt=setInterval(()=>{
     fDef.cd--; document.getElementById('fight-def-cd').textContent=fDef.cd;
@@ -3506,21 +3490,15 @@ function onBindConn(conn){
         F.guardActive=false;
         clearTimeout(F.guardTimer);
         document.getElementById('guard-shield-badge').style.display='none';
-        F.p1.pts += 1;
-        fUpdateScore();
-        fRef('🛡 BLOCKED & PARRIED! +1 pt');
-        fLog('Your Yellow Guard blocked opponent\'s ' + data.moveName + '!');
-        onSendAction({ type:'def_result', defended:true, parried:true, kind:data.kind, moveName:data.moveName });
-        return;
       }
 
       fLockTechs(true);
       const isSub = data.kind === 'sub';
-      const promptTxt = (isSub ? '🔥 DEFEND SUBMISSION: ' : '🛡 DEFEND ') + data.moveName + ' — Hit GREEN!';
-      fRef('⚠ INCOMING: ' + data.moveName.toUpperCase() + '!');
-      fLog('⚠ Opponent attempts ' + data.moveName + '! Hit the green zone to defend!');
+      const promptTxt = (isSub ? '🔥 DÉFENDS LA SOUMISSION : ' : '🛡 DÉFENDS : ') + data.moveName + ' — Vise le VERT (3s) !';
+      fRef('⚠ DÉFENDS : ' + data.moveName.toUpperCase() + ' (3s) !');
+      fLog('⚠ Adversaire tente ' + data.moveName + ' ! Clique au bon moment dans le vert (3s) !');
 
-      fShowDef(promptTxt, data.speed || 1.45, data.winHalf || 0.14,
+      fShowDef(promptTxt, 1.4, 0.14,
         ()=>{
           fLockTechs(false);
           S3.cameraShake = 0.2;
@@ -3558,7 +3536,8 @@ function onBindConn(conn){
             fLog('Opponent landed ' + data.moveName + '! Now in ' + POS_LABELS[myNewPhase] + '.');
             onSendAction({ type:'def_result', defended:false, kind:'pos', moveName:data.moveName, nextPhase:data.nextPhase, ptsAdd:data.ptsAdd||0 });
           }
-        }
+        },
+        data.duration || 3
       );
     }
     else if(data.type==='def_result' && F && F.running){
