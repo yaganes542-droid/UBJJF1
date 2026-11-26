@@ -1,0 +1,3565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>BJJ: Try Game — Shadow 3D (Offline Ready)</title>
+<style>
+:root{
+  --g:#1D9E75;--r:#E24B4A;--am:#EAB308;--bl:#2563EB;--pu:#7F6FDD;
+  --bg:#0d0d0d;--bg2:#161616;--bg3:#1e1e1e;--bg4:#262626;
+  --tx:#f0f0f0;--tx2:#a0a0a0;--tx3:#666;
+  --bo:rgba(255,255,255,0.08);--bo2:rgba(255,255,255,0.16);
+  --rad:8px;
+  --st:env(safe-area-inset-top,0px);--sb:env(safe-area-inset-bottom,0px);
+  color-scheme:dark;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{background:var(--bg);color:var(--tx);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:14px;line-height:1.5;min-height:100%;overflow-x:hidden;}
+body{padding-top:var(--st);padding-bottom:calc(var(--sb) + 8px);}
+#app{max-width:460px;margin:0 auto;padding:0 max(10px,env(safe-area-inset-left,0px)) 24px;}
+.scr{display:none;padding-top:10px;}.scr.on{display:block;}
+h2{font-size:17px;font-weight:600;margin-bottom:12px;}
+.mu{color:var(--tx2);}.sm{font-size:12px;color:var(--tx2);}
+.btn{display:block;width:100%;padding:12px 14px;border-radius:var(--rad);border:1px solid var(--bo2);background:var(--bg3);color:var(--tx);font-size:14px;font-weight:500;cursor:pointer;transition:background .12s;text-align:center;}
+.btn:hover:not(:disabled){background:var(--bg4);}
+.btn:disabled{opacity:.4;cursor:default;}
+.btn.ac{background:var(--g);border-color:var(--g);color:#fff;}
+.btn.ac:hover:not(:disabled){background:#15875f;}
+.btn.sm-btn{padding:7px 11px;font-size:12px;width:auto;display:inline-block;}
+.bk{background:none;border:none;color:var(--tx2);font-size:13px;cursor:pointer;display:flex;align-items:center;gap:4px;padding:0 0 10px;}
+.cd{background:var(--bg2);border:1px solid var(--bo);border-radius:12px;padding:13px;}
+.cd+.cd{margin-top:8px;}
+.bdg{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:500;}
+.bdg.gn{background:rgba(29,158,117,.2);color:var(--g);}
+.bdg.rd{background:rgba(226,75,74,.2);color:var(--r);}
+.bdg.bl{background:rgba(37,99,235,.22);color:#60a5fa;}
+.bdg.am{background:rgba(234,179,8,.2);color:var(--am);}
+input[type=text],select{width:100%;background:var(--bg3);border:1px solid var(--bo2);border-radius:var(--rad);color:var(--tx);padding:10px 12px;font-size:14px;outline:none;font-family:inherit;}
+input[type=text]:focus,select:focus{border-color:var(--g);}
+select option{background:var(--bg3);}
+
+.ttl{font-size:26px;font-weight:700;text-align:center;letter-spacing:-0.5px;padding:20px 0 2px;}
+.sub-ttl{font-size:11px;color:var(--tx3);text-align:center;letter-spacing:3px;margin-bottom:14px;}
+.net-pill{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;font-size:11px;font-weight:600;background:var(--bg2);border:1px solid var(--bo);margin:0 auto 14px;}
+.net-dot{width:7px;height:7px;border-radius:50%;background:var(--g);}
+.net-dot.off{background:var(--am);}
+
+.mi{display:flex;align-items:center;gap:12px;padding:14px 15px;border-radius:12px;border:1px solid var(--bo);background:var(--bg2);cursor:pointer;margin-bottom:8px;transition:background .12s;}
+.mi:hover{background:var(--bg3);}
+.mi-icon{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0;}
+.mi-title{font-size:15px;font-weight:600;display:flex;align-items:center;gap:6px;}
+.mi-desc{font-size:12px;color:var(--tx2);}
+
+.nat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-bottom:12px;}
+.nat-btn{padding:10px 8px;border-radius:var(--rad);border:1px solid var(--bo);background:var(--bg2);color:var(--tx);font-size:13px;cursor:pointer;text-align:center;transition:all .12s;}
+.nat-btn.sel{border-color:var(--g);background:rgba(29,158,117,.15);color:var(--g);}
+
+.atr{display:flex;align-items:center;gap:8px;margin-bottom:9px;}
+.atr-nm{width:110px;font-size:13px;color:var(--tx2);}
+.atr-bar{flex:1;height:7px;background:var(--bg4);border-radius:4px;overflow:hidden;}
+.atr-fill{height:100%;border-radius:4px;background:var(--g);transition:width .18s;}
+.atr-ab{background:none;border:1px solid var(--bo2);border-radius:4px;color:var(--tx2);width:22px;height:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+
+#ch{display:flex;align-items:center;gap:11px;padding:12px;background:var(--bg2);border-radius:12px;border:1px solid var(--bo);margin-bottom:10px;}
+#ch-av{width:46px;height:46px;border-radius:50%;background:var(--bl);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.cnav{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-bottom:10px;}
+.cnav .btn{padding:13px 8px;}
+.e-bar{flex:1;height:8px;background:var(--bg4);border-radius:4px;overflow:hidden;}
+.e-fill{height:100%;border-radius:4px;background:var(--g);transition:width .3s;}
+
+.gym-row{display:flex;align-items:center;gap:10px;padding:11px 12px;background:var(--bg2);border-radius:var(--rad);border:1px solid var(--bo);margin-bottom:7px;cursor:pointer;}
+.stat-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.stat-bar-label{width:80px;font-size:12px;color:var(--tx2);}
+.stat-bar{flex:1;height:6px;background:var(--bg4);border-radius:3px;overflow:hidden;}
+.stat-fill{height:100%;border-radius:3px;background:var(--g);}
+
+.ct-card{background:var(--bg2);border:1px solid var(--bo);border-radius:12px;padding:12px;margin-bottom:8px;cursor:pointer;transition:border-color .15s;}
+.ct-card:hover{border-color:var(--bo2);}
+.ct-card.title-fight{border-color:rgba(234,179,8,.65);background:linear-gradient(135deg,rgba(234,179,8,.10),var(--bg2));}
+.rank-row{display:flex;align-items:center;gap:9px;padding:9px 11px;background:var(--bg2);border-radius:var(--rad);border:1px solid var(--bo);margin-bottom:5px;}
+.rank-num{width:28px;font-size:12px;font-weight:700;color:var(--tx3);}
+.rank-name{flex:1;font-size:13px;}
+.rank-rec{font-size:11px;color:var(--tx2);}
+.rank-row.player{border-color:var(--g);background:rgba(29,158,117,0.08);}
+
+.post-compose{background:var(--bg2);border:1px solid var(--bo2);border-radius:12px;padding:12px;margin-bottom:9px;}
+.post-compose textarea{width:100%;background:transparent;border:none;color:var(--tx);font-size:13px;resize:none;outline:none;min-height:58px;font-family:inherit;}
+.post-card{background:var(--bg2);border:1px solid var(--bo);border-radius:12px;padding:11px;margin-bottom:7px;}
+.post-author{font-size:12px;font-weight:600;color:var(--tx2);margin-bottom:3px;}
+.post-body{font-size:13px;margin-bottom:7px;}
+.react-btn{background:none;border:1px solid var(--bo);border-radius:6px;color:var(--tx2);padding:4px 10px;font-size:12px;cursor:pointer;}
+.react-btn.liked{border-color:var(--g);color:var(--g);}
+.react-btn.disliked{border-color:var(--r);color:var(--r);}
+
+/* MODALS */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.86);z-index:100;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(4px);}
+.modal-overlay.on{display:flex;}
+.modal-box{background:var(--bg2);border:1px solid var(--bo2);border-radius:16px;padding:20px;width:100%;max-width:390px;max-height:88vh;overflow-y:auto;}
+
+/* TUTORIAL HIGHLIGHT */
+.tut-pulse{outline:2px solid var(--am)!important;box-shadow:0 0 18px rgba(234,179,8,0.55)!important;position:relative;z-index:95;}
+#tut-banner{
+  display:none;position:fixed;bottom:14px;left:50%;transform:translateX(-50%);
+  width:calc(100% - 24px);max-width:436px;z-index:120;
+  background:linear-gradient(180deg,#1f2937,#111827);
+  border:2px solid var(--am);border-radius:14px;padding:14px;
+  box-shadow:0 12px 32px rgba(0,0,0,0.85);
+}
+#tut-banner.on{display:block;}
+
+/* ── 3D SHADOW FIGHT ARENA ── */
+#fight-arena-wrap{
+  position:relative;width:100%;padding-bottom:68%;
+  border-radius:12px;overflow:hidden;border:1px solid var(--bo2);
+  margin-bottom:7px;touch-action:none;background:#1a222b;
+  box-shadow:0 8px 24px rgba(0,0,0,0.55);
+}
+#fight-canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;}
+
+#pos-badge{
+  position:absolute;top:8px;left:8px;z-index:5;
+  background:rgba(10,14,18,0.78);border:1px solid rgba(255,255,255,0.18);
+  backdrop-filter:blur(4px);padding:4px 9px;border-radius:6px;
+  font-size:11px;font-weight:700;letter-spacing:.4px;color:#fff;
+  text-transform:uppercase;pointer-events:none;
+}
+#combo-hint{
+  position:absolute;top:8px;right:8px;z-index:5;
+  background:rgba(10,14,18,0.78);border:1px solid rgba(255,255,255,0.18);
+  padding:4px 8px;border-radius:6px;font-size:10px;font-weight:600;
+  color:#cbd5e1;pointer-events:none;text-align:right;max-width:54%;
+}
+#guard-shield-badge{
+  position:absolute;bottom:8px;left:50%;transform:translateX(-50%);z-index:5;
+  background:rgba(234,179,8,0.92);color:#111;font-weight:800;font-size:11px;
+  padding:3px 10px;border-radius:20px;display:none;pointer-events:none;
+  letter-spacing:.5px;box-shadow:0 2px 10px rgba(234,179,8,0.45);
+}
+#injury-badge{
+  position:absolute;bottom:8px;right:8px;z-index:5;
+  background:rgba(226,75,74,0.92);color:#fff;font-weight:700;font-size:10px;
+  padding:3px 8px;border-radius:6px;display:none;pointer-events:none;
+}
+#ref-winner-banner{
+  position:absolute;inset:0;z-index:8;display:none;
+  flex-direction:column;align-items:center;justify-content:flex-end;
+  padding-bottom:14px;pointer-events:none;
+  background:radial-gradient(circle at center, transparent 40%, rgba(0,0,0,0.55) 100%);
+}
+#ref-winner-pill{
+  background:rgba(15,23,42,0.9);border:2px solid var(--am);
+  color:#fff;font-weight:800;font-size:14px;padding:6px 16px;
+  border-radius:999px;letter-spacing:.5px;box-shadow:0 4px 16px rgba(0,0,0,0.7);
+}
+
+.fight-hud{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
+.fight-hud-s{flex:1;}
+.fight-hud-lbl{font-size:10px;color:var(--tx3);margin-bottom:3px;font-weight:600;letter-spacing:.5px;}
+.fight-hud-lbl.r{text-align:right;}
+.hp-bar{height:7px;border-radius:4px;background:var(--bg4);overflow:hidden;border:1px solid var(--bo);}
+.hp-fill{height:100%;border-radius:4px;transition:width .2s;}
+.hp-p{background:var(--g);}
+.hp-a{background:var(--r);}
+.hp-low{background:#ff4444;}
+.fight-mid{font-size:11px;color:var(--tx3);text-align:center;min-width:56px;}
+#fight-score-row{display:flex;justify-content:center;align-items:center;gap:18px;margin-bottom:4px;}
+.f-sc-box{text-align:center;}
+.f-sc-pts{font-size:20px;font-weight:700;}
+.f-sc-lbl{font-size:10px;color:var(--tx3);font-weight:600;letter-spacing:.5px;}
+#fight-fat-row{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
+.fat-bar{flex:1;height:6px;border-radius:3px;background:var(--bg4);overflow:hidden;}
+.fat-fill{height:100%;border-radius:3px;background:var(--g);transition:width .2s;}
+.fat-fill.tired{background:var(--r);}
+#fight-ref{font-size:11px;text-align:center;color:var(--am);font-weight:700;min-height:16px;margin-bottom:3px;}
+#fight-log{font-size:12px;color:var(--tx);min-height:28px;text-align:center;padding:5px 8px;margin-bottom:6px;background:var(--bg2);border-radius:var(--rad);border:1px solid var(--bo);font-weight:500;}
+
+/* DEFEND GAUGE */
+#fight-def-wrap{margin-bottom:7px;display:none;}
+#fight-def-cd{font-size:13px;text-align:center;color:var(--r);font-weight:700;margin-bottom:4px;}
+#fight-def-track{height:13px;border-radius:4px;background:var(--bg4);border:1px solid var(--bo);overflow:hidden;position:relative;margin-bottom:5px;}
+#fight-def-grad{position:absolute;inset:0;background:linear-gradient(90deg,#E24B4A 0%,#EF9F27 35%,#1D9E75 50%,#EF9F27 65%,#E24B4A 100%);}
+#fight-def-cur{position:absolute;top:0;width:3px;height:100%;background:#fff;border-radius:2px;}
+#fight-def-btn{width:100%;padding:10px;background:var(--bl);color:#fff;border:none;border-radius:var(--rad);font-size:14px;font-weight:600;cursor:pointer;}
+#fight-def-btn:disabled{opacity:.4;}
+
+/* GET UP SYSTEM */
+#getup-wrap{display:none;margin-bottom:7px;background:rgba(29,158,117,0.08);border:1px solid rgba(29,158,117,0.45);border-radius:var(--rad);padding:10px;}
+#getup-label{font-size:13px;font-weight:700;color:var(--g);text-align:center;margin-bottom:6px;}
+#getup-progress-row{display:flex;align-items:center;gap:8px;margin-bottom:7px;}
+#getup-bar-bg{flex:1;height:16px;border-radius:8px;background:var(--bg4);overflow:hidden;border:1px solid var(--bo);position:relative;}
+#getup-bar-fill{height:100%;border-radius:8px;background:var(--g);width:0%;transition:width .07s;}
+#getup-pct{font-size:11px;font-weight:700;color:var(--g);min-width:32px;text-align:right;}
+#getup-timer{font-size:11px;color:var(--tx3);text-align:center;margin-bottom:6px;}
+#getup-key-prompt{display:none;text-align:center;margin-bottom:8px;}
+#getup-key-label{font-size:11px;color:var(--tx2);margin-bottom:4px;letter-spacing:.5px;}
+#getup-key-btn{display:inline-flex;align-items:center;justify-content:center;min-width:64px;min-height:64px;border-radius:12px;background:var(--g);color:#fff;font-size:28px;font-weight:900;border:none;cursor:pointer;user-select:none;box-shadow:0 4px 0 #0d6b4a;}
+#getup-key-btn.flash{background:var(--am);}
+#getup-taps-row{font-size:11px;color:var(--tx3);text-align:center;margin-top:4px;}
+#getup-ai-defend{display:none;text-align:center;margin-bottom:6px;font-size:11px;font-weight:700;color:var(--r);}
+#getup-initbtn{width:100%;padding:12px;background:var(--g);color:#fff;border:none;border-radius:var(--rad);font-size:14px;font-weight:700;cursor:pointer;margin-top:4px;}
+
+#fps-counter{position:fixed;top:calc(env(safe-area-inset-top,0px) + 4px);right:max(8px,env(safe-area-inset-right,0px));font-size:10px;font-weight:700;color:var(--g);background:rgba(0,0,0,0.6);padding:2px 6px;border-radius:4px;z-index:999;display:none;}
+
+/* ── ARCADE CONTROLS ── */
+#arcade-controls{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:10px;margin-top:6px;padding:8px 6px;
+  background:var(--bg2);border:1px solid var(--bo);border-radius:14px;
+  user-select:none;-webkit-user-select:none;
+}
+#analog-zone{
+  display:flex;flex-direction:column;align-items:center;gap:4px;flex-shrink:0;
+}
+#stick-base{
+  width:124px;height:124px;border-radius:50%;
+  background:radial-gradient(circle at 35% 35%, #2a2a2e, #141416);
+  border:2px solid rgba(255,255,255,0.16);
+  position:relative;touch-action:none;cursor:pointer;
+  box-shadow:inset 0 4px 12px rgba(0,0,0,0.7);
+}
+#stick-base::before{
+  content:'▲';position:absolute;top:5px;left:50%;transform:translateX(-50%);
+  font-size:9px;color:rgba(255,255,255,0.22);pointer-events:none;
+}
+#stick-base::after{
+  content:'▼';position:absolute;bottom:5px;left:50%;transform:translateX(-50%);
+  font-size:9px;color:rgba(255,255,255,0.22);pointer-events:none;
+}
+#stick-dir-lbl{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  font-size:10px;font-weight:700;color:rgba(255,255,255,0.25);pointer-events:none;
+  letter-spacing:1px;
+}
+#stick-knob{
+  width:48px;height:48px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%, #f8fafc, #94a3b8);
+  border:2px solid #fff;
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  box-shadow:0 4px 10px rgba(0,0,0,0.65);
+  pointer-events:none;transition:transform 0.04s linear;
+}
+#stick-knob.active{
+  background:radial-gradient(circle at 35% 30%, #6ee7b7, #10b981);
+  border-color:#a7f3d0;
+}
+#joy-outs-lbl{font-size:10px;color:var(--tx3);text-align:center;}
+
+#action-cluster{
+  flex:1;display:flex;flex-direction:column;gap:7px;min-width:0;
+}
+.act-row{display:flex;gap:8px;justify-content:center;}
+.act-btn{
+  flex:1;min-height:54px;border-radius:14px;border:none;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  cursor:pointer;touch-action:none;padding:6px 4px;
+  transition:transform .07s, filter .07s;
+  box-shadow:0 4px 0 rgba(0,0,0,0.55);
+}
+.act-btn:active,.act-btn.pressed{transform:translateY(3px);box-shadow:0 1px 0 rgba(0,0,0,0.55);filter:brightness(1.12);}
+.act-btn:disabled{opacity:.4;pointer-events:none;}
+.act-btn-main{font-size:13px;font-weight:800;letter-spacing:.3px;line-height:1.15;}
+.act-btn-sub{font-size:9px;font-weight:600;opacity:.88;margin-top:2px;line-height:1.1;text-align:center;}
+
+#btn-yellow{
+  background:linear-gradient(180deg,#facc15,#ca8a04);
+  color:#111;border:1px solid #fef08a;
+}
+#btn-blue{
+  background:linear-gradient(180deg,#3b82f6,#1d4ed8);
+  color:#fff;border:1px solid #93c5fd;
+}
+#btn-red{
+  background:linear-gradient(180deg,#ef4444,#b91c1c);
+  color:#fff;border:1px solid #fca5a5;
+}
+
+#move-preview{
+  background:rgba(255,255,255,0.04);border:1px solid var(--bo);
+  border-radius:8px;padding:5px 8px;font-size:10px;color:var(--tx2);
+  text-align:center;line-height:1.35;
+}
+#move-preview strong{color:var(--tx);}
+
+/* UBJJF BELT CEREMONY */
+#belt-ceremony-canvas{
+  width:100%;height:210px;border-radius:12px;background:#0a0e14;
+  border:1px solid rgba(234,179,8,0.45);display:block;margin:10px 0;
+}
+
+/* ONLINE */
+.on-code-box{font-size:32px;font-weight:700;letter-spacing:8px;text-align:center;padding:16px 10px;background:var(--bg3);border-radius:12px;border:1px solid rgba(127,119,221,0.5);margin:12px 0;color:#9b97e8;}
+.on-slot{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--rad);border:1px solid var(--bo);background:var(--bg2);margin-bottom:6px;}
+.on-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;background:var(--tx3);}
+.on-dot.me{background:#5ba3e8;}.on-dot.ok{background:var(--g);}
+#on-status-bar{font-size:12px;color:var(--tx2);text-align:center;margin-bottom:8px;padding:6px;background:var(--bg2);border-radius:var(--rad);border:1px solid var(--bo);}
+.on-cdot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--am);margin-right:5px;vertical-align:middle;}
+.on-cdot.on{background:var(--g);}.on-cdot.off{background:var(--r);}
+</style>
+</head>
+<body>
+<div id="fps-counter">60 FPS</div>
+<div id="app">
+
+<!-- MAIN MENU -->
+<div id="scr-menu" class="scr on">
+  <div class="ttl">BJJ: Try Game</div>
+  <div class="sub-ttl">SHADOW 3D GRAPPLING</div>
+  <div style="text-align:center;">
+    <div class="net-pill"><span class="net-dot" id="menu-net-dot"></span><span id="menu-net-txt">Offline Ready (Quick &amp; Career 100% Offline)</span></div>
+  </div>
+  <div class="mi" onclick="goScr('scr-diff')">
+    <div class="mi-icon" style="background:rgba(29,158,117,0.2);">🥋</div>
+    <div>
+      <div class="mi-title">Quick match <span class="bdg gn">OFFLINE</span></div>
+      <div class="mi-desc">Shadow Dojo — Works 100% without internet</div>
+    </div>
+  </div>
+  <div class="mi" onclick="initCareer()">
+    <div class="mi-icon" style="background:rgba(24,95,165,0.2);">🏆</div>
+    <div>
+      <div class="mi-title">Career mode <span class="bdg gn">OFFLINE</span></div>
+      <div class="mi-desc">Build your UBJJF legacy &amp; win the World Belt offline</div>
+    </div>
+  </div>
+  <div class="mi" onclick="openOnlineMenu()">
+    <div class="mi-icon" style="background:rgba(127,119,221,0.2);">🌐</div>
+    <div>
+      <div class="mi-title">Online mode <span class="bdg am">INTERNET REQUIRED</span></div>
+      <div class="mi-desc">Fight a friend in real time (requires connection)</div>
+    </div>
+  </div>
+  <div class="mi" onclick="openCredits(false)">
+    <div class="mi-icon" style="background:rgba(234,179,8,0.18);">📜</div>
+    <div><div class="mi-title">Credits</div><div class="mi-desc">Authors, Shadow Engine &amp; concept</div></div>
+  </div>
+  <div style="margin-top:12px;text-align:center;">
+    <button class="btn sm-btn" onclick="toggleFPS()" id="fps-toggle-btn" style="font-size:11px;color:var(--tx3);border-color:var(--bo);">📊 Show FPS</button>
+  </div>
+</div>
+
+<!-- QUICK DIFF -->
+<div id="scr-diff" class="scr">
+  <button class="bk" onclick="goScr('scr-menu')">← Back</button>
+  <h2>Quick match (Offline)</h2>
+  <div class="sm mu" style="margin-bottom:8px;">Choose difficulty</div>
+  <button class="btn" style="border-color:var(--g);color:var(--g);margin-bottom:8px;" onclick="launchFight({mode:'quick',diff:'easy'})">Easy (White Belt AI)</button>
+  <button class="btn" style="border-color:var(--am);color:var(--am);margin-bottom:8px;" onclick="launchFight({mode:'quick',diff:'medium'})">Medium (Purple Belt AI)</button>
+  <button class="btn" style="border-color:var(--r);color:var(--r);margin-bottom:8px;" onclick="launchFight({mode:'quick',diff:'hard'})">Hard (Black Belt AI)</button>
+</div>
+
+<!-- CAREER SETUP: NAT -->
+<div id="scr-nat" class="scr">
+  <button class="bk" onclick="goScr('scr-menu')">← Back</button>
+  <h2>Choose your nationality</h2>
+  <div class="nat-grid" id="nat-grid"></div>
+  <button class="btn ac" onclick="goToName()">Continue →</button>
+</div>
+
+<!-- CAREER SETUP: NAME -->
+<div id="scr-cname" class="scr">
+  <button class="bk" onclick="goScr('scr-nat')">← Back</button>
+  <h2>Your fighter name</h2>
+  <div class="cd" style="margin-bottom:12px;">
+    <div class="sm mu" style="margin-bottom:6px;">Fighter name</div>
+    <input type="text" id="c-name-inp" placeholder="e.g. Alex Rodrigues" maxlength="28">
+    <div style="margin-top:10px;" class="sm mu">Weight class</div>
+    <select id="c-wc-sel" style="margin-top:5px;">
+      <option value="Lightweight">Lightweight (up to 70 kg)</option>
+      <option value="Welterweight">Welterweight (up to 77 kg)</option>
+      <option value="Middleweight" selected>Middleweight (up to 84 kg)</option>
+      <option value="Light-heavyweight">Light-heavyweight (up to 93 kg)</option>
+      <option value="Heavyweight">Heavyweight (93 kg+)</option>
+    </select>
+  </div>
+  <button class="btn ac" onclick="goToAttrs()">Continue →</button>
+</div>
+
+<!-- CAREER SETUP: ATTRS -->
+<div id="scr-attrs" class="scr">
+  <button class="bk" onclick="goScr('scr-cname')">← Back</button>
+  <h2>Build your style</h2>
+  <div style="text-align:right;margin-bottom:9px;" class="sm">Points left: <span id="pts-left" style="font-weight:700;color:var(--g);">10</span></div>
+  <div id="attrs-wrap"></div>
+  <button class="btn ac" onclick="startCareer()">Start career →</button>
+</div>
+
+<!-- CAREER HUB -->
+<div id="scr-career" class="scr">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+    <button class="bk" style="padding:0;" onclick="goScr('scr-menu')">← Main menu</button>
+    <div style="display:flex;gap:6px;">
+      <button class="btn sm-btn" style="font-size:11px;border-color:var(--am);color:var(--am);" onclick="startCareerTutorial(true)">🎓 Tutorial</button>
+      <button class="btn sm-btn" style="font-size:11px;border-color:var(--bo2);color:var(--tx2);" onclick="resetCareerConfirm()">↺ New</button>
+    </div>
+  </div>
+  <div id="ch">
+    <div id="ch-av">🥋</div>
+    <div style="flex:1;">
+      <div style="font-size:15px;font-weight:700;" id="ch-name">Fighter</div>
+      <div class="sm mu" id="ch-rank">Amateur Dojo</div>
+      <div class="sm" style="margin-top:2px;" id="ch-fans">0 fans • 0/100 fights</div>
+    </div>
+    <div style="text-align:right;">
+      <div class="sm mu" id="ch-day">Day 1</div>
+      <div class="sm mu" id="ch-en-txt">Energy: 100</div>
+    </div>
+  </div>
+  <div style="margin-bottom:10px;">
+    <div class="sm mu" style="margin-bottom:4px;">Energy</div>
+    <div class="e-bar"><div class="e-fill" id="ch-en-bar" style="width:100%;"></div></div>
+  </div>
+  <div class="cnav" id="career-nav-grid">
+    <button class="btn" id="nav-btn-schedule" onclick="goScr('scr-schedule')">📅 Schedule<div class="sm mu" style="margin-top:2px;" id="ch-day-nav">Day 1</div></button>
+    <button class="btn" id="nav-btn-gym" onclick="goScr('scr-gym')">🏋️ Gym<div class="sm mu" style="margin-top:2px;" id="ch-gym-nav">Train</div></button>
+    <button class="btn" id="nav-btn-contracts" onclick="goScr('scr-contracts')">🥊 Contracts<div class="sm mu" style="margin-top:2px;" id="ch-ct-nav">0 available</div></button>
+    <button class="btn" id="nav-btn-ranking" onclick="goScr('scr-ranking')">📊 Ranking<div class="sm mu" style="margin-top:2px;" id="ch-rk-nav">#—</div></button>
+    <button class="btn" id="nav-btn-social" onclick="goScr('scr-social')">📱 Social<div class="sm mu" style="margin-top:2px;" id="ch-soc-nav">0 fans</div></button>
+    <button class="btn" id="nav-btn-history" onclick="goScr('scr-chist')">📋 History<div class="sm mu" style="margin-top:2px;" id="ch-hist-nav">0W-0L</div></button>
+  </div>
+  <div id="ch-belt-wrap"></div>
+  <div id="ch-retire-wrap"></div>
+  <div id="ch-lvl-notice" style="display:none;" class="cd">
+    <div style="color:var(--pu);font-weight:600;margin-bottom:4px;">Level up available!</div>
+    <div class="sm mu">You have skill points to distribute.</div>
+    <button class="btn" style="margin-top:8px;border-color:var(--pu);color:var(--pu);" onclick="openLvlUp()">Upgrade skills</button>
+  </div>
+</div>
+
+<!-- SCHEDULE -->
+<div id="scr-schedule" class="scr">
+  <button class="bk" onclick="goScr('scr-career')">← Career hub</button>
+  <h2>Schedule</h2>
+  <div class="cd" style="margin-bottom:10px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <div><div style="font-size:15px;font-weight:600;" id="sch-day">Day 1</div><div class="sm mu" id="sch-week">Week 1</div></div>
+      <div style="text-align:right;"><div style="font-size:13px;font-weight:600;" id="sch-en">Energy: 100/100</div><div class="sm mu" id="sch-ct-info">New contracts ready</div></div>
+    </div>
+    <div style="margin-top:8px;"><div class="sm mu" style="margin-bottom:3px;">Energy</div>
+    <div class="e-bar" style="height:10px;"><div class="e-fill" id="sch-en-bar" style="width:100%;"></div></div></div>
+  </div>
+  <button class="btn" style="margin-bottom:7px;" onclick="doRest()">😴 Rest — +30 energy &nbsp;<span class="sm mu">1 day</span></button>
+  <button class="btn" style="margin-bottom:7px;" onclick="goScr('scr-gym')">🏋️ Go to gym &nbsp;<span class="sm mu">1 day</span></button>
+  <button class="btn" onclick="goScr('scr-contracts')">🥊 View fight contracts</button>
+</div>
+
+<!-- GYM -->
+<div id="scr-gym" class="scr">
+  <button class="bk" onclick="goScr('scr-career')">← Career hub</button>
+  <h2>Gym</h2>
+  <div class="cd" style="margin-bottom:10px;"><div class="sm mu" style="margin-bottom:8px;">Current stats</div><div id="gym-stats"></div></div>
+  <div class="sm mu" style="margin-bottom:7px;">Each session costs 1 day and 15 energy.</div>
+  <div id="gym-actions"></div>
+</div>
+
+<!-- CONTRACTS -->
+<div id="scr-contracts" class="scr">
+  <button class="bk" onclick="goScr('scr-career')">← Career hub</button>
+  <h2>Fight contracts</h2>
+  <div class="sm mu" style="margin-bottom:10px;" id="ct-info">New contracts every 3 days.</div>
+  <div id="ct-list"></div>
+</div>
+
+<!-- PRE-FIGHT -->
+<div id="scr-prefight" class="scr">
+  <button class="bk" onclick="goScr('scr-contracts')">← Contracts</button>
+  <h2>Fight preview</h2>
+  <div class="cd" id="pf-card" style="margin-bottom:12px;"></div>
+  <div class="cd" id="pf-warn" style="margin-bottom:12px;display:none;border-color:rgba(186,117,23,.5);">
+    <div style="color:var(--am);font-weight:600;margin-bottom:3px;">⚠ Low energy</div>
+    <div class="sm mu">Energy below 40 — you will lose 1 HP per second from fatigue during the fight.</div>
+  </div>
+  <button class="btn ac" onclick="launchCareerFight()">Fight now</button>
+</div>
+
+<!-- FIGHT SCREEN -->
+<div id="scr-fight" class="scr">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+    <button class="bk" style="padding:0;font-size:12px;" onclick="confirmQuitFight()">← Quit match</button>
+    <button class="btn sm-btn" style="padding:3px 8px;font-size:10px;border-color:var(--am);color:var(--am);" onclick="startFightTutorial()">🎓 Controls Guide</button>
+  </div>
+  <div class="fight-hud">
+    <div class="fight-hud-s">
+      <div class="fight-hud-lbl" id="f-p1-lbl">YOU</div>
+      <div class="hp-bar"><div class="hp-fill hp-p" id="f-p1-hp" style="width:100%"></div></div>
+    </div>
+    <div class="fight-mid">
+      <div id="f-timer">5:00</div>
+      <div>R<span id="f-rnd">1</span>/3</div>
+    </div>
+    <div class="fight-hud-s">
+      <div class="fight-hud-lbl r" id="f-p2-lbl">AI</div>
+      <div class="hp-bar"><div class="hp-fill hp-a" id="f-p2-hp" style="width:100%"></div></div>
+    </div>
+  </div>
+
+  <div id="fight-score-row">
+    <div class="f-sc-box"><div class="f-sc-pts" id="f-sc1">0</div><div class="f-sc-lbl" id="f-sc1-lbl">P1</div></div>
+    <div style="color:var(--tx3);font-size:12px;">pts</div>
+    <div class="f-sc-box"><div class="f-sc-pts" id="f-sc2">0</div><div class="f-sc-lbl" id="f-sc2-lbl">P2</div></div>
+  </div>
+
+  <div id="fight-fat-row">
+    <div class="sm mu" style="min-width:56px;">Stamina</div>
+    <div class="fat-bar"><div class="fat-fill" id="f-fat" style="width:100%"></div></div>
+    <div class="sm mu" style="min-width:26px;text-align:right;" id="f-fat-val">100</div>
+  </div>
+
+  <!-- SHADOW DOJO VIEWPORT (3D Three.js + Automatic 2D Offline Fallback!) -->
+  <div id="fight-arena-wrap">
+    <canvas id="fight-canvas"></canvas>
+    <div id="pos-badge">STANDING</div>
+    <div id="combo-hint">Move close &amp; use Blue / Red / Yellow</div>
+    <div id="guard-shield-badge">🛡 ACTIVE GUARD</div>
+    <div id="injury-badge">⚠ RIB INJURY</div>
+    <div id="ref-winner-banner">
+      <div id="ref-winner-pill">✋ REFEREE DECISION</div>
+    </div>
+  </div>
+
+  <div id="fight-ref"></div>
+  <div id="fight-log">Bismillah — Round 1! Approach your opponent.</div>
+
+  <!-- DEFEND GAUGE -->
+  <div id="fight-def-wrap">
+    <div id="fight-def-cd">5</div>
+    <div id="fight-def-track"><div id="fight-def-grad"></div><div id="fight-def-cur" style="left:50%"></div></div>
+    <button id="fight-def-btn" onclick="fDefend()">⚡ ESCAPE / DEFEND</button>
+    <div class="sm mu" style="text-align:center;margin-top:3px;" id="fight-def-hint">Hit when cursor is in the green zone!</div>
+  </div>
+
+  <!-- GET UP SYSTEM -->
+  <div id="getup-wrap">
+    <div id="getup-label">⬆ Bottom Position — Stand Up!</div>
+    <button id="getup-initbtn" ontouchstart="getupInit();event.preventDefault();" onmousedown="getupInit()">⬆ TECHNICAL STAND-UP</button>
+    <div id="getup-key-prompt">
+      <div id="getup-key-label">TAP THIS KEY FAST!</div>
+      <div><button id="getup-key-btn" ontouchstart="getupTap();event.preventDefault();" onmousedown="getupTap()">?</button></div>
+      <div id="getup-taps-row">0 / 0 taps</div>
+    </div>
+    <div id="getup-ai-defend">🛡 Opponent holding you down!</div>
+    <div id="getup-progress-row" style="display:none;">
+      <div id="getup-bar-bg"><div id="getup-bar-fill"></div></div>
+      <div id="getup-pct">0%</div>
+    </div>
+    <div id="getup-timer" style="display:none;">Time left: <span id="getup-cd">5</span>s</div>
+  </div>
+
+  <!-- JOYSTICK + 3 BUTTONS (YELLOW / BLUE / RED) -->
+  <div id="arcade-controls">
+    <div id="analog-zone">
+      <div id="stick-base">
+        <div id="stick-dir-lbl">MOVE</div>
+        <div id="stick-knob"></div>
+      </div>
+      <div id="joy-outs-lbl">Outs: 0/3</div>
+    </div>
+
+    <div id="action-cluster">
+      <div class="act-row">
+        <button id="btn-yellow" class="act-btn"
+          ontouchstart="pressYellow();event.preventDefault();"
+          onmousedown="pressYellow()">
+          <span class="act-btn-main">🛡 DEFEND</span>
+          <span class="act-btn-sub" id="lbl-yellow">Parry / Block (-Stam if empty)</span>
+        </button>
+        <button id="btn-blue" class="act-btn"
+          ontouchstart="pressBlue();event.preventDefault();"
+          onmousedown="pressBlue()">
+          <span class="act-btn-main">🥋 POSITION</span>
+          <span class="act-btn-sub" id="lbl-blue">Clinch / +Stick = Takedown</span>
+        </button>
+      </div>
+      <div class="act-row">
+        <button id="btn-red" class="act-btn"
+          ontouchstart="pressRed();event.preventDefault();"
+          onmousedown="pressRed()">
+          <span class="act-btn-main">🔥 SUBMIT</span>
+          <span class="act-btn-sub" id="lbl-red">Alone: Feint | +Stick: Sub</span>
+        </button>
+      </div>
+      <div id="move-preview">
+        <strong>Standing:</strong> Blue=Clinch · Blue+←=Pull Guard · Red=Feint · Red+Stick=Flying Sub
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- POST FIGHT -->
+<div id="scr-post" class="scr">
+  <div style="text-align:center;padding:20px 0 12px;">
+    <div style="font-size:32px;margin-bottom:4px;" id="post-icon">🏆</div>
+    <div style="font-size:24px;font-weight:700;margin-bottom:5px;" id="post-title">Victory!</div>
+    <div style="font-size:14px;color:var(--tx2);margin-bottom:14px;" id="post-desc"></div>
+  </div>
+  <div class="cd" id="post-score-card" style="margin-bottom:8px;"></div>
+  <div class="cd" id="post-fan-card" style="margin-bottom:8px;text-align:center;display:none;"><div class="sm mu" style="margin-bottom:3px;">Fan change</div><div id="post-fans" style="font-size:19px;font-weight:700;"></div></div>
+  <div class="cd" id="post-soc-card" style="margin-bottom:8px;display:none;"><div style="font-size:13px;font-weight:600;margin-bottom:6px;">Fan reaction</div><div id="post-soc-txt" class="sm mu"></div></div>
+  <div class="cd" id="post-rank-card" style="margin-bottom:8px;display:none;"><div style="font-size:13px;font-weight:600;margin-bottom:4px;">Ranking update</div><div id="post-rank-txt" class="sm mu"></div></div>
+  <button class="btn ac" onclick="afterFight()">Continue</button>
+</div>
+
+<!-- RANKING -->
+<div id="scr-ranking" class="scr">
+  <button class="bk" onclick="goScr('scr-career')">← Career hub</button>
+  <h2>UBJJF Rankings — <span id="rank-wc"></span></h2>
+  <div id="rank-list"></div>
+</div>
+
+<!-- HISTORY -->
+<div id="scr-chist" class="scr">
+  <button class="bk" onclick="goScr('scr-career')">← Career hub</button>
+  <h2>Fight history</h2>
+  <div id="hist-list"></div>
+</div>
+
+<!-- SOCIAL -->
+<div id="scr-social" class="scr">
+  <button class="bk" onclick="goScr('scr-career')">← Career hub</button>
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+    <div id="soc-av" style="width:40px;height:40px;border-radius:50%;background:var(--bl);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">🥋</div>
+    <div><div style="font-size:14px;font-weight:700;" id="soc-handle">@fighter</div><div class="sm mu"><span id="soc-fans">0</span> fans</div></div>
+  </div>
+  <div class="post-compose">
+    <div class="sm mu" style="margin-bottom:5px;">Post to your fans</div>
+    <textarea id="post-ta" placeholder="Share a training update, call out an opponent..." maxlength="280"></textarea>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:5px;">
+      <span class="sm mu" id="post-chr">280 left</span>
+      <button class="btn sm-btn ac" onclick="submitPost()">Post</button>
+    </div>
+  </div>
+  <div id="feed"></div>
+</div>
+
+<!-- LEVEL UP MODAL -->
+<div id="lvl-modal" class="modal-overlay">
+  <div class="modal-box">
+    <div style="font-size:18px;font-weight:700;color:var(--pu);margin-bottom:4px;">Level up!</div>
+    <div class="sm mu" style="margin-bottom:12px;">Distribute your skill points.</div>
+    <div style="text-align:right;margin-bottom:8px;" class="sm">Points left: <span id="lvl-pts" style="font-weight:700;color:var(--pu);"></span></div>
+    <div id="lvl-attrs-wrap"></div>
+    <button class="btn ac" style="margin-top:10px;" onclick="closeLvlUp()">Done</button>
+  </div>
+</div>
+
+<!-- UBJJF CHAMPIONSHIP BELT CINEMATIC MODAL -->
+<div id="belt-modal" class="modal-overlay">
+  <div class="modal-box" style="border-color:rgba(234,179,8,0.65);text-align:center;">
+    <div style="font-size:11px;letter-spacing:2px;color:var(--am);font-weight:700;">UBJJF WORLD CHAMPIONSHIP</div>
+    <div style="font-size:21px;font-weight:800;margin-top:3px;" id="belt-champ-title">NEW UBJJF CHAMPION!</div>
+    <canvas id="belt-ceremony-canvas"></canvas>
+    <div style="font-size:13px;color:var(--tx);margin-bottom:12px;" id="belt-champ-desc">
+      The referee raises your hand and awards you the official UBJJF Championship Black &amp; Gold Belt!
+    </div>
+    <button class="btn ac" style="background:var(--am);border-color:var(--am);color:#111;font-weight:700;" onclick="closeBeltCeremony()">Claim Championship Belt</button>
+  </div>
+</div>
+
+<!-- CREDITS MODAL -->
+<div id="credits-modal" class="modal-overlay">
+  <div class="modal-box" style="text-align:center;">
+    <div style="font-size:26px;margin-bottom:4px;">🥋</div>
+    <div style="font-size:19px;font-weight:800;margin-bottom:2px;">BJJ: Try Game</div>
+    <div class="sm mu" style="letter-spacing:2px;margin-bottom:14px;">SHADOW 3D GRAPPLING — CREDITS</div>
+
+    <div id="retire-legacy-box" style="display:none;background:rgba(234,179,8,0.12);border:1px solid rgba(234,179,8,0.45);border-radius:10px;padding:10px;margin-bottom:12px;">
+      <div style="font-size:13px;font-weight:700;color:var(--am);margin-bottom:3px;">🏅 HALL OF FAME RETIREMENT</div>
+      <div class="sm" id="retire-legacy-txt">100 Fights Completed!</div>
+    </div>
+
+    <div class="cd" style="text-align:left;margin-bottom:8px;">
+      <div style="font-size:12px;color:var(--am);font-weight:700;">💡 Original Concept &amp; Game Design</div>
+      <div style="font-size:14px;font-weight:600;margin-top:2px;">Unknown</div>
+      <div class="sm mu">Original author of the BJJ: Try Game idea, rules, UBJJF career progression &amp; tactile controls.</div>
+    </div>
+
+    <div class="cd" style="text-align:left;margin-bottom:8px;">
+      <div style="font-size:12px;color:#60a5fa;font-weight:700;">💻 Core Gameplay &amp; Architecture Code</div>
+      <div style="font-size:14px;font-weight:600;margin-top:2px;">Claude &amp; Gemini</div>
+      <div class="sm mu">Co-engineered the BJJ state machine, offline engine, career systems &amp; online multiplayer.</div>
+    </div>
+
+    <div class="cd" style="text-align:left;margin-bottom:12px;">
+      <div style="font-size:12px;color:var(--g);font-weight:700;">🎨 3D/2D Shadow Dojo &amp; Kinematics Engine</div>
+      <div style="font-size:14px;font-weight:600;margin-top:2px;">Gemini (Hybrid Shadow Engine)</div>
+      <div class="sm mu">Built the Shadow silhouette grapplers, offline fallback renderer, referee animations &amp; UBJJF Belt ceremony.</div>
+    </div>
+
+    <button class="btn ac" onclick="closeCredits()">Close</button>
+  </div>
+</div>
+
+<!-- INTERACTIVE TUTORIAL BANNER -->
+<div id="tut-banner">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+    <span style="font-size:11px;font-weight:800;color:var(--am);letter-spacing:.6px;" id="tut-step-lbl">TUTORIAL 1/6</span>
+    <button onclick="endTutorial()" style="background:none;border:none;color:var(--tx3);font-size:12px;cursor:pointer;">Skip ✕</button>
+  </div>
+  <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:4px;" id="tut-title">Welcome to Career Mode!</div>
+  <div style="font-size:12px;color:var(--tx2);line-height:1.45;margin-bottom:10px;" id="tut-text">Let's walk through every button and control so you know where everything is.</div>
+  <div style="display:flex;gap:8px;">
+    <button class="btn sm-btn" style="flex:1;" id="tut-prev-btn" onclick="stepTutorial(-1)">← Previous</button>
+    <button class="btn sm-btn ac" style="flex:2;" id="tut-next-btn" onclick="stepTutorial(1)">Next →</button>
+  </div>
+</div>
+
+<!-- ONLINE SCREENS (INTERNET MANDATORY) -->
+<div id="scr-online" class="scr">
+  <button class="bk" onclick="onLeave();goScr('scr-menu')">← Back</button>
+  <h2>Online mode</h2>
+  <div id="on-status-bar"><span class="on-cdot" id="on-cdot"></span><span id="on-status-txt">Checking internet connection...</span></div>
+  <div id="on-offline-block" style="display:none;margin-bottom:12px;border-color:rgba(226,75,74,0.55);background:rgba(226,75,74,0.10);" class="cd">
+    <div style="color:var(--r);font-weight:700;margin-bottom:4px;">📡 Internet connection required</div>
+    <div class="sm" style="margin-bottom:8px;">Online multiplayer requires an active Wi-Fi or mobile data connection. Quick Match and Career Mode remain 100% playable offline!</div>
+    <button class="btn sm-btn" onclick="onRetryConnection()" style="border-color:var(--r);color:var(--r);">🔄 Retry connection</button>
+  </div>
+  <div id="on-actions-wrap">
+    <div class="cd" style="cursor:pointer;margin-bottom:8px;" onclick="onGoCreate()"><div style="font-size:15px;font-weight:600;margin-bottom:3px;">🏠 Create room</div><div class="sm mu">Get a code and share it with your friend</div></div>
+    <div class="cd" style="cursor:pointer;" onclick="onGoJoinScreen()"><div style="font-size:15px;font-weight:600;margin-bottom:3px;">🔗 Join room</div><div class="sm mu">Enter the code your friend sent you</div></div>
+  </div>
+</div>
+
+<div id="scr-on-create" class="scr">
+  <button class="bk" onclick="onLeave();goScr('scr-online')">← Back</button>
+  <h2>Create room</h2>
+  <div class="sm mu" style="margin-bottom:6px;">Share this code with your opponent.</div>
+  <div class="on-code-box" id="on-code-box">——</div>
+  <div style="display:flex;justify-content:center;margin-bottom:12px;"><button class="btn sm-btn" id="on-copy-btn" onclick="onCopyCode()">📋 Copy code</button></div>
+  <div class="cd" style="margin-bottom:10px;"><div class="sm mu" style="margin-bottom:5px;">Your fighter name</div><input type="text" id="on-p1-name" placeholder="Fighter name" maxlength="20" value="Player 1"></div>
+  <div class="cd" style="margin-bottom:10px;" id="on-p1-slots"><div class="sm mu" style="margin-bottom:7px;">Players in room</div><div class="on-slot"><div class="on-dot me"></div><span id="on-p1-slot">You (waiting...)</span></div><div class="on-slot"><div class="on-dot" id="on-p2-dot"></div><span id="on-p2-slot">Waiting for opponent...</span></div></div>
+  <div id="on-create-st" class="sm mu" style="text-align:center;margin-bottom:8px;"></div>
+  <button class="btn ac" id="on-p1-ready-btn" onclick="onSetReady()" disabled>Waiting for opponent...</button>
+</div>
+
+<div id="scr-on-join" class="scr">
+  <button class="bk" onclick="onLeave();goScr('scr-online')">← Back</button>
+  <h2>Join room</h2>
+  <div class="cd" style="margin-bottom:10px;"><div class="sm mu" style="margin-bottom:6px;">Room code (6 characters)</div><input type="text" id="on-join-code" placeholder="Enter code" maxlength="6" style="font-size:20px;letter-spacing:4px;text-transform:uppercase;" oninput="this.value=this.value.toUpperCase()"></div>
+  <div class="cd" style="margin-bottom:10px;"><div class="sm mu" style="margin-bottom:5px;">Your fighter name</div><input type="text" id="on-p2-name" placeholder="Fighter name" maxlength="20" value="Player 2"></div>
+  <button class="btn ac" onclick="onJoinRoom()">Join the room</button>
+  <div id="on-join-err" class="sm" style="color:var(--r);text-align:center;margin-top:8px;min-height:16px;"></div>
+</div>
+
+<div id="scr-on-wait" class="scr">
+  <button class="bk" onclick="onLeave();goScr('scr-online')">← Leave room</button>
+  <h2>Room ready</h2>
+  <div class="cd" style="margin-bottom:10px;" id="on-wait-slots">
+    <div class="sm mu" style="margin-bottom:7px;">Players in room</div>
+    <div class="on-slot"><div class="on-dot ok"></div><span id="on-w-p1">Host connected</span></div>
+    <div class="on-slot"><div class="on-dot me"></div><span id="on-w-p2">You (ready)</span></div>
+  </div>
+  <div class="sm mu" style="text-align:center;margin-bottom:10px;" id="on-wait-st">Waiting for both players...</div>
+  <button class="btn ac" id="on-wait-btn" onclick="onSetReady()">I'm ready!</button>
+</div>
+
+<div id="scr-on-result" class="scr">
+  <div style="text-align:center;padding:22px 0 12px;">
+    <div style="font-size:32px;margin-bottom:5px;" id="on-res-icon">🏆</div>
+    <div style="font-size:24px;font-weight:700;margin-bottom:5px;" id="on-res-title">Victory!</div>
+    <div style="font-size:14px;color:var(--tx2);margin-bottom:14px;" id="on-res-desc"></div>
+  </div>
+  <div class="cd" id="on-scorecard" style="margin-bottom:12px;"></div>
+  <button class="btn ac" onclick="onLeave();goScr('scr-menu')">Back to menu</button>
+</div>
+
+</div><!-- #app -->
+
+<!-- NON-BLOCKING CDN SCRIPTS FOR ONLINE 3D & PEERJS (GAME WORKS 100% OFFLINE WITHOUT THEM!) -->
+<script>
+window._threeLoaded = false;
+window._peerLoaded = false;
+function loadExtScript(src, onloadCb){
+  try{
+    const s = document.createElement('script');
+    s.src = src;
+    s.async = true;
+    s.onload = () => { if(onloadCb) onloadCb(true); };
+    s.onerror = () => { if(onloadCb) onloadCb(false); };
+    document.head.appendChild(s);
+  }catch(e){ if(onloadCb) onloadCb(false); }
+}
+loadExtScript('https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js', ok => {
+  window._threeLoaded = ok && (typeof THREE !== 'undefined');
+});
+loadExtScript('https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.4/peerjs.min.js', ok => {
+  window._peerLoaded = ok && (typeof Peer !== 'undefined');
+  if(document.getElementById('scr-online').classList.contains('on')) onInitLib();
+});
+
+function updateMenuNetBadge(){
+  const dot = document.getElementById('menu-net-dot');
+  const txt = document.getElementById('menu-net-txt');
+  if(!dot || !txt) return;
+  if(navigator.onLine){
+    dot.className = 'net-dot';
+    txt.textContent = 'Online & Offline Ready';
+  } else {
+    dot.className = 'net-dot off';
+    txt.textContent = 'Offline Mode — Quick Match & Career Ready';
+  }
+}
+window.addEventListener('online', () => {
+  updateMenuNetBadge();
+  if(!window._peerLoaded){
+    loadExtScript('https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.4/peerjs.min.js', ok => {
+      window._peerLoaded = ok && (typeof Peer !== 'undefined');
+      if(document.getElementById('scr-online').classList.contains('on')) onInitLib();
+    });
+  }
+  if(!window._threeLoaded){
+    loadExtScript('https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js', ok => {
+      window._threeLoaded = ok && (typeof THREE !== 'undefined');
+    });
+  }
+});
+window.addEventListener('offline', () => {
+  updateMenuNetBadge();
+  if(fightMode === 'online' && F && F.running){
+    fEndFight(false, 'Connection lost (Internet required for Online)');
+  }
+  if(document.getElementById('scr-online').classList.contains('on')) onInitLib();
+});
+document.addEventListener('DOMContentLoaded', updateMenuNetBadge);
+</script>
+
+<script>
+'use strict';
+
+// ═══════════════════════════════════════
+// POLYFILL FOR CanvasRenderingContext2D.roundRect (Old Mobile WebViews)
+// ═══════════════════════════════════════
+if (typeof CanvasRenderingContext2D !== 'undefined' && !CanvasRenderingContext2D.prototype.roundRect) {
+  CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
+    if (typeof r === 'number') r = {tl: r, tr: r, br: r, bl: r};
+    else r = Object.assign({tl: 0, tr: 0, br: 0, bl: 0}, r);
+    this.beginPath();
+    this.moveTo(x + r.tl, y);
+    this.lineTo(x + w - r.tr, y);
+    this.quadraticCurveTo(x + w, y, x + w, y + r.tr);
+    this.lineTo(x + w, y + h - r.br);
+    this.quadraticCurveTo(x + w, y + h, x + w - r.br, y + h);
+    this.lineTo(x + r.bl, y + h);
+    this.quadraticCurveTo(x, y + h, x, y + h - r.bl);
+    this.lineTo(x, y + r.tl);
+    this.quadraticCurveTo(x, y, x + r.tl, y);
+    this.closePath();
+    return this;
+  };
+}
+
+// ═══════════════════════════════════════
+// FPS COUNTER
+// ═══════════════════════════════════════
+let _fpsVisible=false, _fpsLast=performance.now(), _fpsFrames=0, _fpsRAF=null;
+function _fpsLoop(){
+  _fpsFrames++;
+  const now=performance.now(), delta=now-_fpsLast;
+  if(delta>=500){
+    const fps=Math.round(_fpsFrames/(delta/1000));
+    _fpsFrames=0; _fpsLast=now;
+    const el=document.getElementById('fps-counter');
+    if(el&&_fpsVisible){
+      el.textContent=fps+' FPS';
+      el.style.color=fps>=50?'var(--g)':fps>=28?'var(--am)':'var(--r)';
+    }
+  }
+  if(_fpsVisible) _fpsRAF=requestAnimationFrame(_fpsLoop);
+}
+function toggleFPS(){
+  _fpsVisible=!_fpsVisible;
+  const el=document.getElementById('fps-counter');
+  const btn=document.getElementById('fps-toggle-btn');
+  if(_fpsVisible){
+    el.style.display='block'; btn.textContent='📊 Hide FPS';
+    _fpsLast=performance.now(); _fpsFrames=0; _fpsLoop();
+  }else{
+    el.style.display='none'; btn.textContent='📊 Show FPS';
+    if(_fpsRAF){cancelAnimationFrame(_fpsRAF);_fpsRAF=null;}
+  }
+}
+
+// ═══════════════════════════════════════
+// DATA & BJJ POSITIONS / MOVES
+// ═══════════════════════════════════════
+const NATS=[
+  {f:'🇧🇷',n:'Brazil'},{f:'🇺🇸',n:'USA'},{f:'🇯🇵',n:'Japan'},
+  {f:'🇷🇺',n:'Russia'},{f:'🇰🇿',n:'Kazakhstan'},{f:'🇦🇿',n:'Azerbaijan'},
+  {f:'🇰🇷',n:'South Korea'},{f:'🇨🇺',n:'Cuba'},{f:'🇩🇿',n:'Algeria'},
+  {f:'🇩🇯',n:'Djibouti'},{f:'🇳🇬',n:'Nigeria'},{f:'🇲🇦',n:'Morocco'},
+  {f:'🇵🇸',n:'Palestine'},{f:'🇫🇷',n:'France'},{f:'🇬🇧',n:'UK'},
+  {f:'🇦🇺',n:'Australia'},{f:'🇨🇦',n:'Canada'},{f:'🇲🇽',n:'Mexico'},
+  {f:'🇮🇷',n:'Iran'},{f:'🇸🇪',n:'Sweden'},{f:'🇳🇱',n:'Netherlands'},
+];
+const ATTR_DEF=[
+  {k:'sub',  l:'Submissions', c:'var(--r)'},
+  {k:'td',   l:'Takedowns',   c:'var(--bl)'},
+  {k:'guard',l:'Guard work',  c:'var(--g)'},
+  {k:'cardio',l:'Cardio',     c:'var(--am)'},
+  {k:'chain',l:'Chaining',    c:'var(--pu)'},
+];
+const GYM_DEF=[
+  {k:'strength', l:'Strength',  icon:'💪', desc:'Boosts submission & position power'},
+  {k:'agility',  l:'Agility',   icon:'⚡', desc:'Improves takedown & transition speed'},
+  {k:'endurance',l:'Endurance', icon:'🫁', desc:'Reduces stamina drain & damage'},
+];
+const AI_NAMES=['Carlos Souza','Yuki Tanaka','Ivan Petrov','Ahmed Hassan',
+  'Marco Silva','Luiz Gracie','Kenji Mori','Alexei Volkov','Pedro Costa',
+  'Rafael Lima','Takeshi Ono','Miguel Pereira','Lorenzo Braz','Felipe Maia'];
+const FAN_WIN=['Alhamdulillah, technical masterpiece on the tatami! 🥋','That transition to mount was surgical!','Pure Jiu-Jitsu & respect! 🔥','Best grappling match of the year!'];
+const FAN_LOSS=['Back to the dojo, you will return stronger 💪','Tough scramble — keep drilling!','Every black belt was once a white belt.'];
+
+const POS_LABELS={
+  stand: 'STANDING',
+  clinch: 'CLINCH (COLLAR TIE)',
+  closed_guard_top: 'TOP CLOSED GUARD',
+  closed_guard_bottom: 'BOTTOM CLOSED GUARD',
+  half_guard: 'HALF GUARD TOP',
+  side_control: 'SIDE CONTROL',
+  full_mount: 'FULL MOUNT',
+  back_control: 'BACK CONTROL',
+  bottom_pinned: 'BOTTOM PINNED'
+};
+
+const DIFF_CFG={
+  easy:   {dmg:8,  aiSpd:0.006, aiAttackDelay:6200, adef:0.28, defWin:0.22, defSpd:0.9,
+           getupReq:45, getupTime:6, aiStopGetup:0.25, getupTaps:6,  aiDefDrain:8},
+  medium: {dmg:13, aiSpd:0.009, aiAttackDelay:4400, adef:0.50, defWin:0.14, defSpd:1.4,
+           getupReq:65, getupTime:5, aiStopGetup:0.50, getupTaps:9,  aiDefDrain:14},
+  hard:   {dmg:19, aiSpd:0.012, aiAttackDelay:3100, adef:0.74, defWin:0.08, defSpd:1.95,
+           getupReq:85, getupTime:4, aiStopGetup:0.72, getupTaps:12, aiDefDrain:20},
+};
+
+const CR=0.475, PR=0.02, OUT_LIMIT=3, ROUND_SECS=300, ROUNDS=3;
+
+// ═══════════════════════════════════════
+// SCREENS, TUTORIAL & CREDITS
+// ═══════════════════════════════════════
+function goScr(id){
+  endTutorial(true);
+  document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));
+  const el=document.getElementById(id);
+  if(el) el.classList.add('on');
+  window.scrollTo(0,0);
+  if(id==='scr-social') buildFeed();
+  if(id==='scr-ranking') buildRanking();
+  if(id==='scr-chist') buildHist();
+  if(id==='scr-gym') buildGym();
+  if(id==='scr-contracts') buildContracts();
+  if(id==='scr-schedule') refreshSchedule();
+  if(id==='scr-career') refreshCareer();
+  if(id==='scr-online') onInitLib();
+}
+
+function openCredits(isRetirement){
+  const box=document.getElementById('retire-legacy-box');
+  if(isRetirement && C){
+    box.style.display='block';
+    document.getElementById('retire-legacy-txt').textContent=
+      `${C.name} (${C.flag} ${C.wc}) retired after ${C.totalFights} fights (${C.wins}W-${C.losses}L) • ${fmtN(C.fans)} fans${C.hasBelt?' • UBJJF World Champion 🥇':''}`;
+  } else {
+    box.style.display='none';
+  }
+  document.getElementById('credits-modal').classList.add('on');
+}
+function closeCredits(){
+  document.getElementById('credits-modal').classList.remove('on');
+}
+
+// ── INTERACTIVE TUTORIAL ENGINE ──
+let _tutSteps=[], _tutIdx=0, _tutActive=false;
+
+function startCareerTutorial(force){
+  if(!C) return;
+  if(!force && C.seenTutorial) return;
+  C.seenTutorial=true;
+  saveC();
+  _tutSteps=[
+    {el:'ch', title:'1. Fighter Card & Career Progress', text:'Here is your fighter profile, UBJJF rank, fan count, current Day, and remaining Energy (out of 100).'},
+    {el:'nav-btn-schedule', title:'2. 📅 Schedule (Rest & Advance Days)', text:'Tap Schedule to rest (+30 Energy, advances 1 day). Rest before fights so you don\'t suffer fatigue!'},
+    {el:'nav-btn-gym', title:'3. 🏋️ Gym (Train Stats)', text:'Spend 1 day and 15 Energy to permanently upgrade Strength, Agility, and Endurance.'},
+    {el:'nav-btn-contracts', title:'4. 🥊 Contracts & UBJJF Title', text:'Pick your opponents here! Win 5 amateur fights to enter UBJJF rankings, climb to #1, and win the UBJJF World Belt!'},
+    {el:'nav-btn-ranking', title:'5. 📊 UBJJF Rankings & 📋 History', text:'Track your climb from #50 to #1 in your weight class, and review every match in History.'},
+    {el:'nav-btn-social', title:'6. 📱 Social & 100-Fight Retirement', text:'Post updates to grow your fanbase. Once you reach 100 career fights, you can retire and view the Hall of Fame Credits!'}
+  ];
+  _tutIdx=0; _tutActive=true;
+  renderTutorialStep();
+}
+
+function startFightTutorial(){
+  _tutSteps=[
+    {el:'stick-base', title:'1. Analog Joystick (Move & Direction)', text:'Drag the stick (or use WASD / ZQSD / Arrows) to move inside the white tatami circle. Hold a direction + a button for specific BJJ moves!'},
+    {el:'btn-blue', title:'2. 🥋 BLUE Button (Positions & Takedowns)', text:'Standing: Blue alone = Clinch. Blue + Stick = Double Leg, Single Leg, Judo Throw, or Pull Guard. On the ground: Pass guard, Sweep, or Mount!'},
+    {el:'btn-red', title:'3. 🔥 RED Button (Feints & Submissions)', text:'Red alone (Neutral stick) = Feint (+22% accuracy on next move). Red + Stick = Flying Submission or Ground Choke/Armbar!'},
+    {el:'btn-yellow', title:'4. 🛡 YELLOW Button (Parry & Block)', text:'Press Yellow when the opponent telegraphs an attack to Parry (+1 pt). Warning: holding Yellow when nobody attacks drains stamina!'},
+    {el:'fight-arena-wrap', title:'5. Tatami Ring & Referee', text:'Stay inside the white tatami circle (3 outs = DQ). At the end of the match, the referee raises the winner\'s hand!'}
+  ];
+  _tutIdx=0; _tutActive=true;
+  renderTutorialStep();
+}
+
+function renderTutorialStep(){
+  document.querySelectorAll('.tut-pulse').forEach(e=>e.classList.remove('tut-pulse'));
+  const banner=document.getElementById('tut-banner');
+  if(!_tutActive || !_tutSteps.length){ banner.classList.remove('on'); return; }
+  const st=_tutSteps[_tutIdx];
+  const target=document.getElementById(st.el);
+  if(target){
+    target.classList.add('tut-pulse');
+    target.scrollIntoView({behavior:'smooth', block:'center'});
+  }
+  document.getElementById('tut-step-lbl').textContent=`TUTORIAL ${_tutIdx+1}/${_tutSteps.length}`;
+  document.getElementById('tut-title').textContent=st.title;
+  document.getElementById('tut-text').textContent=st.text;
+  document.getElementById('tut-prev-btn').disabled=(_tutIdx===0);
+  document.getElementById('tut-next-btn').textContent=(_tutIdx===_tutSteps.length-1)?'Got it! ✓':'Next →';
+  banner.classList.add('on');
+}
+
+function stepTutorial(delta){
+  _tutIdx+=delta;
+  if(_tutIdx>=_tutSteps.length){ endTutorial(); return; }
+  if(_tutIdx<0) _tutIdx=0;
+  renderTutorialStep();
+}
+
+function endTutorial(){
+  _tutActive=false;
+  document.querySelectorAll('.tut-pulse').forEach(e=>e.classList.remove('tut-pulse'));
+  const banner=document.getElementById('tut-banner');
+  if(banner) banner.classList.remove('on');
+}
+
+// ═══════════════════════════════════════
+// CAREER STATE & PROGRESSION (WITH BELT & RANKING BUG FIXES)
+// ═══════════════════════════════════════
+let C=null, selNat=null, attrPts=10;
+let attrs={sub:5,td:5,guard:5,cardio:5,chain:5};
+let currentOpp=null;
+
+function saveC(){ try{ if(C) localStorage.setItem('bjj5',JSON.stringify(C)); }catch(e){} }
+function fmtN(n){ if(n>=1e6)return(n/1e6).toFixed(1)+'M'; if(n>=1e3)return(n/1e3).toFixed(1)+'K'; return''+n; }
+
+function initCareer(){
+  try{
+    const sv=localStorage.getItem('bjj5');
+    if(sv){
+      C=JSON.parse(sv);
+      if(!C.contracts) C.contracts=[];
+      if(!C.history) C.history=[];
+      if(!C.posts) C.posts=[];
+      if(!C.gymStats) C.gymStats={strength:5,agility:5,endurance:5};
+      // Repair existing save if player reached Rank #1 without receiving belt
+      if(C.inUBJJF && C.rank===1 && !C.hasBelt){
+        C.hasBelt=true;
+        saveC();
+      }
+      refreshCareer(); goScr('scr-career');
+      if(!C.seenTutorial) setTimeout(()=>startCareerTutorial(false), 300);
+      return;
+    }
+  }catch(e){}
+  buildNatGrid(); goScr('scr-nat');
+}
+
+function resetCareerConfirm(){
+  if(confirm('Start a brand new career? Your current career save will be replaced.')){
+    try{ localStorage.removeItem('bjj5'); }catch(e){}
+    C=null; selNat=null;
+    buildNatGrid(); goScr('scr-nat');
+  }
+}
+
+function buildNatGrid(){
+  const g=document.getElementById('nat-grid'); g.innerHTML='';
+  NATS.forEach(n=>{
+    const b=document.createElement('button');
+    b.className='nat-btn'+(selNat===n.n?' sel':'');
+    b.textContent=n.f+' '+n.n;
+    b.onclick=()=>{selNat=n.n;buildNatGrid();};
+    g.appendChild(b);
+  });
+}
+function goToName(){ if(!selNat){alert('Select a nationality.');return;} goScr('scr-cname'); }
+function goToAttrs(){
+  const nm=document.getElementById('c-name-inp').value.trim();
+  if(nm.length<2){alert('Enter at least 2 characters.');return;}
+  attrPts=10; attrs={sub:5,td:5,guard:5,cardio:5,chain:5};
+  buildAttrUI('attrs-wrap','pts-left',attrs,15,true); goScr('scr-attrs');
+}
+function buildAttrUI(wrId,ptsId,atObj,maxVal,isSetup){
+  const w=document.getElementById(wrId); if(!w) return; w.innerHTML='';
+  ATTR_DEF.forEach(def=>{
+    const pct=(atObj[def.k]/maxVal)*100;
+    const row=document.createElement('div'); row.className='atr';
+    row.innerHTML=`<div class="atr-nm">${def.l}</div>
+      <button class="atr-ab" onclick="adjAttr('${def.k}',-1,'${wrId}','${ptsId||''}',${maxVal},${isSetup})">−</button>
+      <div class="atr-bar"><div class="atr-fill" id="af-${wrId}-${def.k}" style="width:${pct}%;background:${def.c};"></div></div>
+      <button class="atr-ab" onclick="adjAttr('${def.k}',1,'${wrId}','${ptsId||''}',${maxVal},${isSetup})">+</button>
+      <div id="av-${wrId}-${def.k}">${atObj[def.k]}</div>`;
+    w.appendChild(row);
+  });
+  if(ptsId){ const el=document.getElementById(ptsId); if(el) el.textContent=isSetup?attrPts:(C?C.lvlPts:0); }
+}
+function adjAttr(k,d,wrId,ptsId,mx,isSetup){
+  const a=isSetup?attrs:C.attrs, nv=a[k]+d; if(nv<1||nv>mx) return;
+  if(d>0){ if(isSetup){if(attrPts<=0)return;attrPts--;} else{if(!C||C.lvlPts<=0)return;C.lvlPts--;} }
+  else { if(isSetup)attrPts++; else if(C)C.lvlPts++; }
+  a[k]=nv;
+  const fb=document.getElementById('af-'+wrId+'-'+k), vb=document.getElementById('av-'+wrId+'-'+k);
+  if(fb) fb.style.width=((nv/mx)*100)+'%';
+  if(vb) vb.textContent=nv;
+  if(ptsId){ const el=document.getElementById(ptsId); if(el) el.textContent=isSetup?attrPts:(C?C.lvlPts:0); }
+  if(!isSetup){saveC();refreshCareer();}
+}
+function startCareer(){
+  const nm=document.getElementById('c-name-inp').value.trim();
+  const wc=document.getElementById('c-wc-sel').value;
+  const nat=NATS.find(n=>n.n===selNat);
+  if(!nat){goScr('scr-nat');return;}
+  C={name:nm,nat:nat.n,flag:nat.f,wc,attrs:{...attrs},
+     gymStats:{strength:5,agility:5,endurance:5},
+     wins:0,losses:0,totalFights:0,fans:0,
+     rank:null,inUBJJF:false,streetFights:0,hasBelt:false,titleDefenses:0,
+     history:[],posts:[],day:1,energy:100,
+     contracts:[],lastCtDay:0,lvlPts:0,winsForLvl:0,
+     seenTutorial:false,retired:false};
+  saveC(); goScr('scr-career'); refreshCareer();
+  setTimeout(()=>startCareerTutorial(false), 300);
+}
+function refreshCareer(){
+  if(!C) return;
+  checkGenerateContracts();
+  document.getElementById('ch-av').textContent=C.flag||'🥋';
+  document.getElementById('ch-name').textContent=C.name + (C.hasBelt ? ' 👑' : '');
+  document.getElementById('ch-rank').textContent=C.inUBJJF
+    ? (C.hasBelt ? 'UBJJF #1 World Champion — '+C.wc : 'UBJJF #'+C.rank+' — '+C.wc)
+    : 'Amateur Dojo — '+C.wc+' ('+(C.streetFights||0)+'/5 wins to UBJJF)';
+  document.getElementById('ch-fans').textContent=fmtN(C.fans)+' fans • '+C.totalFights+'/100 fights';
+  document.getElementById('ch-day').textContent='Day '+C.day;
+  document.getElementById('ch-en-txt').textContent='Energy: '+C.energy;
+  const eb=document.getElementById('ch-en-bar');
+  eb.style.width=C.energy+'%';
+  eb.style.background=C.energy<40?'var(--r)':C.energy<70?'var(--am)':'var(--g)';
+  document.getElementById('ch-day-nav').textContent='Day '+C.day;
+  document.getElementById('ch-gym-nav').textContent='Str '+C.gymStats.strength+' Agi '+C.gymStats.agility;
+  document.getElementById('ch-ct-nav').textContent=(C.contracts?C.contracts.length:0)+' available';
+  document.getElementById('ch-rk-nav').textContent=C.inUBJJF?'#'+C.rank:'Unranked';
+  document.getElementById('ch-soc-nav').textContent=fmtN(C.fans)+' fans';
+  document.getElementById('ch-hist-nav').textContent=C.wins+'W-'+C.losses+'L';
+
+  document.getElementById('ch-belt-wrap').innerHTML=C.hasBelt?
+    `<div style="text-align:center;padding:12px;background:rgba(234,179,8,.14);border:1px solid rgba(234,179,8,.45);border-radius:12px;margin-bottom:10px;">
+      <div style="font-size:24px;">🥇</div>
+      <div style="font-size:14px;font-weight:700;color:var(--am);">UBJJF World Champion — ${C.wc}</div>
+      <div class="sm mu" style="margin-top:2px;">Title Defenses: ${C.titleDefenses||0}</div>
+      <button class="btn sm-btn" style="margin-top:6px;border-color:var(--am);color:var(--am);font-size:11px;" onclick="openBeltCeremony(true)">View Championship Belt</button>
+    </div>`:'';
+
+  const rw=document.getElementById('ch-retire-wrap');
+  if(C.totalFights>=100){
+    rw.innerHTML=`<div class="cd" style="border-color:var(--am);margin-bottom:10px;text-align:center;">
+      <div style="font-size:15px;font-weight:800;color:var(--am);">🏅 100 Fights Milestone Reached!</div>
+      <div class="sm mu" style="margin:4px 0 8px;">Your legendary career is eligible for Hall of Fame retirement and full Credits.</div>
+      <button class="btn ac" style="background:var(--am);border-color:var(--am);color:#111;font-weight:700;" onclick="retireCareer()">Retire &amp; View Credits</button>
+    </div>`;
+  } else {
+    rw.innerHTML='';
+  }
+
+  document.getElementById('ch-lvl-notice').style.display=C.lvlPts>0?'block':'none';
+}
+
+function retireCareer(){
+  if(!C) return;
+  C.retired=true;
+  saveC();
+  openCredits(true);
+}
+
+function refreshSchedule(){
+  if(!C) return;
+  document.getElementById('sch-day').textContent='Day '+C.day;
+  document.getElementById('sch-week').textContent='Week '+Math.ceil(C.day/7);
+  document.getElementById('sch-en').textContent='Energy: '+C.energy+'/100';
+  document.getElementById('sch-en-bar').style.width=C.energy+'%';
+  const left=Math.max(0, 3-(C.day-C.lastCtDay));
+  document.getElementById('sch-ct-info').textContent=(C.contracts&&C.contracts.length>0)?'Contracts available now':(left+'d until new contracts');
+}
+function doRest(){ if(!C)return; C.energy=Math.min(100,C.energy+30); C.day++; saveC(); refreshCareer(); refreshSchedule(); }
+function buildGym(){
+  if(!C) return;
+  const sd=document.getElementById('gym-stats'); sd.innerHTML='';
+  GYM_DEF.forEach(gs=>{
+    const row=document.createElement('div'); row.className='stat-bar-row';
+    row.innerHTML=`<div class="stat-bar-label">${gs.icon} ${gs.l}</div><div class="stat-bar"><div class="stat-fill" style="width:${(C.gymStats[gs.k]/20)*100}%;"></div></div><div style="width:28px;text-align:right;font-size:12px;font-weight:600;">${C.gymStats[gs.k]}</div>`;
+    sd.appendChild(row);
+  });
+  const ga=document.getElementById('gym-actions'); ga.innerHTML='';
+  GYM_DEF.forEach(gs=>{
+    const row=document.createElement('div'); row.className='gym-row'; row.onclick=()=>doGym(gs.k,gs.l);
+    row.innerHTML=`<div style="font-size:20px;width:30px;text-align:center;">${gs.icon}</div><div style="flex:1;"><div style="font-size:13px;font-weight:500;">Train ${gs.l}</div><div class="sm mu">${gs.desc} (${C.gymStats[gs.k]}/20)</div></div><div class="sm mu">1d / -15en</div>`;
+    ga.appendChild(row);
+  });
+}
+function doGym(k,l){
+  if(!C)return; if(C.energy<15){alert('Not enough energy. Rest in Schedule first!');return;} if(C.gymStats[k]>=20){alert('Maxed!');return;}
+  C.gymStats[k]++; C.energy=Math.max(0,C.energy-15); C.day++; saveC(); refreshCareer(); buildGym();
+}
+
+function checkGenerateContracts(){
+  if(!C)return; if(!C.contracts)C.contracts=[];
+  // Ensure contracts always generate after a fight or every 3 days so player is never stuck without fights
+  if(C.contracts.length===0){
+    for(let i=0;i<3;i++){
+      const isTitleFight = (C.inUBJJF && C.rank<=5 && i===2);
+      const isTitleDefense = (isTitleFight && C.hasBelt);
+      const name = isTitleFight
+        ? (isTitleDefense ? AI_NAMES[(C.day+i)%AI_NAMES.length]+' (#1 Contender)' : 'Mestre Leandro Silva (Champion)')
+        : AI_NAMES[Math.floor(Math.random()*AI_NAMES.length)];
+      const nat = (isTitleFight && !isTitleDefense) ? {f:'🇧🇷',n:'Brazil'} : NATS[Math.floor(Math.random()*NATS.length)];
+      const diff = isTitleFight ? 'hard' : (i===0?'easy':i===1?'medium':'hard');
+      C.contracts.push({
+        name, nat, diff,
+        isTitleFight,
+        isTitleDefense,
+        wins: isTitleFight ? 28 : Math.floor(Math.random()*15)+3,
+        losses: isTitleFight ? 1 : Math.floor(Math.random()*5),
+        fanBonus: isTitleFight ? 2500 : (diff==='hard'?400:diff==='medium'?200:80)
+      });
+    }
+    C.lastCtDay=C.day; saveC();
+  }
+}
+
+function buildContracts(){
+  if(!C)return; checkGenerateContracts();
+  const list=document.getElementById('ct-list'); list.innerHTML='';
+  const info=document.getElementById('ct-info');
+  if(info){
+    if(!C.inUBJJF) info.textContent=`Amateur Dojo: Win ${5-(C.streetFights||0)} more fight(s) to enter UBJJF Rankings.`;
+    else if(C.hasBelt) info.textContent=`You are the UBJJF Champion! Defend your belt in Title Bouts.`;
+    else if(C.rank<=5) info.textContent=`Top 5 Contender! Fight the Championship Title Bout below to claim the Belt.`;
+    else info.textContent=`Current Rank: #${C.rank} — Win matches to climb into the Top 5 Title Contenders.`;
+  }
+  if(!C.contracts.length){list.innerHTML='<div class="cd"><div class="sm mu">No contracts right now. Rest in Schedule to advance days!</div></div>';return;}
+  C.contracts.forEach((ct)=>{
+    const dc=ct.diff==='easy'?'var(--g)':ct.diff==='medium'?'var(--am)':'var(--r)';
+    const card=document.createElement('div');
+    card.className='ct-card'+(ct.isTitleFight?' title-fight':'');
+    const titleLabel = ct.isTitleDefense
+      ? '👑 UBJJF BELT TITLE DEFENSE'
+      : '👑 UBJJF #1 CHAMPIONSHIP TITLE BOUT';
+    card.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;">
+      <div>
+        ${ct.isTitleFight?`<div style="font-size:10px;font-weight:800;color:var(--am);letter-spacing:.6px;margin-bottom:2px;">${titleLabel}</div>`:''}
+        <div style="font-size:14px;font-weight:700;">${ct.name}</div>
+        <div class="sm mu">${ct.nat.f} ${ct.nat.n} • ${ct.wins}W-${ct.losses}L</div>
+      </div>
+      <span class="bdg" style="background:${dc}20;color:${dc};">${ct.diff.toUpperCase()}</span>
+    </div>`;
+    card.onclick=()=>{
+      currentOpp=ct;
+      document.getElementById('pf-card').innerHTML=`
+        ${ct.isTitleFight?`<div style="font-size:11px;font-weight:800;color:var(--am);margin-bottom:4px;">🏆 ${ct.isTitleDefense?'DEFEND YOUR UBJJF WORLD BELT':'UBJJF WORLD TITLE MATCH — WINNER TAKES THE BELT'}</div>`:''}
+        <div style="font-size:15px;font-weight:700;">${C.name} vs ${ct.name}</div>
+        <div class="sm mu">${C.wc} • ${ct.diff.toUpperCase()}</div>`;
+      document.getElementById('pf-warn').style.display=C.energy<40?'block':'none';
+      goScr('scr-prefight');
+    };
+    list.appendChild(card);
+  });
+}
+function launchCareerFight(){
+  if(!currentOpp||!C)return;
+  launchFight({
+    mode:'career',
+    diff:currentOpp.diff,
+    opp:currentOpp,
+    isTitleFight:!!currentOpp.isTitleFight,
+    fatigued:C.energy<40,
+    pName:C.name,
+    aName:currentOpp.name
+  });
+}
+function openLvlUp(){ if(!C||C.lvlPts<=0)return; buildAttrUI('lvl-attrs-wrap','lvl-pts',C.attrs,20,false); document.getElementById('lvl-modal').classList.add('on'); }
+function closeLvlUp(){ document.getElementById('lvl-modal').classList.remove('on'); saveC(); refreshCareer(); }
+document.getElementById('post-ta').addEventListener('input',function(){ document.getElementById('post-chr').textContent=(280-this.value.length)+' left'; });
+function submitPost(){
+  const txt=document.getElementById('post-ta').value.trim(); if(!txt||!C)return;
+  const fanDelta=Math.floor(Math.random()*180+40);
+  C.fans+=fanDelta; C.posts.unshift({author:C.name,body:txt,likes:0,dislikes:0,myReact:null,isPlayer:true,fanDelta});
+  document.getElementById('post-ta').value=''; saveC(); refreshCareer(); buildFeed();
+}
+function reactPost(idx,r){
+  if(!C||!C.posts[idx])return;
+  const p=C.posts[idx];
+  if(p.myReact===r){
+    if(r==='like') p.likes=Math.max(0,(p.likes||0)-1);
+    else p.dislikes=Math.max(0,(p.dislikes||0)-1);
+    p.myReact=null;
+  } else {
+    if(p.myReact==='like') p.likes=Math.max(0,(p.likes||0)-1);
+    if(p.myReact==='dislike') p.dislikes=Math.max(0,(p.dislikes||0)-1);
+    if(r==='like') p.likes=(p.likes||0)+1;
+    else p.dislikes=(p.dislikes||0)+1;
+    p.myReact=r;
+  }
+  saveC(); buildFeed();
+}
+function buildFeed(){
+  if(!C)return; const f=document.getElementById('feed'); f.innerHTML='';
+  document.getElementById('soc-handle').textContent='@'+C.name.toLowerCase().replace(/\s+/g,'_');
+  document.getElementById('soc-fans').textContent=fmtN(C.fans);
+  if(!C.posts.length){f.innerHTML='<div class="sm mu" style="text-align:center;padding:12px;">No posts yet.</div>';return;}
+  C.posts.slice(0,15).forEach((p,i)=>{
+    const c=document.createElement('div'); c.className='post-card';
+    c.innerHTML=`<div class="post-author">${p.author}</div><div class="post-body">${p.body}</div>
+      <div style="display:flex;gap:7px;"><button class="react-btn${p.myReact==='like'?' liked':''}" onclick="reactPost(${i},'like')">👍 ${p.likes}</button><button class="react-btn${p.myReact==='dislike'?' disliked':''}" onclick="reactPost(${i},'dislike')">👎 ${p.dislikes}</button></div>`;
+    f.appendChild(c);
+  });
+}
+function buildRanking(){
+  if(!C)return; document.getElementById('rank-wc').textContent=C.wc;
+  const list=document.getElementById('rank-list'); list.innerHTML='';
+  if(!C.inUBJJF){list.innerHTML='<div class="cd"><div class="sm mu">Win 5 amateur dojo fights to enter the UBJJF rankings ('+(C.streetFights||0)+'/5 wins).</div></div>';return;}
+  const maxShow = Math.max(20, C.rank || 20);
+  for(let r=1;r<=maxShow;r++){
+    const isP=r===C.rank;
+    const champTag=(r===1)?' 🥇':'';
+    const row=document.createElement('div'); row.className='rank-row'+(isP?' player':'');
+    row.innerHTML=`<div class="rank-num">#${r}</div><div class="rank-name">${isP?C.name:(r===1?'Mestre Leandro Silva':AI_NAMES[r%AI_NAMES.length])}${champTag}</div><div class="rank-rec">${isP?C.wins+'W-'+C.losses+'L':'18W-2L'}</div>`;
+    list.appendChild(row);
+  }
+}
+function buildHist(){
+  if(!C)return; const list=document.getElementById('hist-list'); list.innerHTML='';
+  if(!C.history.length){list.innerHTML='<div class="cd"><div class="sm mu">No fights yet.</div></div>';return;}
+  C.history.forEach(f=>{
+    const c=document.createElement('div'); c.className='cd';
+    c.innerHTML=`<span class="bdg ${f.r==='W'?'gn':'rd'}">${f.r}</span> <strong style="margin-left:6px;">${f.opp}</strong> <span class="sm mu">· ${f.method}</span>`;
+    list.appendChild(c);
+  });
+}
+
+// ═══════════════════════════════════════
+// UBJJF CHAMPIONSHIP BELT CINEMATIC
+// ═══════════════════════════════════════
+let _beltAnimRAF=null;
+function openBeltCeremony(replayOnly){
+  const modal=document.getElementById('belt-modal');
+  document.getElementById('belt-champ-title').textContent=(C?C.name.toUpperCase():'CHAMPION')+' — UBJJF CHAMPION!';
+  document.getElementById('belt-champ-desc').textContent=replayOnly
+    ? 'Official UBJJF World Championship Black & Gold Belt — Halal Silhouette Trophy Presentation.'
+    : 'Alhamdulillah! You defeated the #1 Champion! The referee raises your hand and awards you the UBJJF Championship Belt!';
+  modal.classList.add('on');
+  startBeltCanvasAnimation();
+}
+function closeBeltCeremony(){
+  document.getElementById('belt-modal').classList.remove('on');
+  if(_beltAnimRAF){cancelAnimationFrame(_beltAnimRAF);_beltAnimRAF=null;}
+}
+
+function startBeltCanvasAnimation(){
+  const canvas=document.getElementById('belt-ceremony-canvas');
+  if(!canvas) return;
+  const dpr=Math.min(window.devicePixelRatio||1,2);
+  const W=canvas.clientWidth||340, H=canvas.clientHeight||210;
+  canvas.width=W*dpr; canvas.height=H*dpr;
+  const ctx=canvas.getContext('2d');
+  ctx.scale(dpr,dpr);
+
+  let start=performance.now();
+  const sparkles=Array.from({length:28},(_,i)=>({
+    x:Math.random()*W, y:Math.random()*H,
+    r:1+Math.random()*2.2, spd:0.3+Math.random()*0.7, phase:i
+  }));
+
+  function drawFrame(now){
+    const t=(now-start)/1000;
+    ctx.clearRect(0,0,W,H);
+
+    const bg=ctx.createRadialGradient(W/2, H*0.42, 10, W/2, H*0.5, W*0.75);
+    bg.addColorStop(0, '#2b2410');
+    bg.addColorStop(0.55, '#121822');
+    bg.addColorStop(1, '#07090d');
+    ctx.fillStyle=bg;
+    ctx.fillRect(0,0,W,H);
+
+    ctx.save();
+    ctx.translate(W/2, H*0.42);
+    for(let i=0;i<8;i++){
+      ctx.rotate(Math.PI/4 + Math.sin(t*0.5)*0.04);
+      ctx.fillStyle='rgba(234,179,8,0.045)';
+      ctx.beginPath();
+      ctx.moveTo(0,0); ctx.lineTo(-18,-160); ctx.lineTo(18,-160);
+      ctx.closePath(); ctx.fill();
+    }
+    ctx.restore();
+
+    const cx=W/2, cy=H*0.56;
+    ctx.save();
+    ctx.fillStyle='#050507';
+    ctx.beginPath(); ctx.arc(cx, cy-68, 13, 0, Math.PI*2); ctx.fill();
+    ctx.lineWidth=8; ctx.strokeStyle='#f8fafc'; ctx.lineCap='round';
+    const raise=Math.min(1, t*1.4);
+    ctx.beginPath(); ctx.moveTo(cx-16, cy-46); ctx.lineTo(cx-34, cy-46 - raise*34); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(cx+16, cy-46); ctx.lineTo(cx+34, cy-46 - raise*34); ctx.stroke();
+    ctx.fillStyle='#050507';
+    ctx.beginPath(); ctx.arc(cx-34, cy-46 - raise*34, 5, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(cx+34, cy-46 - raise*34, 5, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle='#f8fafc';
+    ctx.beginPath();
+    ctx.roundRect(cx-20, cy-52, 40, 46, 8);
+    ctx.fill();
+    ctx.restore();
+
+    const beltY = H*0.68 + Math.sin(t*3)*3;
+    const scaleX = 0.94 + Math.cos(t*2)*0.06;
+    ctx.save();
+    ctx.translate(cx, beltY);
+    ctx.scale(scaleX, 1);
+
+    ctx.fillStyle='#09090b';
+    ctx.strokeStyle='#3f3f46';
+    ctx.lineWidth=1.5;
+    ctx.beginPath();
+    ctx.roundRect(-125, -14, 250, 28, 12);
+    ctx.fill(); ctx.stroke();
+
+    ctx.fillStyle='#ca8a04';
+    ctx.beginPath(); ctx.roundRect(-92, -11, 28, 22, 5); ctx.fill();
+    ctx.beginPath(); ctx.roundRect(64, -11, 28, 22, 5); ctx.fill();
+
+    const goldGrad=ctx.createLinearGradient(-44,-24,44,24);
+    goldGrad.addColorStop(0,'#fef08a');
+    goldGrad.addColorStop(0.5,'#eab308');
+    goldGrad.addColorStop(1,'#a16207');
+    ctx.fillStyle=goldGrad;
+    ctx.strokeStyle='#fef9c3';
+    ctx.lineWidth=2;
+    ctx.beginPath();
+    ctx.roundRect(-46, -24, 92, 48, 14);
+    ctx.fill(); ctx.stroke();
+
+    ctx.fillStyle='#111827';
+    ctx.beginPath();
+    ctx.roundRect(-36, -15, 72, 30, 8);
+    ctx.fill();
+
+    ctx.fillStyle='#facc15';
+    ctx.font='800 13px sans-serif';
+    ctx.textAlign='center';
+    ctx.textBaseline='middle';
+    ctx.fillText('UBJJF', 0, -2);
+    ctx.fillStyle='#fef08a';
+    ctx.font='700 7px sans-serif';
+    ctx.fillText('WORLD CHAMPION', 0, 9);
+    ctx.restore();
+
+    sparkles.forEach(s=>{
+      s.y -= s.spd;
+      if(s.y<0) s.y=H;
+      const alpha=0.35 + 0.55*Math.sin(t*4 + s.phase);
+      ctx.fillStyle=`rgba(250,204,21,${alpha.toFixed(2)})`;
+      ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI*2); ctx.fill();
+    });
+
+    _beltAnimRAF=requestAnimationFrame(drawFrame);
+  }
+  if(_beltAnimRAF) cancelAnimationFrame(_beltAnimRAF);
+  _beltAnimRAF=requestAnimationFrame(drawFrame);
+}
+
+// ═══════════════════════════════════════
+// HYBRID SHADOW DOJO ENGINE (3D THREE.JS WHEN ONLINE + 2D SHADOW ENGINE WHEN OFFLINE!)
+// ═══════════════════════════════════════
+let S3={
+  ready:false, use2D:false, ctx2d:null,
+  scene:null, camera:null, renderer:null,
+  p1:null, p2:null, ref:null, animTime:0,
+  cameraShake:0
+};
+
+function init3DScene(){
+  const canvas=document.getElementById('fight-canvas');
+  const wrap=document.getElementById('fight-arena-wrap');
+  const W=wrap.offsetWidth||380, H=wrap.offsetHeight||258;
+
+  // If Three.js is unavailable (e.g., started completely offline without cache), activate native 2D Shadow Dojo Renderer!
+  if(typeof THREE==='undefined'){
+    S3.use2D = true;
+    const dpr = Math.min(window.devicePixelRatio||1, 2);
+    canvas.width = W * dpr;
+    canvas.height = H * dpr;
+    S3.ctx2d = canvas.getContext('2d');
+    S3.ctx2d.setTransform(dpr, 0, 0, dpr, 0, 0);
+    S3.ready = true;
+    return;
+  }
+
+  // Switch from 2D fallback to 3D Three.js if Three.js loaded later
+  if(S3.use2D){
+    S3.use2D = false;
+    S3.ready = false;
+  }
+
+  if(!S3.ready){
+    S3.scene=new THREE.Scene();
+    S3.scene.background=new THREE.Color(0x9fb0be);
+    S3.scene.fog=new THREE.FogExp2(0x9fb0be, 0.042);
+
+    S3.camera=new THREE.PerspectiveCamera(42, W/H, 0.1, 100);
+    S3.camera.position.set(0, 3.6, 7.2);
+    S3.camera.lookAt(0, 0.9, 0);
+
+    S3.renderer=new THREE.WebGLRenderer({canvas:canvas, antialias:true, powerPreference:'high-performance'});
+    S3.renderer.setSize(W, H, false);
+    S3.renderer.setPixelRatio(Math.min(window.devicePixelRatio||1, 2));
+    S3.renderer.shadowMap.enabled=true;
+    S3.renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+
+    const hemi=new THREE.HemisphereLight(0xdbeafe, 0x334155, 0.85);
+    S3.scene.add(hemi);
+
+    const dirLight=new THREE.DirectionalLight(0xffffff, 1.05);
+    dirLight.position.set(5, 9, 4);
+    dirLight.castShadow=true;
+    dirLight.shadow.mapSize.width=1024;
+    dirLight.shadow.mapSize.height=1024;
+    dirLight.shadow.camera.near=1;
+    dirLight.shadow.camera.far=25;
+    const d=7;
+    dirLight.shadow.camera.left=-d; dirLight.shadow.camera.right=d;
+    dirLight.shadow.camera.top=d; dirLight.shadow.camera.bottom=-d;
+    S3.scene.add(dirLight);
+
+    // ── TATAMI MATS FLOOR ──
+    const tatamiCanvas=document.createElement('canvas');
+    tatamiCanvas.width=512; tatamiCanvas.height=512;
+    const tctx=tatamiCanvas.getContext('2d');
+    tctx.fillStyle='#596b64';
+    tctx.fillRect(0,0,512,512);
+    tctx.fillStyle='rgba(255,255,255,0.035)';
+    for(let y=0;y<512;y+=4) tctx.fillRect(0,y,512,2);
+    tctx.strokeStyle='#1e2925';
+    tctx.lineWidth=6;
+    tctx.strokeRect(3,3,250,506);
+    tctx.strokeRect(259,3,250,250);
+    tctx.strokeRect(259,259,250,250);
+
+    const tatamiTex=new THREE.CanvasTexture(tatamiCanvas);
+    tatamiTex.wrapS=THREE.RepeatWrapping;
+    tatamiTex.wrapT=THREE.RepeatWrapping;
+    tatamiTex.repeat.set(5,5);
+
+    const floorGeo=new THREE.PlaneGeometry(24, 24);
+    const floorMat=new THREE.MeshStandardMaterial({map:tatamiTex, roughness:0.88, metalness:0.05});
+    const floor=new THREE.Mesh(floorGeo, floorMat);
+    floor.rotation.x=-Math.PI/2;
+    floor.receiveShadow=true;
+    S3.scene.add(floor);
+
+    const ringGeo=new THREE.RingGeometry(3.62, 3.80, 64);
+    const ringMat=new THREE.MeshBasicMaterial({color:0xf8fafc, side:THREE.DoubleSide, transparent:true, opacity:0.75});
+    const ring=new THREE.Mesh(ringGeo, ringMat);
+    ring.rotation.x=-Math.PI/2;
+    ring.position.y=0.012;
+    S3.scene.add(ring);
+
+    // ── JAPANESE SHOJI DOJO WALLS ──
+    const wallGroup=new THREE.Group();
+    const backWall=new THREE.Mesh(
+      new THREE.BoxGeometry(20, 7, 0.3),
+      new THREE.MeshStandardMaterial({color:0xcbd5e1, roughness:0.9})
+    );
+    backWall.position.set(0, 3.5, -6.5);
+    wallGroup.add(backWall);
+
+    const woodMat=new THREE.MeshStandardMaterial({color:0x27272a, roughness:0.7});
+    for(let x=-8; x<=8; x+=3.2){
+      const pillar=new THREE.Mesh(new THREE.BoxGeometry(0.18, 7, 0.4), woodMat);
+      pillar.position.set(x, 3.5, -6.35);
+      wallGroup.add(pillar);
+    }
+    for(let y=1.2; y<=5.5; y+=2.1){
+      const beam=new THREE.Mesh(new THREE.BoxGeometry(20, 0.14, 0.38), woodMat);
+      beam.position.set(0, y, -6.35);
+      wallGroup.add(beam);
+    }
+    S3.scene.add(wallGroup);
+
+    S3.p1=createShadowGrappler(0x1D9E75, 0xf8fafc);
+    S3.p2=createShadowGrappler(0xE24B4A, 0xf8fafc);
+    S3.ref=createShadowGrappler(0xEAB308, 0x1e293b);
+    S3.ref.root.position.set(0, 0, -2.2);
+
+    S3.scene.add(S3.p1.root);
+    S3.scene.add(S3.p2.root);
+    S3.scene.add(S3.ref.root);
+
+    S3.ready=true;
+  } else {
+    S3.renderer.setSize(W, H, false);
+    S3.camera.aspect=W/H;
+    S3.camera.updateProjectionMatrix();
+  }
+}
+
+// ── 2D OFFLINE SHADOW DOJO RENDERER (ZERO INTERNET NEEDED!) ──
+function render2DShadowDojo(fState, dt){
+  const wrap=document.getElementById('fight-arena-wrap');
+  const W=wrap.offsetWidth||380, H=wrap.offsetHeight||258;
+  const ctx=S3.ctx2d;
+  if(!ctx) return;
+
+  S3.animTime += dt;
+  const t = S3.animTime;
+  let shakeX=0, shakeY=0;
+  if(S3.cameraShake>0){
+    shakeX=(Math.random()-0.5)*S3.cameraShake*28;
+    shakeY=(Math.random()-0.5)*S3.cameraShake*28;
+    S3.cameraShake=Math.max(0, S3.cameraShake - dt*1.8);
+  }
+
+  ctx.save();
+  ctx.translate(shakeX, shakeY);
+
+  // Shoji Dojo Background
+  const wallGrad=ctx.createLinearGradient(0,0,0,H*0.42);
+  wallGrad.addColorStop(0,'#9fb0be');
+  wallGrad.addColorStop(1,'#cbd5e1');
+  ctx.fillStyle=wallGrad;
+  ctx.fillRect(-10,-10,W+20,H*0.44);
+
+  // Wooden Shoji beams
+  ctx.fillStyle='#27272a';
+  for(let x=20; x<W; x+=75) ctx.fillRect(x, 0, 5, H*0.42);
+  ctx.fillRect(0, H*0.18, W, 4);
+  ctx.fillRect(0, H*0.38, W, 7);
+
+  // Tatami Mat Perspective Floor
+  const matGrad=ctx.createLinearGradient(0,H*0.38,0,H);
+  matGrad.addColorStop(0,'#4b5b55');
+  matGrad.addColorStop(1,'#5f736b');
+  ctx.fillStyle=matGrad;
+  ctx.fillRect(-10,H*0.38,W+20,H*0.66);
+
+  // Tatami grid lines
+  ctx.strokeStyle='rgba(20,30,26,0.35)';
+  ctx.lineWidth=1.5;
+  for(let r=1;r<=4;r++){
+    const y=H*0.38 + (H*0.62)*(r/4);
+    ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke();
+  }
+
+  // White Tatami Boundary Ellipse
+  const cx=W*0.5, cy=H*0.69;
+  const rx=W*0.43, ry=H*0.26;
+  ctx.strokeStyle='rgba(248,250,252,0.75)';
+  ctx.lineWidth=4;
+  ctx.beginPath();
+  ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI*2);
+  ctx.stroke();
+
+  function mapPos(nx, ny){
+    const dx=(nx-0.5)/0.475;
+    const dy=(ny-0.5)/0.475;
+    return { x: cx + dx*rx*0.92, y: cy + dy*ry*0.92 };
+  }
+
+  function drawShadowFighter(x, y, beltColor, giColor, facing, stance, raisedArm){
+    ctx.save();
+    ctx.translate(x, y);
+    // Ground shadow
+    ctx.fillStyle='rgba(0,0,0,0.34)';
+    ctx.beginPath();
+    ctx.ellipse(0, 4, stance==='ground'?34:20, 7, 0, 0, Math.PI*2);
+    ctx.fill();
+
+    const bob = Math.sin(t*5)*2;
+    if(stance==='ceremony'){
+      // Upright Gi silhouette with raised inner arm
+      ctx.fillStyle=giColor;
+      ctx.strokeStyle='#09090b'; ctx.lineWidth=2;
+      ctx.beginPath(); ctx.roundRect(-13, -54, 26, 34, 6); ctx.fill(); ctx.stroke();
+      // Legs
+      ctx.fillRect(-11, -20, 9, 22); ctx.fillRect(2, -20, 9, 22);
+      // Belt
+      ctx.fillStyle=beltColor;
+      ctx.fillRect(-13, -30, 26, 5);
+      // Head
+      ctx.fillStyle='#050507';
+      ctx.beginPath(); ctx.arc(0, -64, 9, 0, Math.PI*2); ctx.fill();
+      // Arms
+      ctx.strokeStyle=giColor; ctx.lineWidth=6; ctx.lineCap='round';
+      ctx.beginPath(); ctx.moveTo(-12,-48);
+      if(raisedArm==='left') ctx.lineTo(-22,-80); else ctx.lineTo(-18,-26);
+      ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(12,-48);
+      if(raisedArm==='right') ctx.lineTo(22,-80); else ctx.lineTo(18,-26);
+      ctx.stroke();
+    } else if(stance==='ground'){
+      // Grappling ground silhouette
+      ctx.fillStyle=giColor;
+      ctx.strokeStyle='#09090b'; ctx.lineWidth=2;
+      ctx.beginPath(); ctx.roundRect(-24, -22+bob*0.4, 48, 18, 8); ctx.fill(); ctx.stroke();
+      ctx.fillStyle=beltColor;
+      ctx.fillRect(-4, -22+bob*0.4, 8, 18);
+      ctx.fillStyle='#050507';
+      ctx.beginPath(); ctx.arc(facing*24, -18+bob*0.4, 8, 0, Math.PI*2); ctx.fill();
+    } else {
+      // Standing BJJ Shadow stance
+      ctx.fillStyle=giColor;
+      ctx.strokeStyle='#09090b'; ctx.lineWidth=2;
+      // Legs
+      ctx.beginPath(); ctx.moveTo(-8,-22); ctx.lineTo(-14,0); ctx.lineWidth=8; ctx.strokeStyle=giColor; ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(8,-22); ctx.lineTo(14,0); ctx.stroke();
+      // Torso
+      ctx.fillStyle=giColor; ctx.strokeStyle='#09090b'; ctx.lineWidth=2;
+      ctx.beginPath(); ctx.roundRect(-13, -50+bob, 26, 30, 6); ctx.fill(); ctx.stroke();
+      // Belt
+      ctx.fillStyle=beltColor;
+      ctx.fillRect(-13, -28+bob, 26, 5);
+      // Head
+      ctx.fillStyle='#050507';
+      ctx.beginPath(); ctx.arc(facing*3, -59+bob, 8.5, 0, Math.PI*2); ctx.fill();
+      // Guard arms
+      ctx.strokeStyle=giColor; ctx.lineWidth=5.5; ctx.lineCap='round';
+      ctx.beginPath(); ctx.moveTo(0, -44+bob); ctx.lineTo(facing*20, -38+bob); ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  const ph = fState.phase;
+  if(ph==='ceremony'){
+    drawShadowFighter(cx, cy-16, '#EAB308', '#1e293b', 1, 'ceremony', fState.winnerIsP1?'left':'right');
+    drawShadowFighter(cx-44, cy-6, '#1D9E75', '#f8fafc', 1, 'ceremony', fState.winnerIsP1?'right':null);
+    drawShadowFighter(cx+44, cy-6, '#E24B4A', '#f8fafc', -1, 'ceremony', !fState.winnerIsP1?'left':null);
+  } else {
+    const p1pos = mapPos(fState.p1.x, fState.p1.y);
+    const p2pos = mapPos(fState.p2.x, fState.p2.y);
+    const refX = (p1pos.x + p2pos.x)*0.5;
+    const refY = Math.min(p1pos.y, p2pos.y) - 26;
+
+    // Draw Referee in background
+    drawShadowFighter(refX, refY, '#EAB308', '#1e293b', 1, 'stand', null);
+
+    if(ph==='stand'){
+      const f1 = p2pos.x >= p1pos.x ? 1 : -1;
+      drawShadowFighter(p1pos.x, p1pos.y, '#1D9E75', '#f8fafc', f1, 'stand', null);
+      drawShadowFighter(p2pos.x, p2pos.y, '#E24B4A', '#f8fafc', -f1, 'stand', null);
+    } else if(ph==='clinch'){
+      const mx=(p1pos.x+p2pos.x)*0.5, my=(p1pos.y+p2pos.y)*0.5;
+      drawShadowFighter(mx-14, my, '#1D9E75', '#f8fafc', 1, 'stand', null);
+      drawShadowFighter(mx+14, my, '#E24B4A', '#f8fafc', -1, 'stand', null);
+    } else {
+      const mx=(p1pos.x+p2pos.x)*0.5, my=(p1pos.y+p2pos.y)*0.5;
+      const p1OnTop = (ph==='closed_guard_top'||ph==='half_guard'||ph==='side_control'||ph==='full_mount'||ph==='back_control');
+      if(p1OnTop){
+        drawShadowFighter(mx, my+4, '#E24B4A', '#f8fafc', -1, 'ground', null);
+        drawShadowFighter(mx, my-12, '#1D9E75', '#f8fafc', 1, 'ground', null);
+      } else {
+        drawShadowFighter(mx, my+4, '#1D9E75', '#f8fafc', 1, 'ground', null);
+        drawShadowFighter(mx, my-12, '#E24B4A', '#f8fafc', -1, 'ground', null);
+      }
+    }
+  }
+  ctx.restore();
+}
+
+function createShadowGrappler(beltHex, outfitHex){
+  const root=new THREE.Group();
+
+  const shadowSkinMat=new THREE.MeshBasicMaterial({color:0x050507});
+  const undershirtMat=new THREE.MeshToonMaterial({color:0x111827});
+  const giMat=new THREE.MeshToonMaterial({color:outfitHex});
+  const outlineMat=new THREE.MeshBasicMaterial({color:0x09090b, side:THREE.BackSide});
+  const beltMat=new THREE.MeshToonMaterial({color:beltHex});
+
+  function makeOutlinedMesh(geo, mat, outlineScale=1.045){
+    const g=new THREE.Group();
+    const m=new THREE.Mesh(geo, mat);
+    m.castShadow=true;
+    g.add(m);
+    const out=new THREE.Mesh(geo, outlineMat);
+    out.scale.set(outlineScale, outlineScale, outlineScale);
+    g.add(out);
+    return g;
+  }
+
+  const hips=new THREE.Group();
+  hips.position.y=0.92;
+  root.add(hips);
+
+  const hipMesh=makeOutlinedMesh(new THREE.CylinderGeometry(0.21, 0.23, 0.24, 14), giMat);
+  hips.add(hipMesh);
+
+  const beltMesh=makeOutlinedMesh(new THREE.CylinderGeometry(0.225, 0.225, 0.075, 16), beltMat, 1.03);
+  beltMesh.position.y=0.11;
+  hips.add(beltMesh);
+
+  const beltTail1=makeOutlinedMesh(new THREE.BoxGeometry(0.05, 0.24, 0.03), beltMat);
+  beltTail1.position.set(0.05, -0.02, 0.23);
+  beltTail1.rotation.z=-0.22;
+  hips.add(beltTail1);
+
+  const beltTail2=makeOutlinedMesh(new THREE.BoxGeometry(0.05, 0.22, 0.03), beltMat);
+  beltTail2.position.set(-0.04, -0.02, 0.23);
+  beltTail2.rotation.z=0.25;
+  hips.add(beltTail2);
+
+  const torso=new THREE.Group();
+  torso.position.y=0.14;
+  hips.add(torso);
+
+  const chestMesh=makeOutlinedMesh(new THREE.CylinderGeometry(0.27, 0.21, 0.56, 14), giMat);
+  chestMesh.position.y=0.28;
+  torso.add(chestMesh);
+
+  const skirtMesh=makeOutlinedMesh(new THREE.CylinderGeometry(0.22, 0.26, 0.24, 14), giMat);
+  skirtMesh.position.y=-0.08;
+  torso.add(skirtMesh);
+
+  const vNeck=new THREE.Mesh(new THREE.ConeGeometry(0.11, 0.28, 4), undershirtMat);
+  vNeck.position.set(0, 0.44, 0.21);
+  vNeck.rotation.x=Math.PI;
+  torso.add(vNeck);
+
+  const headGroup=new THREE.Group();
+  headGroup.position.y=0.68;
+  torso.add(headGroup);
+
+  const headMesh=new THREE.Mesh(new THREE.SphereGeometry(0.155, 18, 18), shadowSkinMat);
+  headMesh.scale.set(0.92, 1.08, 0.98);
+  headMesh.castShadow=true;
+  headGroup.add(headMesh);
+
+  function buildArm(side){
+    const shoulder=new THREE.Group();
+    shoulder.position.set(side*0.31, 0.48, 0);
+    torso.add(shoulder);
+
+    const upperSleeve=makeOutlinedMesh(new THREE.CylinderGeometry(0.085, 0.075, 0.28, 12), giMat);
+    upperSleeve.position.y=-0.14;
+    shoulder.add(upperSleeve);
+
+    const elbow=new THREE.Group();
+    elbow.position.y=-0.28;
+    shoulder.add(elbow);
+
+    const foreArm=new THREE.Mesh(new THREE.CylinderGeometry(0.058, 0.048, 0.26, 10), shadowSkinMat);
+    foreArm.position.y=-0.13;
+    foreArm.castShadow=true;
+    elbow.add(foreArm);
+
+    const fist=new THREE.Mesh(new THREE.SphereGeometry(0.058, 10, 10), shadowSkinMat);
+    fist.position.y=-0.27;
+    elbow.add(fist);
+
+    return {shoulder, elbow};
+  }
+  const armL=buildArm(-1);
+  const armR=buildArm(1);
+
+  function buildLeg(side){
+    const hipJoint=new THREE.Group();
+    hipJoint.position.set(side*0.13, -0.06, 0);
+    hips.add(hipJoint);
+
+    const thigh=makeOutlinedMesh(new THREE.CylinderGeometry(0.11, 0.09, 0.42, 12), giMat);
+    thigh.position.y=-0.21;
+    hipJoint.add(thigh);
+
+    const knee=new THREE.Group();
+    knee.position.y=-0.42;
+    hipJoint.add(knee);
+
+    const shin=makeOutlinedMesh(new THREE.CylinderGeometry(0.088, 0.072, 0.40, 12), giMat);
+    shin.position.y=-0.20;
+    knee.add(shin);
+
+    const foot=new THREE.Mesh(new THREE.BoxGeometry(0.085, 0.055, 0.19), shadowSkinMat);
+    foot.position.set(0, -0.41, 0.04);
+    foot.castShadow=true;
+    knee.add(foot);
+
+    return {hipJoint, knee};
+  }
+  const legL=buildLeg(-1);
+  const legR=buildLeg(1);
+
+  return {root, hips, torso, headGroup, armL, armR, legL, legR};
+}
+
+function update3DPose(fState, dt){
+  if(!S3.ready || !fState) return;
+  if(S3.use2D || typeof THREE==='undefined'){
+    render2DShadowDojo(fState, dt);
+    return;
+  }
+
+  S3.animTime += dt;
+  const t = S3.animTime;
+
+  const p1x = (fState.p1.x - 0.5) * 7.6;
+  const p1z = (fState.p1.y - 0.5) * 7.6;
+  const p2x = (fState.p2.x - 0.5) * 7.6;
+  const p2z = (fState.p2.y - 0.5) * 7.6;
+
+  const g1 = S3.p1, g2 = S3.p2, ref = S3.ref;
+  const ph = fState.phase;
+
+  function resetStanding(g, bobOffset, upright=false){
+    const bob = Math.sin(t*4 + bobOffset) * 0.02;
+    g.hips.position.set(0, (upright?0.94:0.88) + bob, 0);
+    g.hips.rotation.set(0, 0, 0);
+    g.torso.rotation.set(upright?0.04:0.22, 0, 0);
+    g.headGroup.rotation.set(upright?0:-0.18, 0, 0);
+
+    g.armL.shoulder.rotation.set(upright?-0.15:-0.85, upright?0:0.25, -0.18);
+    g.armL.elbow.rotation.set(upright?-0.2:-1.15, 0, 0);
+    g.armR.shoulder.rotation.set(upright?-0.15:-0.65, upright?0:-0.25, 0.18);
+    g.armR.elbow.rotation.set(upright?-0.2:-1.25, 0, 0);
+
+    g.legL.hipJoint.rotation.set(upright?-0.05:-0.28, 0, -0.14);
+    g.legL.knee.rotation.set(upright?0.08:0.45, 0, 0);
+    g.legR.hipJoint.rotation.set(upright?0.05:0.22, 0, 0.14);
+    g.legR.knee.rotation.set(upright?0.08:0.35, 0, 0);
+  }
+
+  if(ph==='ceremony'){
+    const winnerG = fState.winnerIsP1 ? g1 : g2;
+    const loserG  = fState.winnerIsP1 ? g2 : g1;
+
+    g1.root.position.set(-0.62, 0, 0.2);
+    g1.root.rotation.set(0, 0, 0);
+    g2.root.position.set(0.62, 0, 0.2);
+    g2.root.rotation.set(0, 0, 0);
+    ref.root.position.set(0, 0, 0.05);
+    ref.root.rotation.set(0, 0, 0);
+
+    resetStanding(g1, 0, true);
+    resetStanding(g2, 0.8, true);
+    resetStanding(ref, 1.4, true);
+
+    if(fState.winnerIsP1){
+      ref.armL.shoulder.rotation.set(-2.75, 0, -0.22);
+      ref.armL.elbow.rotation.set(-0.15, 0, 0);
+      winnerG.armR.shoulder.rotation.set(-2.75, 0, 0.22);
+      winnerG.armR.elbow.rotation.set(-0.15, 0, 0);
+    } else {
+      ref.armR.shoulder.rotation.set(-2.75, 0, 0.22);
+      ref.armR.elbow.rotation.set(-0.15, 0, 0);
+      winnerG.armL.shoulder.rotation.set(-2.75, 0, -0.22);
+      winnerG.armL.elbow.rotation.set(-0.15, 0, 0);
+    }
+    loserG.torso.rotation.x = 0.28;
+
+    S3.camera.position.lerp(new THREE.Vector3(0, 1.55, 3.6), 0.15);
+    S3.camera.lookAt(0, 1.15, 0.1);
+    S3.renderer.render(S3.scene, S3.camera);
+    return;
+  }
+
+  const midX = (p1x + p2x) * 0.5;
+  const midZ = (p1z + p2z) * 0.5;
+  ref.root.position.lerp(new THREE.Vector3(midX * 0.6, 0, midZ - 1.65), 0.06);
+  ref.root.lookAt(midX, 0, midZ);
+  resetStanding(ref, 2.1, true);
+
+  function poseSeatedGuard(g){
+    g.hips.position.set(0, 0.22, 0);
+    g.hips.rotation.set(-0.95, 0, 0);
+    g.torso.rotation.set(0.45, 0, 0);
+    g.headGroup.rotation.set(0.35, 0, 0);
+    g.legL.hipJoint.rotation.set(-0.65, -0.35, -0.45);
+    g.legL.knee.rotation.set(0.95, 0, 0);
+    g.legR.hipJoint.rotation.set(-0.65, 0.35, 0.45);
+    g.legR.knee.rotation.set(0.95, 0, 0);
+    g.armL.shoulder.rotation.set(-1.1, 0.3, 0);
+    g.armL.elbow.rotation.set(-0.7, 0, 0);
+    g.armR.shoulder.rotation.set(-1.1, -0.3, 0);
+    g.armR.elbow.rotation.set(-0.7, 0, 0);
+  }
+
+  function poseTopKneeling(g, height=0.56){
+    g.hips.position.set(0, height + Math.sin(t*5)*0.015, 0);
+    g.hips.rotation.set(0.35, 0, 0);
+    g.torso.rotation.set(0.45, 0, 0);
+    g.legL.hipJoint.rotation.set(-1.1, 0, -0.25);
+    g.legL.knee.rotation.set(1.75, 0, 0);
+    g.legR.hipJoint.rotation.set(-0.85, 0, 0.25);
+    g.legR.knee.rotation.set(1.55, 0, 0);
+    g.armL.shoulder.rotation.set(-1.25, 0.2, 0);
+    g.armL.elbow.rotation.set(-0.65, 0, 0);
+    g.armR.shoulder.rotation.set(-1.25, -0.2, 0);
+    g.armR.elbow.rotation.set(-0.65, 0, 0);
+  }
+
+  function poseSupinePinned(g){
+    g.hips.position.set(0, 0.16, 0);
+    g.hips.rotation.set(-Math.PI/2, 0, 0);
+    g.torso.rotation.set(0.15, 0, 0);
+    g.headGroup.rotation.set(0.25, 0, 0);
+    g.legL.hipJoint.rotation.set(-0.4, 0, -0.2);
+    g.legL.knee.rotation.set(0.85, 0, 0);
+    g.legR.hipJoint.rotation.set(-0.4, 0, 0.2);
+    g.legR.knee.rotation.set(0.85, 0, 0);
+    g.armL.shoulder.rotation.set(-1.3, 0.2, -0.3);
+    g.armL.elbow.rotation.set(-1.1, 0, 0);
+    g.armR.shoulder.rotation.set(-1.3, -0.2, 0.3);
+    g.armR.elbow.rotation.set(-1.1, 0, 0);
+  }
+
+  if(ph==='stand'){
+    g1.root.position.set(p1x, 0, p1z);
+    g2.root.position.set(p2x, 0, p2z);
+    g1.root.lookAt(p2x, 0, p2z);
+    g2.root.lookAt(p1x, 0, p1z);
+    resetStanding(g1, 0);
+    resetStanding(g2, 1.5);
+
+    if(fState.guardActive){
+      g1.armL.shoulder.rotation.set(-1.35, 0.35, -0.1);
+      g1.armR.shoulder.rotation.set(-1.35, -0.35, 0.1);
+      g1.torso.rotation.x=0.35;
+    }
+  }
+  else if(ph==='clinch'){
+    const mx=(p1x+p2x)*0.5, mz=(p1z+p2z)*0.5;
+    const ang=Math.atan2(p2x-p1x, p2z-p1z);
+    g1.root.position.set(mx - Math.sin(ang)*0.34, 0, mz - Math.cos(ang)*0.34);
+    g2.root.position.set(mx + Math.sin(ang)*0.34, 0, mz + Math.cos(ang)*0.34);
+    g1.root.lookAt(g2.root.position);
+    g2.root.lookAt(g1.root.position);
+    resetStanding(g1, 0);
+    resetStanding(g2, 0.7);
+    g1.armL.shoulder.rotation.set(-1.45, 0.3, 0);
+    g1.armR.shoulder.rotation.set(-1.2, -0.4, 0);
+    g2.armL.shoulder.rotation.set(-1.45, 0.3, 0);
+    g2.armR.shoulder.rotation.set(-1.2, -0.4, 0);
+  }
+  else {
+    const mx=(p1x+p2x)*0.5, mz=(p1z+p2z)*0.5;
+    g1.root.position.set(mx, 0, mz);
+    g2.root.position.set(mx, 0, mz);
+    g1.root.rotation.set(0, Math.PI*0.35, 0);
+    g2.root.rotation.set(0, -Math.PI*0.65, 0);
+
+    if(ph==='closed_guard_top' || ph==='half_guard'){
+      g1.root.position.set(mx-0.25, 0, mz);
+      g2.root.position.set(mx+0.25, 0, mz);
+      g1.root.lookAt(g2.root.position);
+      g2.root.lookAt(g1.root.position);
+      poseTopKneeling(g1, 0.56);
+      poseSeatedGuard(g2);
+    }
+    else if(ph==='closed_guard_bottom'){
+      g1.root.position.set(mx-0.25, 0, mz);
+      g2.root.position.set(mx+0.25, 0, mz);
+      g1.root.lookAt(g2.root.position);
+      g2.root.lookAt(g1.root.position);
+      poseSeatedGuard(g1);
+      poseTopKneeling(g2, 0.56);
+    }
+    else if(ph==='side_control'){
+      g2.root.position.set(mx, 0, mz);
+      g2.root.rotation.set(0, 0, 0);
+      poseSupinePinned(g2);
+      g1.root.position.set(mx-0.36, 0, mz+0.05);
+      g1.root.rotation.set(0, Math.PI/2, 0);
+      poseTopKneeling(g1, 0.38);
+    }
+    else if(ph==='full_mount'){
+      g2.root.position.set(mx, 0, mz);
+      g2.root.rotation.set(0, 0, 0);
+      poseSupinePinned(g2);
+      g1.root.position.set(mx, 0, mz-0.05);
+      g1.root.rotation.set(0, 0, 0);
+      poseTopKneeling(g1, 0.46);
+    }
+    else if(ph==='back_control'){
+      g2.root.position.set(mx, 0, mz+0.12);
+      g2.root.rotation.set(0, 0, 0);
+      poseSeatedGuard(g2);
+      g1.root.position.set(mx, 0, mz-0.16);
+      g1.root.rotation.set(0, 0, 0);
+      poseSeatedGuard(g1);
+    }
+    else if(ph==='bottom_pinned'){
+      g1.root.position.set(mx, 0, mz);
+      g1.root.rotation.set(0, 0, 0);
+      poseSupinePinned(g1);
+      g2.root.position.set(mx, 0, mz-0.05);
+      g2.root.rotation.set(0, 0, 0);
+      poseTopKneeling(g2, 0.46);
+    }
+  }
+
+  const targetY = (ph==='stand' || ph==='clinch') ? 1.05 : 0.62;
+  const camDist = (ph==='stand' || ph==='clinch') ? 5.2 : 4.1;
+  const camHeight = (ph==='stand' || ph==='clinch') ? 2.55 : 2.15;
+
+  let shakeX=0, shakeY=0;
+  if(S3.cameraShake>0){
+    shakeX=(Math.random()-0.5)*S3.cameraShake;
+    shakeY=(Math.random()-0.5)*S3.cameraShake;
+    S3.cameraShake=Math.max(0, S3.cameraShake - dt*1.8);
+  }
+
+  S3.camera.position.lerp(new THREE.Vector3(midX + shakeX, camHeight + shakeY, midZ + camDist), 0.14);
+  S3.camera.lookAt(midX, targetY, midZ);
+
+  S3.renderer.render(S3.scene, S3.camera);
+}
+
+// ═══════════════════════════════════════
+// BJJ FIGHT ENGINE — BUG-FREE COMBAT & OFFLINE AI
+// ═══════════════════════════════════════
+let fightMode='quick', F=null;
+let fKeyState={up:false,down:false,left:false,right:false};
+let fStickVec={x:0, y:0, dir:'neutral'};
+let fGameInt=null, fTimerInt=null, fAiInt=null, fFatInt=null, fCeremonyInt=null;
+let fDef={active:false,pos:50,dir:1,speed:1.4,int:null,cdInt:null,cd:5,onOk:null,onFail:null};
+let fNear=false, fLocked=false, fFightEnded=false, fIsTitleBout=false;
+let fDefWin=0.14, fDiff='medium', fFatigued=false;
+
+let fGetup={
+  active:false,phase:0,progress:0,required:70,tapsNeeded:8,tapsDone:0,
+  currentKey:'',currentKeyCode:'',timeLeft:5,timerInt:null,aiDefending:false,aiDefInt:null,resolved:false
+};
+
+function initF(){
+  return {
+    p1:{x:0.35, y:0.5, hp:100, pts:0, outs:0, fat:100, injured:false, outCooldown:0},
+    p2:{x:0.65, y:0.5, hp:100, pts:0, outs:0, fat:100},
+    rnd:1, timer:ROUND_SECS, running:false,
+    phase:'stand',
+    submitting:false,
+    guardActive:false, guardTimer:null,
+    feintBonus:0, feintTimer:null,
+    aiTelegraph:false, aiTelegraphMove:'', aiTelegraphTimer:null,
+    winnerIsP1:true
+  };
+}
+
+function launchFight(opts){
+  fAllClear();
+  fFightEnded=false;
+  fightMode=opts.mode||'quick';
+  fDiff=opts.diff||'medium';
+  fFatigued=opts.fatigued||false;
+  fIsTitleBout=!!opts.isTitleFight;
+
+  F=initF();
+  F.running=true;
+  fNear=false;
+  fLocked=false;
+  fKeyState={up:false,down:false,left:false,right:false};
+  fStickVec={x:0,y:0,dir:'neutral'};
+
+  const knob=document.getElementById('stick-knob');
+  if(knob){ knob.style.transform='translate(-50%, -50%)'; knob.classList.remove('active'); }
+  const dlbl=document.getElementById('stick-dir-lbl');
+  if(dlbl) dlbl.textContent='MOVE';
+
+  fGetup={active:false,phase:0,progress:0,required:DIFF_CFG[fDiff].getupReq,tapsNeeded:DIFF_CFG[fDiff].getupTaps,tapsDone:0,currentKey:'',currentKeyCode:'',timeLeft:DIFF_CFG[fDiff].getupTime,timerInt:null,aiDefending:false,aiDefInt:null,resolved:false};
+
+  const p1name=opts.pName||(fightMode==='career'&&C?C.name:'You');
+  const p2name=opts.aName||'AI';
+  document.getElementById('f-p1-lbl').textContent=p1name;
+  document.getElementById('f-p2-lbl').textContent=p2name;
+  document.getElementById('f-sc1-lbl').textContent=p1name;
+  document.getElementById('f-sc2-lbl').textContent=p2name;
+  document.getElementById('f-rnd').textContent='1';
+  document.getElementById('injury-badge').style.display='none';
+  document.getElementById('guard-shield-badge').style.display='none';
+  document.getElementById('ref-winner-banner').style.display='none';
+
+  fLockTechs(false);
+  fDefWin=DIFF_CFG[fDiff].defWin;
+  fHideDef();
+  hideGetup();
+  fUpdateOutsLabel();
+  goScr('scr-fight');
+
+  setTimeout(()=>{
+    init3DScene();
+    update3DPose(F, 0.016);
+  }, 40);
+
+  fSetPhase('stand');
+  fStartLoop();
+  fStartTimer();
+  fScheduleAI();
+  if(fFatigued) fStartFatigue();
+  fUpdateHUD();
+  fUpdateScore();
+  fFatUI();
+  fLog('Bismillah — Round 1! Move close & use Blue (Position), Red (Submit/Feint), Yellow (Defend).');
+}
+
+function confirmQuitFight(){
+  if(!F) { goScr('scr-menu'); return; }
+  if(confirm('Leave the match? Progress in this bout will be lost.')){
+    fAllClear();
+    F.running=false;
+    if(fightMode==='online'){ onLeave(); goScr('scr-menu'); }
+    else if(fightMode==='career'){ goScr('scr-career'); }
+    else { goScr('scr-menu'); }
+  }
+}
+
+// ── ANALOG JOYSTICK + KEYBOARD DIRECTION RESOLUTION ──
+function updateStickDirection(){
+  let vx = fStickVec.x;
+  let vy = fStickVec.y;
+  if(fKeyState.left) vx -= 1;
+  if(fKeyState.right) vx += 1;
+  if(fKeyState.up) vy -= 1;
+  if(fKeyState.down) vy += 1;
+
+  const mag = Math.hypot(vx, vy);
+  const lbl = document.getElementById('stick-dir-lbl');
+  if(mag < 0.28){
+    fStickVec.dir = 'neutral';
+    if(lbl) lbl.textContent = 'NEUTRAL';
+  } else if(Math.abs(vx) > Math.abs(vy)){
+    fStickVec.dir = vx > 0 ? 'right' : 'left';
+    if(lbl) lbl.textContent = vx > 0 ? 'FWD ▶' : '◀ BACK';
+  } else {
+    fStickVec.dir = vy < 0 ? 'up' : 'down';
+    if(lbl) lbl.textContent = vy < 0 ? '▲ UP' : '▼ DOWN';
+  }
+  updateMoveHints();
+}
+
+(function setupAnalogStick(){
+  const base=document.getElementById('stick-base');
+  const knob=document.getElementById('stick-knob');
+  if(!base||!knob) return;
+  let dragging=false;
+  const maxR=38;
+
+  function handleMove(clientX, clientY){
+    const rect=base.getBoundingClientRect();
+    const cx=rect.left + rect.width/2;
+    const cy=rect.top + rect.height/2;
+    let dx=clientX - cx;
+    let dy=clientY - cy;
+    const dist=Math.hypot(dx, dy);
+    if(dist>maxR){ dx=(dx/dist)*maxR; dy=(dy/dist)*maxR; }
+    knob.style.transform=`translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
+    knob.classList.add('active');
+    fStickVec.x = dx / maxR;
+    fStickVec.y = dy / maxR;
+    updateStickDirection();
+  }
+  function resetStick(){
+    dragging=false;
+    knob.style.transform='translate(-50%, -50%)';
+    knob.classList.remove('active');
+    fStickVec.x=0; fStickVec.y=0;
+    updateStickDirection();
+  }
+
+  base.addEventListener('touchstart',e=>{ dragging=true; handleMove(e.touches[0].clientX, e.touches[0].clientY); e.preventDefault(); },{passive:false});
+  base.addEventListener('touchmove',e=>{ if(dragging){ handleMove(e.touches[0].clientX, e.touches[0].clientY); e.preventDefault(); } },{passive:false});
+  base.addEventListener('touchend',resetStick);
+  base.addEventListener('touchcancel',resetStick);
+
+  base.addEventListener('mousedown',e=>{ dragging=true; handleMove(e.clientX, e.clientY); });
+  window.addEventListener('mousemove',e=>{ if(dragging) handleMove(e.clientX, e.clientY); });
+  window.addEventListener('mouseup',()=>{ if(dragging) resetStick(); });
+})();
+
+function updateMoveHints(){
+  if(!F) return;
+  const dir=fStickVec.dir;
+  const ph=F.phase;
+  const lBlue=document.getElementById('lbl-blue');
+  const lRed=document.getElementById('lbl-red');
+  const prev=document.getElementById('move-preview');
+
+  if(ph==='stand'){
+    if(dir==='neutral'){ lBlue.textContent='Clinch (Collar Tie)'; lRed.textContent='Feint (Bait Guard)'; }
+    else if(dir==='left'){ lBlue.textContent='Pull Guard'; lRed.textContent='Imanari Roll'; }
+    else if(dir==='right'){ lBlue.textContent='Double Leg (+2)'; lRed.textContent='Flying Armbar!'; }
+    else if(dir==='up'){ lBlue.textContent='Judo Throw (+2)'; lRed.textContent='Flying Triangle!'; }
+    else { lBlue.textContent='Single Leg (+2)'; lRed.textContent='Flying Guillotine!'; }
+    prev.innerHTML='<strong>Standing:</strong> Blue=Clinch · Blue+←=Pull Guard · Red=Feint · Red+Stick=Flying Sub';
+  }
+  else if(ph==='clinch'){
+    if(dir==='right') lBlue.textContent='Double Leg (+2)';
+    else if(dir==='down') lBlue.textContent='Single Leg (+2)';
+    else if(dir==='up') lBlue.textContent='Judo Throw (+2)';
+    else if(dir==='left') lBlue.textContent='Pull Guard';
+    else lBlue.textContent='Inside Trip (+2)';
+    lRed.textContent = dir==='neutral' ? 'Clinch Feint' : 'Flying Sub!';
+    prev.innerHTML='<strong>Clinch:</strong> Blue+→ Double Leg | Blue+↓ Single Leg | Blue+↑ Judo Throw | Blue+← Pull Guard';
+  }
+  else if(ph==='closed_guard_top'){
+    lBlue.textContent = dir==='neutral' ? 'Posture Up' : 'Pass to Half Guard';
+    lRed.textContent = dir==='neutral' ? 'Pass Feint' : 'Stack Armbar';
+    prev.innerHTML='<strong>Top Guard:</strong> Blue+Stick = Pass to Half Guard | Red = Feint | Red+Stick = Armbar';
+  }
+  else if(ph==='half_guard'){
+    lBlue.textContent = dir==='neutral' ? 'Underhook' : 'Pass to Side Control (+3)';
+    lRed.textContent = dir==='neutral' ? 'Crossface Feint' : 'Kimura Lock';
+    prev.innerHTML='<strong>Half Guard:</strong> Blue+Stick = Guard Pass (+3) | Red+Stick = Kimura';
+  }
+  else if(ph==='side_control'){
+    lBlue.textContent = dir==='up' ? 'Step to Full Mount (+4)' : (dir==='right'?'Take Back (+4)':'Transition (+4)');
+    lRed.textContent = dir==='neutral' ? 'Hip Feint' : (dir==='right'?'Americana':'Arm-Triangle');
+    prev.innerHTML='<strong>Side Control:</strong> Blue+↑ Mount (+4) | Blue+→ Back (+4) | Red+→ Americana | Red+↑ Arm-Triangle';
+  }
+  else if(ph==='full_mount'){
+    lBlue.textContent = dir==='neutral' ? 'Heavy Pressure' : 'Take Back (+4)';
+    if(dir==='up') lRed.textContent='Mounted Triangle!';
+    else if(dir==='right') lRed.textContent='Mounted Armbar!';
+    else if(dir==='left') lRed.textContent='Ezekiel Choke!';
+    else lRed.textContent='Mount Feint';
+    prev.innerHTML='<strong>Full Mount:</strong> Red+↑ Triangle | Red+→ Armbar | Red+← Ezekiel | Blue+Stick = Back Take (+4)';
+  }
+  else if(ph==='back_control'){
+    lBlue.textContent = 'Body Triangle Lock';
+    lRed.textContent = dir==='neutral' ? 'Hand-Fight Feint' : (dir==='up'?'Rear Naked Choke!':'Bow & Arrow Choke!');
+    prev.innerHTML='<strong>Back Control:</strong> Red+↑ Rear Naked Choke (RNC) | Red+→ Bow & Arrow Choke';
+  }
+  else if(ph==='closed_guard_bottom'){
+    lBlue.textContent = dir==='neutral' ? 'Break Posture' : 'Hip Bump Sweep (+2)';
+    if(dir==='up') lRed.textContent='Triangle Choke!';
+    else if(dir==='right') lRed.textContent='Armbar from Guard!';
+    else if(dir==='left') lRed.textContent='Guillotine Choke!';
+    else lRed.textContent='Guard Feint';
+    prev.innerHTML='<strong>Closed Guard:</strong> Blue+Stick = Sweep (+2) | Red+↑ Triangle | Red+→ Armbar | Red+← Guillotine';
+  }
+  else if(ph==='bottom_pinned'){
+    lBlue.textContent = 'Shrimp / Escape';
+    lRed.textContent = 'Buggy Choke (Risky)';
+    prev.innerHTML='<strong>Bottom Pinned:</strong> Tap Technical Stand-Up or use Blue+Stick to recover Guard!';
+  }
+}
+
+// ═══════════════════════════════════════
+// BUTTON 1: YELLOW (DEFENSE / PARRY)
+// ═══════════════════════════════════════
+function pressYellow(){
+  if(!F||!F.running||fLocked||fDef.active||fGetup.active) return;
+
+  if(F.aiTelegraph){
+    clearTimeout(F.aiTelegraphTimer);
+    F.aiTelegraph=false;
+    S3.cameraShake=0.18;
+    F.p1.pts += 1;
+    fRef('🛡 PERFECT PARRY! +1 Advantage');
+    fLog('Yellow Parry! You stuffed '+F.aiTelegraphMove+' cleanly!');
+    fUpdateScore();
+    onSendAction({type:'parry', pts:F.p1.pts});
+    if(fightMode!=='online') fScheduleAI();
+    return;
+  }
+
+  if(F.guardActive) return;
+  F.guardActive=true;
+  document.getElementById('guard-shield-badge').style.display='block';
+  fLog('🛡 Guard raised — waiting for opponent move...');
+
+  F.guardTimer=setTimeout(()=>{
+    if(!F||!F.running) return;
+    if(F.guardActive){
+      F.guardActive=false;
+      document.getElementById('guard-shield-badge').style.display='none';
+      const drain = 14;
+      F.p1.fat = Math.max(0, F.p1.fat - drain);
+      fFatUI();
+      fRef('⚠ Wasted Guard! −'+drain+' Stamina');
+      fLog('Opponent didn\'t attack — holding empty defense drained −'+drain+' stamina!');
+    }
+  }, 1150);
+}
+
+// ═══════════════════════════════════════
+// BUTTON 2: BLUE (POSITIONS / CLINCH / TAKEDOWNS / TRANSITIONS)
+// ═══════════════════════════════════════
+function pressBlue(){
+  if(!F||!F.running||fLocked||fDef.active||fGetup.active) return;
+  const dir = fStickVec.dir;
+  const ph = F.phase;
+
+  if(ph==='stand' && !fNear){
+    fLog('Move closer to your opponent to clinch or shoot!');
+    return;
+  }
+
+  if(F.aiTelegraph){
+    clearTimeout(F.aiTelegraphTimer);
+    F.aiTelegraph=false;
+  }
+  if(fAiInt){clearTimeout(fAiInt);fAiInt=null;}
+  fLockTechs(true);
+
+  let skillBonus = 0;
+  if(fightMode==='career'&&C) skillBonus = C.attrs.td*0.012 + C.gymStats.agility*0.008;
+  const fatMod = F.p1.fat<30 ? -0.15 : (F.feintBonus || 0);
+  F.feintBonus = 0;
+
+  if(ph==='stand'){
+    if(dir==='neutral'){
+      const ok = Math.random() < (0.78 + skillBonus + fatMod);
+      if(ok){
+        fSetPhase('clinch');
+        F.p2.x = F.p1.x + (F.p2.x>=F.p1.x ? 0.08 : -0.08);
+        fLog('🥋 Clinch secured! Now push Joystick + Blue for Double Leg, Single Leg, Judo Throw or Pull Guard!');
+        fRef('🥋 CLINCH ENGAGED');
+      } else {
+        F.p1.fat=Math.max(0,F.p1.fat-6);
+        fLog('Opponent hand-fought and broke your collar tie.');
+      }
+    }
+    else if(dir==='left'){
+      fSetPhase('closed_guard_bottom');
+      fLog('🥋 Pulled Closed Guard! Use Red + Joystick for Triangle, Armbar or Guillotine, or Blue + Stick to Sweep!');
+      fRef('🥋 GUARD PULLED');
+    }
+    else {
+      const tdName = dir==='up' ? 'Judo Throw' : (dir==='down' ? 'Single Leg' : 'Double Leg');
+      const base = dir==='up' ? 0.48 : (dir==='down' ? 0.65 : 0.60);
+      const ok = Math.random() < (base + skillBonus + fatMod);
+      if(ok){
+        F.p1.pts += 2;
+        S3.cameraShake = 0.25;
+        fSetPhase(dir==='up' ? 'side_control' : 'closed_guard_top');
+        fRef('🏅 '+tdName+'! +2 pts');
+        fLog(tdName+' landed cleanly! +2 pts — now in '+POS_LABELS[F.phase]+'!');
+      } else {
+        F.p1.fat=Math.max(0,F.p1.fat-10);
+        fLog(tdName+' sprawled! Opponent defended the shot.');
+      }
+    }
+  }
+  else if(ph==='clinch'){
+    if(dir==='left'){
+      fSetPhase('closed_guard_bottom');
+      fLog('🥋 Pulled Closed Guard from the clinch!');
+      fRef('🥋 CLOSED GUARD');
+    } else {
+      const tdName = dir==='up' ? 'Uchi-Mata Judo Throw' : (dir==='down' ? 'Single Leg Takedown' : (dir==='right' ? 'Double Leg Takedown' : 'Inside Trip'));
+      const base = dir==='up' ? 0.62 : 0.72;
+      const ok = Math.random() < (base + skillBonus + fatMod);
+      if(ok){
+        F.p1.pts += 2;
+        S3.cameraShake = 0.28;
+        fSetPhase(dir==='up' ? 'side_control' : 'closed_guard_top');
+        fRef('🏅 '+tdName+'! +2 pts');
+        fLog(tdName+' from the clinch! +2 pts!');
+      } else {
+        fSetPhase('stand');
+        F.p1.fat=Math.max(0,F.p1.fat-8);
+        fLog('Opponent whizzer-defended and broke the clinch!');
+      }
+    }
+  }
+  else {
+    const ok = Math.random() < (0.64 + skillBonus + fatMod);
+    if(ph==='closed_guard_top'){
+      if(ok){ fSetPhase('half_guard'); fLog('Knee-cut pass into Half Guard!'); fRef('🥋 HALF GUARD'); }
+      else { fLog('Opponent locked their closed guard tight.'); }
+    }
+    else if(ph==='half_guard'){
+      if(ok){
+        F.p1.pts += 3;
+        fSetPhase('side_control');
+        fRef('🏅 Guard Pass! +3 pts');
+        fLog('Passed Half Guard into Side Control! +3 pts!');
+      } else { fLog('Opponent retained half guard knee shield.'); }
+    }
+    else if(ph==='side_control'){
+      if(ok){
+        F.p1.pts += 4;
+        const nextPh = dir==='right' ? 'back_control' : 'full_mount';
+        fSetPhase(nextPh);
+        fRef('🏅 '+POS_LABELS[nextPh]+'! +4 pts');
+        fLog('Transitioned to '+POS_LABELS[nextPh]+'! +4 pts!');
+      } else { fLog('Opponent framed your hip and blocked the transition.'); }
+    }
+    else if(ph==='full_mount'){
+      if(ok){
+        F.p1.pts += 4;
+        fSetPhase('back_control');
+        fRef('🏅 Back Take! +4 pts');
+        fLog('Opponent turned away — you took Back Control! +4 pts!');
+      } else { fLog('Maintained heavy Full Mount control.'); }
+    }
+    else if(ph==='closed_guard_bottom'){
+      if(ok){
+        F.p1.pts += 2;
+        fSetPhase('full_mount');
+        fRef('🏅 Hip Bump Sweep! +2 pts');
+        fLog('Hip Bump Sweep straight to Full Mount! +2 pts!');
+      } else { fLog('Sweep blocked — opponent posted their hand.'); }
+    }
+    else if(ph==='bottom_pinned'){
+      if(ok){
+        fSetPhase('closed_guard_bottom');
+        fLog('Shrimped out and recovered Closed Guard!');
+        fRef('🥋 GUARD RECOVERED');
+      } else {
+        fLog('Pinned tight — try Technical Stand-Up!');
+      }
+    }
+    else if(ph==='back_control'){
+      fLog('Body triangle tightened on opponent\'s back!');
+    }
+  }
+
+  onSendAction({type:'sync', phase:F.phase, pts:F.p1.pts, hp:F.p2.hp});
+  fUpdateHUD(); fUpdateScore(); fFatUI();
+  setTimeout(()=>{ fLockTechs(false); fCheckHP(); if(F&&F.running&&fightMode!=='online') fScheduleAI(); }, 500);
+}
+
+// ═══════════════════════════════════════
+// BUTTON 3: RED (ALONE = FEINT | + JOYSTICK = SUBMISSION)
+// ═══════════════════════════════════════
+function pressRed(){
+  if(!F||!F.running||fLocked||fDef.active||F.submitting||fGetup.active) return;
+  const dir = fStickVec.dir;
+  const ph = F.phase;
+
+  if((ph==='stand'||ph==='clinch') && !fNear){
+    fLog('Get closer to feint or launch a flying submission!');
+    return;
+  }
+
+  if(dir==='neutral'){
+    if(F.p1.fat < 5){ fLog('Too exhausted to feint!'); return; }
+    F.p1.fat = Math.max(0, F.p1.fat - 4);
+    F.feintBonus = 0.22;
+    fFatUI();
+    fRef('🎭 FEINT! Opponent baited (+22% next move)');
+    fLog('Level-change feint! Opponent bit on the fake — strike now!');
+    if(F.feintTimer) clearTimeout(F.feintTimer);
+    F.feintTimer = setTimeout(()=>{ if(F) F.feintBonus=0; }, 2500);
+    return;
+  }
+
+  if(F.aiTelegraph){
+    clearTimeout(F.aiTelegraphTimer);
+    F.aiTelegraph=false;
+  }
+  if(fAiInt){clearTimeout(fAiInt);fAiInt=null;}
+
+  if(ph==='stand' || ph==='clinch'){
+    const flyName = dir==='up' ? 'Flying Triangle Choke' : (dir==='left' ? 'Imanari Heel Hook' : (dir==='down' ? 'Flying Guillotine' : 'Flying Armbar'));
+    F.submitting = true;
+    fLockTechs(true);
+    fLog('🦅 '+flyName+'! Hit the green zone or risk a bad landing!');
+
+    fShowDef('🦅 '+flyName+' — Hit GREEN zone!', 1.85, 0.11,
+      ()=>{
+        const aiEsc = fightMode==='online' ? false : (Math.random() < (DIFF_CFG[fDiff].adef * 0.65));
+        F.submitting = false;
+        if(aiEsc){
+          fSetPhase('closed_guard_bottom');
+          fLog('Opponent slipped out of '+flyName+' — you land in Closed Guard!');
+          fLockTechs(false); if(fightMode!=='online') fScheduleAI();
+        } else {
+          F.p2.hp = 0;
+          fLog('🏆 '+flyName+' LOCKED IN! TAP OUT!');
+          onSendAction({type:'sub_win', method:flyName});
+          fUpdateHUD(); fLockTechs(false); fCheckHP();
+        }
+      },
+      ()=>{
+        F.submitting = false;
+        S3.cameraShake = 0.42;
+        if(Math.random() < 0.5){
+          F.p1.fat = Math.round(F.p1.fat * 0.5);
+          F.p1.hp = Math.max(1, F.p1.hp - 18);
+          F.p1.injured = true;
+          document.getElementById('injury-badge').style.display='block';
+          fSetPhase('closed_guard_bottom');
+          fRef('💥 BAD FALL! Injury & −50% Stamina!');
+          fLog('You crashed hard on the '+flyName+'! Rib injury & half stamina lost!');
+        } else {
+          fSetPhase('bottom_pinned');
+          fRef('⚠ CRASHED! Opponent takes Top Mount!');
+          fLog('Missed '+flyName+'! Opponent capitalized and pinned you on the mat!');
+        }
+        onSendAction({type:'sync', phase:F.phase, pts:F.p1.pts, hp:F.p2.hp});
+        fUpdateHUD(); fFatUI(); fLockTechs(false);
+        if(F&&F.running&&fightMode!=='online') fScheduleAI();
+      }
+    );
+    return;
+  }
+
+  let subName = 'Armbar';
+  let subPower = 0.14;
+  if(ph==='full_mount'){
+    if(dir==='up'){ subName='Mounted Triangle Choke'; subPower=0.16; }
+    else if(dir==='right'){ subName='Mounted Armbar'; subPower=0.16; }
+    else if(dir==='left'){ subName='Ezekiel Choke'; subPower=0.15; }
+    else { subName='Americana Keylock'; subPower=0.15; }
+  }
+  else if(ph==='back_control'){
+    subName = dir==='up' ? 'Rear Naked Choke (RNC)' : 'Bow & Arrow Choke';
+    subPower = 0.18;
+  }
+  else if(ph==='side_control'){
+    subName = dir==='right' ? 'Americana' : (dir==='up' ? 'Arm-Triangle Choke' : 'Kimura');
+    subPower = 0.14;
+  }
+  else if(ph==='closed_guard_bottom'){
+    if(dir==='up'){ subName='Triangle Choke'; subPower=0.14; }
+    else if(dir==='right'){ subName='Guard Armbar'; subPower=0.14; }
+    else { subName='Guillotine Choke'; subPower=0.14; }
+  }
+  else if(ph==='half_guard' || ph==='closed_guard_top'){
+    subName = 'Kimura / Toe Hold';
+    subPower = 0.12;
+  }
+  else if(ph==='bottom_pinned'){
+    subName = 'Desperation Buggy Choke';
+    subPower = 0.08;
+  }
+
+  let careerSubBonus = 0;
+  if(fightMode==='career' && C) careerSubBonus = C.attrs.sub * 0.004;
+
+  F.submitting = true;
+  fLockTechs(true);
+  fLog('🔥 Attempting '+subName+' from '+POS_LABELS[ph]+'...');
+
+  const fatBonus = F.p1.fat < 30 ? -0.04 : 0;
+  fShowDef('Lock '+subName+' — Hit GREEN zone!', DIFF_CFG[fDiff].defSpd, Math.max(0.07, subPower + careerSubBonus + fatBonus),
+    ()=>{
+      const aidef = fightMode==='online' ? false : (Math.random() < (DIFF_CFG[fDiff].adef * 0.72));
+      F.submitting = false;
+      if(aidef){
+        F.p1.fat = Math.max(0, F.p1.fat - 10);
+        if(ph==='full_mount') fSetPhase('closed_guard_bottom');
+        fLog('Opponent defended '+subName+' and scrambled!');
+      } else {
+        F.p2.hp = 0;
+        fLog('🏆 '+subName+'! OPPONENT TAPS OUT!');
+        onSendAction({type:'sub_win', method:subName});
+      }
+      fUpdateHUD(); fFatUI(); fLockTechs(false);
+      fCheckHP(); if(F&&F.running&&fightMode!=='online') fScheduleAI();
+    },
+    ()=>{
+      F.submitting = false;
+      F.p1.fat = Math.max(0, F.p1.fat - 12);
+      if(ph==='full_mount' || ph==='side_control') fSetPhase('closed_guard_top');
+      fLog('Bad timing on '+subName+' — opponent escaped and recovered guard!');
+      fFatUI(); fLockTechs(false);
+      if(F&&F.running&&fightMode!=='online') fScheduleAI();
+    }
+  );
+}
+
+// ── GAME LOOP ──
+function fStartLoop(){ if(fGameInt) clearInterval(fGameInt); fGameInt=setInterval(fTick,50); }
+
+let _onlineSyncTick=0;
+function fTick(){
+  if(!F||!F.running) return;
+  if(fGetup.active){ update3DPose(F, 0.05); return; }
+
+  const me=F.p1, ai=F.p2;
+  const spd = me.injured ? 0.009 : 0.014;
+  let moved=false;
+
+  if(me.outCooldown>0) me.outCooldown = Math.max(0, me.outCooldown - 0.05);
+
+  if(F.phase==='stand'){
+    let mx = fStickVec.x + (fKeyState.right?1:0) - (fKeyState.left?1:0);
+    let my = fStickVec.y + (fKeyState.down?1:0) - (fKeyState.up?1:0);
+    const mag = Math.hypot(mx, my);
+    if(mag > 0.15){
+      const nx = mx / Math.max(1, mag);
+      const ny = my / Math.max(1, mag);
+      me.x = Math.max(0.02, Math.min(0.98, me.x + nx*spd));
+      me.y = Math.max(0.02, Math.min(0.98, me.y + ny*spd));
+      moved = true;
+    }
+
+    if(fightMode!=='online'){
+      const aiSpd=DIFF_CFG[fDiff].aiSpd;
+      const dxAI=me.x-ai.x, dyAI=me.y-ai.y;
+      const distAI=Math.hypot(dxAI, dyAI);
+      if(distAI>0.18){
+        ai.x += (dxAI/distAI)*aiSpd;
+        ai.y += (dyAI/distAI)*aiSpd;
+      } else if(distAI<0.11){
+        ai.x -= (dxAI/distAI)*aiSpd*0.4;
+        ai.y -= (dyAI/distAI)*aiSpd*0.4;
+      }
+    }
+  }
+
+  const dxP=me.x-0.5, dyP=me.y-0.5;
+  const distFromCenter = Math.hypot(dxP, dyP);
+  if(distFromCenter > CR){
+    const ang=Math.atan2(dyP,dxP);
+    me.x=0.5+Math.cos(ang)*(CR - 0.035);
+    me.y=0.5+Math.sin(ang)*(CR - 0.035);
+    if(me.outCooldown<=0){
+      me.outCooldown = 1.5;
+      me.outs++;
+      fUpdateOutsLabel();
+      if(me.outs>=OUT_LIMIT){
+        fRef('⬛ Disqualified! 3 outs outside the white tatami line!');
+        fEndDQ(); return;
+      } else {
+        fRef('⬛ Stepped outside white line! Warning '+me.outs+'/'+OUT_LIMIT);
+      }
+    }
+  }
+
+  if(!moved && !F.guardActive && Math.random()<0.18){
+    me.fat = Math.min(100, me.fat + 1);
+  } else if(moved && Math.random()<0.05){
+    me.fat = Math.max(0, me.fat - 1);
+  }
+  fFatUI();
+
+  const prox = Math.hypot(me.x-ai.x, me.y-ai.y);
+  fNear = (F.phase!=='stand') || (prox < 0.25);
+
+  if(fightMode==='online' && oConn && oConn.open){
+    _onlineSyncTick++;
+    if(_onlineSyncTick%2===0){
+      try{ oConn.send({type:'pos', x:1-me.x, y:me.y}); }catch(e){}
+    }
+  }
+
+  update3DPose(F, 0.05);
+  fUpdateHUD();
+}
+
+function fUpdateOutsLabel(){
+  const lbl=document.getElementById('joy-outs-lbl');
+  if(lbl&&F) lbl.textContent='Outs: '+(F.p1.outs||0)+'/'+OUT_LIMIT;
+}
+
+function fStartTimer(){
+  if(fTimerInt) clearInterval(fTimerInt);
+  fTimerInt=setInterval(()=>{
+    if(!F||!F.running) return;
+    F.timer--;
+    const m=Math.floor(F.timer/60), s=F.timer%60;
+    document.getElementById('f-timer').textContent=m+':'+(s<10?'0':'')+s;
+    if(F.timer<=0) fEndRound();
+  },1000);
+}
+
+function fStartFatigue(){
+  if(fFatInt) clearInterval(fFatInt);
+  fFatInt=setInterval(()=>{
+    if(!F||!F.running){clearInterval(fFatInt);return;}
+    F.p1.hp=Math.max(0,F.p1.hp-1); fUpdateHUD();
+    if(F.p1.hp<=0){clearInterval(fFatInt);fCheckHP();}
+  },1000);
+}
+
+// ── AI ATTACK SCHEDULER ──
+function fScheduleAI(){
+  if(fAiInt){clearTimeout(fAiInt);fAiInt=null;}
+  if(!F||!F.running||fightMode==='online') return;
+  const base=DIFF_CFG[fDiff].aiAttackDelay;
+  fAiInt=setTimeout(()=>{
+    if(!fDef.active&&!fLocked&&F&&F.running&&F.p1.hp>0&&F.p2.hp>0&&!fGetup.active) fAiAttack();
+    else if(F&&F.running) fScheduleAI();
+  }, base + Math.random()*2000);
+}
+
+function fAiAttack(){
+  if(fightMode==='online'||!F||!F.running) return;
+  const isStand = (F.phase==='stand' || F.phase==='clinch');
+  if(isStand && !fNear){
+    fScheduleAI();
+    return;
+  }
+  const moveName = isStand ? 'Double Leg Takedown' : 'Armbar Submission';
+  F.aiTelegraph = true;
+  F.aiTelegraphMove = moveName;
+  fRef('⚡ Opponent shooting '+moveName+' — Press YELLOW to Parry!');
+  fLog('⚠ Opponent telegraphs '+moveName+'! Press YELLOW now!');
+
+  F.aiTelegraphTimer = setTimeout(()=>{
+    if(!F||!F.running) return;
+    F.aiTelegraph = false;
+
+    if(F.guardActive){
+      F.guardActive=false;
+      clearTimeout(F.guardTimer);
+      document.getElementById('guard-shield-badge').style.display='none';
+      fRef('🛡 BLOCKED with Guard!');
+      fLog('Your Yellow guard blocked '+moveName+'!');
+      fScheduleAI();
+      return;
+    }
+
+    fLockTechs(true);
+    fShowDef('Defend '+moveName+'!', DIFF_CFG[fDiff].defSpd, fDefWin,
+      ()=>{ fLog('Escaped '+moveName+'!'); fLockTechs(false); fScheduleAI(); },
+      ()=>{
+        let d = isStand ? DIFF_CFG[fDiff].dmg : Math.round(DIFF_CFG[fDiff].dmg*2.1);
+        if(fightMode==='career'&&C) d=Math.max(1,Math.round(d*(1-C.gymStats.endurance*0.015)));
+        F.p1.hp=Math.max(0,F.p1.hp-d);
+        fLog('−'+d+' HP from '+moveName+'!');
+        if(isStand){
+          F.p2.pts += 2;
+          fUpdateScore();
+          fSetPhase('bottom_pinned');
+          fLockTechs(false);
+          fUpdateHUD();
+          startGetup();
+          return;
+        }
+        fUpdateHUD(); fLockTechs(false);
+        fCheckHP(); if(F&&F.running) fScheduleAI();
+      }
+    );
+  }, 850);
+}
+
+// ═══════════════════════════════════════
+// GET UP SYSTEM
+// ═══════════════════════════════════════
+const GETUP_KEYS=[
+  {label:'W', code:'KeyW'}, {label:'A', code:'KeyA'},
+  {label:'S', code:'KeyS'}, {label:'D', code:'KeyD'},
+  {label:'↑', code:'ArrowUp'}, {label:'↓', code:'ArrowDown'}
+];
+
+function startGetup(){
+  if(!F||!F.running||fGetup.active) return;
+  fGetup.active=true; fGetup.phase=0; fGetup.progress=0; fGetup.tapsDone=0; fGetup.resolved=false;
+  fGetup.required=70; fGetup.tapsNeeded=DIFF_CFG[fDiff].getupTaps||8;
+  fGetup.aiDefStrength=DIFF_CFG[fDiff].aiStopGetup;
+  fLocked=true;
+  document.getElementById('getup-initbtn').style.display='block';
+  document.getElementById('getup-key-prompt').style.display='none';
+  document.getElementById('getup-ai-defend').style.display='none';
+  document.getElementById('getup-progress-row').style.display='none';
+  document.getElementById('getup-timer').style.display='none';
+  document.getElementById('getup-wrap').style.display='block';
+  fLog('Taken down! Tap TECHNICAL STAND-UP or use Blue+Stick to recover guard!');
+}
+
+function getupInit(){
+  if(!fGetup.active||fGetup.phase!==0||fGetup.resolved||!F||!F.running) return;
+  fGetup.phase=1; fGetup.progress=0; fGetup.tapsDone=0;
+  fGetup.timeLeft=DIFF_CFG[fDiff].getupTime||5;
+  const pick=GETUP_KEYS[Math.floor(Math.random()*GETUP_KEYS.length)];
+  fGetup.currentKey=pick.label; fGetup.currentKeyCode=pick.code;
+
+  document.getElementById('getup-initbtn').style.display='none';
+  document.getElementById('getup-key-btn').textContent=pick.label;
+  document.getElementById('getup-key-prompt').style.display='block';
+  document.getElementById('getup-progress-row').style.display='flex';
+  document.getElementById('getup-timer').style.display='block';
+  _getupUpdateUI();
+
+  fGetup.aiDefending=Math.random()<fGetup.aiDefStrength;
+  if(fGetup.aiDefending){
+    document.getElementById('getup-ai-defend').style.display='block';
+    fGetup.aiDefInt=setInterval(()=>{
+      if(!fGetup.active||fGetup.phase!==1) return;
+      fGetup.progress=Math.max(0,fGetup.progress-(DIFF_CFG[fDiff].aiDefDrain||14));
+      _getupUpdateUI();
+    },900);
+  }
+  fGetup.timerInt=setInterval(()=>{
+    if(!fGetup.active||fGetup.phase!==1) return;
+    fGetup.timeLeft--;
+    document.getElementById('getup-cd').textContent=fGetup.timeLeft;
+    if(fGetup.timeLeft<=0){ clearInterval(fGetup.timerInt); resolveGetup(false); }
+  },1000);
+}
+
+function getupTap(){
+  if(!fGetup.active||fGetup.phase!==1||fGetup.resolved||!F||!F.running) return;
+  fGetup.tapsDone++;
+  fGetup.progress=Math.min(100, fGetup.progress + (fGetup.required/fGetup.tapsNeeded)*1.08);
+  const btn=document.getElementById('getup-key-btn');
+  btn.classList.add('flash'); setTimeout(()=>btn.classList.remove('flash'),100);
+  _getupUpdateUI();
+  if(fGetup.progress>=fGetup.required) resolveGetup(true);
+}
+
+function _getupUpdateUI(){
+  const pct=Math.min(100,Math.round(fGetup.progress));
+  document.getElementById('getup-bar-fill').style.width=pct+'%';
+  document.getElementById('getup-pct').textContent=pct+'%';
+  document.getElementById('getup-taps-row').textContent=fGetup.tapsDone+' / '+fGetup.tapsNeeded+' taps';
+}
+
+function resolveGetup(success){
+  if(fGetup.resolved) return;
+  fGetup.resolved=true; fGetup.active=false; fGetup.phase=0;
+  hideGetup(); fLocked=false;
+  if(success){
+    fLog('Technical Stand-Up! Back to feet!');
+    fRef('🔝 STOOD UP!');
+    fSetPhase('stand');
+    if(F&&F.running&&fightMode!=='online') fScheduleAI();
+  } else {
+    fSetPhase('closed_guard_bottom');
+    fLog('Could not stand — recovered Closed Guard on bottom!');
+    if(F&&F.running&&fightMode!=='online') fScheduleAI();
+  }
+}
+
+function hideGetup(){
+  document.getElementById('getup-wrap').style.display='none';
+  if(fGetup.timerInt){clearInterval(fGetup.timerInt);fGetup.timerInt=null;}
+  if(fGetup.aiDefInt){clearInterval(fGetup.aiDefInt);fGetup.aiDefInt=null;}
+}
+
+function fSetPhase(ph){
+  if(!F) return;
+  F.phase = ph;
+  const badge = document.getElementById('pos-badge');
+  if(badge) badge.textContent = POS_LABELS[ph] || ph.toUpperCase();
+  updateMoveHints();
+}
+
+// ── DEFEND / SUBMISSION TIMING GAUGE ──
+function fShowDef(hint, speed, winHalf, onOk, onFail){
+  document.getElementById('fight-def-wrap').style.display='block';
+  document.getElementById('fight-def-hint').textContent=hint;
+  document.getElementById('fight-def-btn').disabled=false;
+  fDef.active=true; fDef.pos=50; fDef.dir=1; fDef.speed=speed;
+  fDef.onOk=onOk; fDef.onFail=onFail; fDef._winHalf=winHalf;
+  if(fDef.int) clearInterval(fDef.int);
+  fDef.int=setInterval(()=>{
+    if(!fDef.active) return;
+    fDef.pos+=fDef.dir*fDef.speed;
+    if(fDef.pos>=100){fDef.pos=100;fDef.dir=-1;}
+    if(fDef.pos<=0){fDef.pos=0;fDef.dir=1;}
+    document.getElementById('fight-def-cur').style.left=fDef.pos.toFixed(1)+'%';
+  },16);
+  fDef.cd=5; document.getElementById('fight-def-cd').textContent=5;
+  if(fDef.cdInt) clearInterval(fDef.cdInt);
+  fDef.cdInt=setInterval(()=>{
+    fDef.cd--; document.getElementById('fight-def-cd').textContent=fDef.cd;
+    if(fDef.cd<=0){
+      clearInterval(fDef.cdInt); fDef.active=false; fHideDef();
+      if(fDef.onFail) fDef.onFail();
+    }
+  },1000);
+}
+function fDefend(){
+  if(!fDef.active) return;
+  clearInterval(fDef.int); clearInterval(fDef.cdInt);
+  fDef.active=false;
+  const halfPct=(fDef._winHalf||0.14)*100;
+  const hit=Math.abs(fDef.pos-50)<=halfPct;
+  fHideDef();
+  if(hit){ if(fDef.onOk) fDef.onOk(); }
+  else   { if(fDef.onFail) fDef.onFail(); }
+}
+function fHideDef(){
+  document.getElementById('fight-def-wrap').style.display='none';
+  fDef.active=false;
+  if(fDef.int){clearInterval(fDef.int);fDef.int=null;}
+  if(fDef.cdInt){clearInterval(fDef.cdInt);fDef.cdInt=null;}
+}
+
+function fUpdateHUD(){
+  if(!F) return;
+  const p1=document.getElementById('f-p1-hp'), p2=document.getElementById('f-p2-hp');
+  p1.style.width=Math.max(0,F.p1.hp)+'%'; p2.style.width=Math.max(0,F.p2.hp)+'%';
+  p1.classList.toggle('hp-low',F.p1.hp<30); p2.classList.toggle('hp-low',F.p2.hp<30);
+}
+function fUpdateScore(){
+  if(!F) return;
+  document.getElementById('f-sc1').textContent=F.p1.pts;
+  document.getElementById('f-sc2').textContent=F.p2.pts;
+}
+function fFatUI(){
+  if(!F) return;
+  const f=F.p1.fat;
+  document.getElementById('f-fat').style.width=f+'%';
+  document.getElementById('f-fat').classList.toggle('tired',f<30);
+  document.getElementById('f-fat-val').textContent=f;
+}
+function fLog(m){ const e=document.getElementById('fight-log'); if(e) e.textContent=m; }
+function fRef(m){ const e=document.getElementById('fight-ref'); if(!e)return; e.textContent=m; setTimeout(()=>{if(e)e.textContent='';},2600); }
+function fLockTechs(v){
+  fLocked=v;
+  ['btn-yellow','btn-blue','btn-red'].forEach(id=>{
+    const b=document.getElementById(id);
+    if(b) b.disabled=v;
+  });
+}
+
+// ── END CONDITIONS + REFEREE RAISING WINNER'S HAND CEREMONY ──
+function fCheckHP(){ if(F&&(F.p1.hp<=0||F.p2.hp<=0)) fEndRound(); }
+function fEndRound(){
+  if(!F||!F.running) return;
+  F.running=false;
+  if(fAiInt){clearTimeout(fAiInt);fAiInt=null;}
+  hideGetup(); fGetup.active=false;
+  if(F.p1.hp<=0){ fEndFight(false,'Submission / Stoppage'); return; }
+  if(F.p2.hp<=0){ fEndFight(true,'Submission (Tap Out)'); return; }
+  if(F.rnd<ROUNDS){ fNextRound(); }
+  else {
+    const pw=F.p1.pts>F.p2.pts||(F.p1.pts===F.p2.pts&&F.p1.hp>F.p2.hp);
+    fEndFight(pw,'Points Decision');
+  }
+}
+function fNextRound(){
+  F.running=true; F.rnd++; F.p1.hp=100; F.p2.hp=100; F.timer=ROUND_SECS;
+  F.p1.x=0.35; F.p1.y=0.5; F.p2.x=0.65; F.p2.y=0.5;
+  F.submitting=false; fLocked=false;
+  fSetPhase('stand');
+  document.getElementById('f-rnd').textContent=F.rnd;
+  fUpdateHUD(); fUpdateScore();
+  fLog('Round '+F.rnd+' — Hajime!');
+  setTimeout(()=>{ if(F&&F.running&&fightMode!=='online') fScheduleAI(); },1000);
+}
+function fEndDQ(){
+  if(!F)return;
+  fEndFight(false,'Disqualification — 3 outs');
+}
+
+function fEndFight(playerWon, method){
+  if(!F||fFightEnded) return;
+  fFightEnded=true; F.running=false;
+  fAllClear(); fHideDef(); fLockTechs(true); hideGetup();
+
+  F.winnerIsP1 = playerWon;
+  F.phase = 'ceremony';
+  const winName = playerWon ? document.getElementById('f-p1-lbl').textContent : document.getElementById('f-p2-lbl').textContent;
+  const banner = document.getElementById('ref-winner-banner');
+  const pill = document.getElementById('ref-winner-pill');
+  if(banner && pill){
+    pill.textContent = '✋ WINNER: ' + winName.toUpperCase() + '!';
+    pill.style.borderColor = playerWon ? 'var(--g)' : 'var(--r)';
+    banner.style.display = 'flex';
+  }
+  fRef('✋ Referee raises ' + winName + '\'s hand!');
+  fLog('Match over! ' + winName + ' wins by ' + (method||'Decision') + '!');
+
+  if(fCeremonyInt) clearInterval(fCeremonyInt);
+  fCeremonyInt = setInterval(()=>{ if(F) update3DPose(F, 0.04); }, 40);
+
+  setTimeout(()=>{
+    if(fCeremonyInt){ clearInterval(fCeremonyInt); fCeremonyInt=null; }
+    if(banner) banner.style.display='none';
+    fShowPost(playerWon, method||'');
+  }, 2400);
+}
+
+function fAllClear(){
+  if(fGameInt){clearInterval(fGameInt);fGameInt=null;}
+  if(fTimerInt){clearInterval(fTimerInt);fTimerInt=null;}
+  if(fAiInt){clearTimeout(fAiInt);fAiInt=null;}
+  if(fFatInt){clearInterval(fFatInt);fFatInt=null;}
+  if(fCeremonyInt){clearInterval(fCeremonyInt);fCeremonyInt=null;}
+  if(fDef.int){clearInterval(fDef.int);fDef.int=null;}
+  if(fDef.cdInt){clearInterval(fDef.cdInt);fDef.cdInt=null;}
+  if(fGetup.timerInt){clearInterval(fGetup.timerInt);fGetup.timerInt=null;}
+  if(F&&F.guardTimer){clearTimeout(F.guardTimer);}
+  if(F&&F.feintTimer){clearTimeout(F.feintTimer);}
+  if(F&&F.aiTelegraphTimer){clearTimeout(F.aiTelegraphTimer);}
+}
+
+function fShowPost(playerWon,method){
+  const p1n=document.getElementById('f-p1-lbl').textContent;
+  const p2n=document.getElementById('f-p2-lbl').textContent;
+
+  if(fightMode==='online'){
+    document.getElementById('on-res-icon').textContent=playerWon?'🏆':'🥋';
+    document.getElementById('on-res-title').textContent=playerWon?'Online Victory!':'Defeat';
+    document.getElementById('on-res-desc').textContent=method||'Match finished';
+    document.getElementById('on-scorecard').innerHTML=`
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span>${p1n}</span><strong>${F.p1.pts} pts</strong></div>
+      <div style="display:flex;justify-content:space-between;"><span>${p2n}</span><strong>${F.p2.pts} pts</strong></div>`;
+    goScr('scr-on-result');
+    return;
+  }
+
+  document.getElementById('post-icon').textContent=playerWon?'🏆':'🥋';
+  document.getElementById('post-title').textContent=playerWon?'Victory!':'Defeat';
+  document.getElementById('post-score-card').innerHTML=`
+    <div style="font-size:13px;font-weight:600;margin-bottom:8px;">Final scorecard</div>
+    <div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span>${p1n}</span><span style="font-weight:700;">${F.p1.pts} pts</span></div>
+    <div style="display:flex;justify-content:space-between;"><span>${p2n}</span><span style="font-weight:700;">${F.p2.pts} pts</span></div>
+    ${method?`<div class="sm mu" style="margin-top:6px;">Method: ${method}</div>`:''}`;
+
+  if(fightMode==='quick'||!C){
+    document.getElementById('post-desc').textContent=playerWon?'Alhamdulillah! Clean Jiu-Jitsu victory.':'Keep drilling on the tatami.';
+    document.getElementById('post-fan-card').style.display='none';
+    document.getElementById('post-soc-card').style.display='none';
+    document.getElementById('post-rank-card').style.display='none';
+    goScr('scr-post'); return;
+  }
+
+  if(playerWon){C.wins++;C.winsForLvl++;}else{C.losses++;}
+  C.totalFights++;
+  if(!C.inUBJJF && playerWon) C.streetFights++;
+  C.contracts=[]; C.day++;
+  if(C.winsForLvl>=3){C.lvlPts+=3;C.winsForLvl=0;}
+
+  const fanDelta=playerWon?Math.floor(Math.random()*300+100):-Math.floor(Math.random()*80+20);
+  let rankMsg='';
+  let wonBeltNow=false;
+  let lostBeltNow=false;
+
+  if(C.streetFights>=5&&!C.inUBJJF){
+    C.inUBJJF=true; C.rank=25;
+    rankMsg='Promoted to UBJJF Rankings at #25!';
+  } else if(C.inUBJJF){
+    if(playerWon){
+      const oldR=C.rank;
+      C.rank = fIsTitleBout ? 1 : Math.max(1, C.rank - Math.floor(Math.random()*4 + 3));
+      if(C.hasBelt && fIsTitleBout){
+        C.titleDefenses = (C.titleDefenses||0) + 1;
+        rankMsg = `UBJJF Championship Belt Defended! (Defense #${C.titleDefenses})`;
+      } else {
+        rankMsg = `UBJJF Rank improved: #${oldR} → #${C.rank}`;
+      }
+    } else {
+      const oldR=C.rank;
+      if(C.hasBelt && fIsTitleBout){
+        C.hasBelt=false;
+        C.rank=2;
+        lostBeltNow=true;
+        rankMsg='Lost the UBJJF Championship Belt! Dropped to #2.';
+      } else {
+        C.rank = Math.min(50, C.rank + 2);
+        rankMsg = `UBJJF Rank dropped: #${oldR} → #${C.rank}`;
+      }
+    }
+  }
+
+  // Award UBJJF Championship Belt whenever player reaches #1 or wins Title Bout!
+  if(playerWon && C.inUBJJF && (fIsTitleBout || C.rank===1) && !C.hasBelt){
+    C.hasBelt=true;
+    C.rank=1;
+    wonBeltNow=true;
+    rankMsg='NEW UBJJF WORLD CHAMPION (#1)!';
+  }
+
+  C.fans=Math.max(0,C.fans+fanDelta);
+  const comment=(playerWon?FAN_WIN:FAN_LOSS)[Math.floor(Math.random()*2)];
+  C.history.unshift({opp:currentOpp?currentOpp.name:'Opponent',r:playerWon?'W':'L',method:method||'Points',rnd:F.rnd});
+  saveC(); refreshCareer();
+
+  document.getElementById('post-desc').textContent=wonBeltNow
+    ? 'NEW UBJJF WORLD CHAMPION!'
+    : (lostBeltNow ? 'Title Lost — Train and reclaim your belt!' : (playerWon?'Victory on the mat!':'Tough match.'));
+  document.getElementById('post-fan-card').style.display='block';
+  document.getElementById('post-fans').innerHTML=(fanDelta>=0?'+':'')+fanDelta+' fans';
+  document.getElementById('post-soc-card').style.display='block';
+  document.getElementById('post-soc-txt').textContent='"'+comment+'"';
+  if(rankMsg){
+    document.getElementById('post-rank-card').style.display='block';
+    document.getElementById('post-rank-txt').textContent=rankMsg;
+  } else {
+    document.getElementById('post-rank-card').style.display='none';
+  }
+
+  goScr('scr-post');
+  if(wonBeltNow){
+    setTimeout(()=>openBeltCeremony(false), 450);
+  }
+}
+function afterFight(){ goScr(fightMode==='career'?'scr-career':'scr-menu'); }
+
+// ── KEYBOARD SHORTCUTS ──
+document.addEventListener('keydown',e=>{
+  const inFight=document.getElementById('scr-fight').classList.contains('on');
+  if(!inFight) return;
+  switch(e.key){
+    case 'ArrowUp':    case 'w': case 'W': case 'z': case 'Z': fKeyState.up=true; updateStickDirection(); e.preventDefault(); break;
+    case 'ArrowDown':  case 's': case 'S': fKeyState.down=true; updateStickDirection(); e.preventDefault(); break;
+    case 'ArrowLeft':  case 'a': case 'A': case 'q': case 'Q': fKeyState.left=true; updateStickDirection(); e.preventDefault(); break;
+    case 'ArrowRight': case 'd': case 'D': fKeyState.right=true; updateStickDirection(); e.preventDefault(); break;
+    case 'j': case 'J': case '1': pressYellow(); break;
+    case 'k': case 'K': case '2': pressBlue(); break;
+    case 'l': case 'L': case '3': pressRed(); break;
+    case ' ':
+      if(fDef.active){ fDefend(); e.preventDefault(); }
+      else if(fGetup.active){ fGetup.phase===0 ? getupInit() : getupTap(); e.preventDefault(); }
+      break;
+    default:
+      if(fGetup.active && fGetup.phase===1 && e.code===fGetup.currentKeyCode){ getupTap(); e.preventDefault(); }
+      break;
+  }
+});
+document.addEventListener('keyup',e=>{
+  switch(e.key){
+    case 'ArrowUp':    case 'w': case 'W': case 'z': case 'Z': fKeyState.up=false; updateStickDirection(); break;
+    case 'ArrowDown':  case 's': case 'S': fKeyState.down=false; updateStickDirection(); break;
+    case 'ArrowLeft':  case 'a': case 'A': case 'q': case 'Q': fKeyState.left=false; updateStickDirection(); break;
+    case 'ArrowRight': case 'd': case 'D': fKeyState.right=false; updateStickDirection(); break;
+  }
+});
+
+window.addEventListener('resize',()=>{ if(S3.ready) init3DScene(); });
+
+// ═══════════════════════════════════════
+// ONLINE MODE (FIXED: RELIABLE CONNECTION, HEARTBEAT, STUN & SYNC)
+// ═══════════════════════════════════════
+let oP=null, oConn=null, oIsP1=false, oMyCode='', oMyName='', oOppName='Opponent';
+let oMyReady=false, oOppReady=false, oLibReady=false;
+let oPingInt=null, oConnectTimeout=null, oStartSent=false;
+
+const PEER_CFG = {
+  debug: 1,
+  config: {
+    iceServers: [
+      { urls: 'stun:stun.l.google.com:19302' },
+      { urls: 'stun:stun1.l.google.com:19302' },
+      { urls: 'stun:stun2.l.google.com:19302' },
+      { urls: 'stun:stun.services.mozilla.com' }
+    ]
+  }
+};
+
+function openOnlineMenu(){
+  goScr('scr-online');
+}
+
+function onStatus(msg, st){
+  const d=document.getElementById('on-cdot'), t=document.getElementById('on-status-txt');
+  if(t) t.textContent=msg;
+  if(d) d.className='on-cdot'+(st==='on'?' on':st==='off'?' off':'');
+}
+
+function onInitLib(){
+  const offBox = document.getElementById('on-offline-block');
+  const actWrap = document.getElementById('on-actions-wrap');
+
+  if(!navigator.onLine){
+    oLibReady = false;
+    onStatus('No internet connection — Online mode disabled.','off');
+    if(offBox) offBox.style.display='block';
+    if(actWrap) actWrap.style.opacity='0.4';
+    return;
+  }
+
+  if(offBox) offBox.style.display='none';
+  if(actWrap) actWrap.style.opacity='1';
+
+  if(typeof Peer!=='undefined'){
+    oLibReady=true;
+    onStatus('Connected — choose Create or Join.','on');
+  } else {
+    oLibReady=false;
+    onStatus('Connecting to online server...','');
+    loadExtScript('https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js', ok => {
+      if(ok && typeof Peer !== 'undefined' && navigator.onLine){
+        oLibReady=true;
+        onStatus('Connected — choose Create or Join.','on');
+      } else {
+        onStatus('Online server unreachable — check your internet connection.','off');
+        if(offBox) offBox.style.display='block';
+      }
+    });
+  }
+}
+
+function onRetryConnection(){
+  onInitLib();
+}
+
+function onEnsureOnline(){
+  if(!navigator.onLine){
+    onInitLib();
+    alert('Internet connection is required for Online mode. Quick Match and Career Mode work offline!');
+    return false;
+  }
+  if(!oLibReady || typeof Peer==='undefined'){
+    onInitLib();
+    alert('Still connecting to the online server. Check your internet and try again.');
+    return false;
+  }
+  return true;
+}
+
+function onGoJoinScreen(){
+  if(!onEnsureOnline()) return;
+  document.getElementById('on-join-err').textContent='';
+  goScr('scr-on-join');
+}
+
+function onRandCode(){
+  const ch='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let c='';
+  for(let i=0;i<6;i++) c+=ch[Math.floor(Math.random()*ch.length)];
+  return c.toLowerCase();
+}
+
+function onCopyCode(){
+  const c=document.getElementById('on-code-box').textContent;
+  if(navigator.clipboard) navigator.clipboard.writeText(c).catch(()=>{});
+  const b=document.getElementById('on-copy-btn');
+  if(b){ b.textContent='✓ Copied!'; setTimeout(()=>b.textContent='📋 Copy code',1500); }
+}
+
+function onUpdateLobbyUI(){
+  if(oIsP1){
+    const p1El=document.getElementById('on-p1-slot');
+    const p2El=document.getElementById('on-p2-slot');
+    const p2Dot=document.getElementById('on-p2-dot');
+    const btn=document.getElementById('on-p1-ready-btn');
+    const st=document.getElementById('on-create-st');
+    if(p1El) p1El.textContent=oMyName + (oMyReady ? ' (YOU — READY ✓)' : ' (you)');
+    if(oConn && oConn.open){
+      if(p2Dot) p2Dot.className='on-dot ok';
+      if(p2El) p2El.textContent=oOppName + (oOppReady ? ' (READY ✓)' : ' (connected)');
+      if(btn){
+        btn.disabled=oMyReady;
+        btn.textContent=oMyReady ? 'Ready ✓ — waiting for '+oOppName+'...' : "I'm ready!";
+      }
+      if(st){
+        if(oMyReady && !oOppReady) st.textContent='Waiting for '+oOppName+' to press Ready...';
+        else if(!oMyReady && oOppReady) st.textContent=oOppName+' is READY! Press "I\'m ready!" to start!';
+        else if(!oMyReady && !oOppReady) st.textContent='Both players connected! Press "I\'m ready!"';
+      }
+    }
+  } else {
+    const w1=document.getElementById('on-w-p1');
+    const w2=document.getElementById('on-w-p2');
+    const btn=document.getElementById('on-wait-btn');
+    const st=document.getElementById('on-wait-st');
+    if(w1) w1.textContent=oOppName + (oOppReady ? ' (READY ✓)' : ' (host)');
+    if(w2) w2.textContent=oMyName + (oMyReady ? ' (YOU — READY ✓)' : ' (you)');
+    if(btn){
+      btn.disabled=oMyReady;
+      btn.textContent=oMyReady ? 'Ready ✓ — waiting for '+oOppName+'...' : "I'm ready!";
+    }
+    if(st){
+      if(oMyReady && !oOppReady) st.textContent='Waiting for '+oOppName+' to press Ready...';
+      else if(!oMyReady && oOppReady) st.textContent=oOppName+' is READY! Press "I\'m ready!" to start!';
+      else if(!oMyReady && !oOppReady) st.textContent='Connected to room! Press "I\'m ready!"';
+    }
+  }
+}
+
+function onBindConn(conn){
+  oConn=conn;
+  if(oPingInt) clearInterval(oPingInt);
+  oPingInt=setInterval(()=>{
+    if(oConn && oConn.open){
+      try{ oConn.send({type:'ping', name:oMyName, ready:oMyReady}); }catch(e){}
+    }
+  }, 1500);
+
+  oConn.on('data', data=>{
+    if(!data || typeof data!=='object') return;
+
+    if(data.type==='hello' || data.type==='ping'){
+      if(data.name) oOppName = data.name;
+      if(typeof data.ready==='boolean' && data.ready && !oOppReady){
+        oOppReady = true;
+      }
+      onUpdateLobbyUI();
+      if(data.type==='hello'){
+        try{ oConn.send({type:'hello_ack', name:oMyName, ready:oMyReady}); }catch(e){}
+      }
+      if(oMyReady && oOppReady && !oStartSent){
+        onTriggerMatchStart();
+      }
+    }
+    else if(data.type==='hello_ack'){
+      if(data.name) oOppName = data.name;
+      if(typeof data.ready==='boolean') oOppReady = data.ready;
+      onUpdateLobbyUI();
+      if(oMyReady && oOppReady && !oStartSent){
+        onTriggerMatchStart();
+      }
+    }
+    else if(data.type==='ready'){
+      if(data.name) oOppName = data.name;
+      oOppReady = true;
+      onUpdateLobbyUI();
+      if(oMyReady && oOppReady && !oStartSent){
+        onTriggerMatchStart();
+      }
+    }
+    else if(data.type==='start'){
+      if(data.name) oOppName = data.name;
+      if(!oStartSent){
+        oStartSent = true;
+        onStartMatch();
+      }
+    }
+    else if(data.type==='pos' && F && F.running){
+      F.p2.x = data.x;
+      F.p2.y = data.y;
+    }
+    else if(data.type==='sync' && F && F.running){
+      const mirrorMap={
+        closed_guard_top:'closed_guard_bottom',
+        closed_guard_bottom:'closed_guard_top',
+        full_mount:'bottom_pinned',
+        side_control:'bottom_pinned',
+        back_control:'bottom_pinned',
+        bottom_pinned:'full_mount'
+      };
+      if(data.phase) fSetPhase(mirrorMap[data.phase] || data.phase);
+      if(typeof data.pts==='number') F.p2.pts = data.pts;
+      if(typeof data.hp==='number') F.p1.hp = data.hp;
+      fUpdateHUD(); fUpdateScore(); fCheckHP();
+    }
+    else if(data.type==='parry' && F && F.running){
+      F.p2.pts = data.pts || (F.p2.pts+1);
+      fUpdateScore();
+      fRef('⚡ Opponent parried!');
+    }
+    else if(data.type==='sub_win' && F && F.running){
+      F.p1.hp = 0;
+      fUpdateHUD();
+      fEndFight(false, data.method || 'Submission');
+    }
+  });
+
+  oConn.on('close',()=>{
+    if(oPingInt){ clearInterval(oPingInt); oPingInt=null; }
+    if(F && F.running){
+      fEndFight(true, 'Opponent disconnected');
+    } else {
+      onStatus('Opponent disconnected.','off');
+    }
+  });
+
+  oConn.on('error', err=>{
+    console.warn('Conn error:', err);
+  });
+}
+
+function onSendAction(payload){
+  if(fightMode==='online' && oConn && oConn.open){
+    try{ oConn.send(payload); }catch(e){}
+  }
+}
+
+function onTriggerMatchStart(){
+  if(oStartSent) return;
+  oStartSent = true;
+  onSendAction({type:'start', name:oMyName});
+  setTimeout(()=>onSendAction({type:'start', name:oMyName}), 150);
+  onStartMatch();
+}
+
+async function onGoCreate(){
+  if(!onEnsureOnline()) return;
+  onLeave();
+  oIsP1=true; oMyReady=false; oOppReady=false; oStartSent=false;
+  oMyName=document.getElementById('on-p1-name').value.trim()||'Player 1';
+  oMyCode=onRandCode();
+  document.getElementById('on-code-box').textContent=oMyCode.toUpperCase();
+  document.getElementById('on-p1-slot').textContent=oMyName+' (you)';
+  document.getElementById('on-p2-slot').textContent='Waiting for opponent...';
+  document.getElementById('on-p2-dot').className='on-dot';
+  document.getElementById('on-p1-ready-btn').disabled=true;
+  document.getElementById('on-p1-ready-btn').textContent='Waiting for opponent...';
+  document.getElementById('on-create-st').textContent='Opening room...';
+  goScr('scr-on-create');
+
+  oP=new Peer('bjjtry-'+oMyCode, PEER_CFG);
+  oP.on('open',()=>{
+    document.getElementById('on-create-st').textContent='Room open — share code with your friend!';
+  });
+  oP.on('error',err=>{
+    document.getElementById('on-create-st').textContent='Network error: '+err.type+' (try creating again)';
+  });
+  oP.on('connection',conn=>{
+    onBindConn(conn);
+    const onOpenHandler = ()=>{
+      oMyName=document.getElementById('on-p1-name').value.trim()||oMyName;
+      onUpdateLobbyUI();
+      try{ conn.send({type:'hello', name:oMyName, ready:oMyReady}); }catch(e){}
+    };
+    if(conn.open) onOpenHandler();
+    else conn.on('open', onOpenHandler);
+  });
+}
+
+async function onJoinRoom(){
+  if(!onEnsureOnline()) return;
+  const raw=document.getElementById('on-join-code').value.trim().toLowerCase();
+  const errEl=document.getElementById('on-join-err');
+  if(raw.length!==6){ errEl.textContent='Please enter a 6-character code.'; return; }
+  errEl.textContent='Connecting to room '+raw.toUpperCase()+'...';
+  onLeave();
+  oIsP1=false; oMyReady=false; oOppReady=false; oStartSent=false;
+  oMyName=document.getElementById('on-p2-name').value.trim()||'Player 2';
+
+  oP=new Peer(PEER_CFG);
+  oConnectTimeout=setTimeout(()=>{
+    if(!oConn || !oConn.open){
+      errEl.textContent='Connection timed out. Make sure your friend has the Create Room screen open and check the code!';
+    }
+  }, 12000);
+
+  oP.on('error',err=>{
+    if(oConnectTimeout){ clearTimeout(oConnectTimeout); oConnectTimeout=null; }
+    if(err.type==='peer-unavailable'){
+      errEl.textContent='Room not found! Check the 6-letter code or ask your friend to keep the room open.';
+    } else {
+      errEl.textContent='Connection error ('+err.type+'). Try again!';
+    }
+  });
+
+  oP.on('open',()=>{
+    const conn=oP.connect('bjjtry-'+raw, {reliable:true, serialization:'json'});
+    onBindConn(conn);
+    const onOpenHandler = ()=>{
+      if(oConnectTimeout){ clearTimeout(oConnectTimeout); oConnectTimeout=null; }
+      errEl.textContent='';
+      onUpdateLobbyUI();
+      goScr('scr-on-wait');
+      try{ conn.send({type:'hello', name:oMyName, ready:oMyReady}); }catch(e){}
+      setTimeout(()=>{ try{ conn.send({type:'hello', name:oMyName, ready:oMyReady}); }catch(e){} }, 400);
+    };
+    if(conn.open) onOpenHandler();
+    else conn.on('open', onOpenHandler);
+  });
+}
+
+function onSetReady(){
+  if(!navigator.onLine){ onEnsureOnline(); return; }
+  if(!oConn || !oConn.open){
+    alert('Not connected to opponent yet! Please wait a moment or rejoin the room.');
+    return;
+  }
+  if(oIsP1) oMyName=document.getElementById('on-p1-name').value.trim()||oMyName;
+  else oMyName=document.getElementById('on-p2-name').value.trim()||oMyName;
+
+  oMyReady=true;
+  onUpdateLobbyUI();
+  onSendAction({type:'ready', name:oMyName});
+  setTimeout(()=>onSendAction({type:'ready', name:oMyName}), 250);
+
+  if(oMyReady && oOppReady && !oStartSent){
+    onTriggerMatchStart();
+  }
+}
+
+function onStartMatch(){
+  if(!navigator.onLine){ onEnsureOnline(); return; }
+  if(oPingInt){ clearInterval(oPingInt); oPingInt=null; }
+  launchFight({mode:'online', diff:'medium', pName:oMyName, aName:oOppName});
+}
+
+function onLeave(){
+  oMyReady=false; oOppReady=false; oStartSent=false;
+  if(oPingInt){ clearInterval(oPingInt); oPingInt=null; }
+  if(oConnectTimeout){ clearTimeout(oConnectTimeout); oConnectTimeout=null; }
+  if(oConn){try{oConn.close();}catch(e){} oConn=null;}
+  if(oP){try{oP.destroy();}catch(e){} oP=null;}
+}
+</script>
+</body>
+</html>
