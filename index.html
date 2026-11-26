@@ -3207,16 +3207,30 @@ document.addEventListener('keyup',e=>{
 window.addEventListener('resize',()=>{ if(S3.ready) init3DScene(); });
 
 // ═══════════════════════════════════════
-// ONLINE MODE (INTERNET MANDATORY — STRICT CHECK)
+// ONLINE MODE (FIXED: RELIABLE CONNECTION, HEARTBEAT, STUN & SYNC)
 // ═══════════════════════════════════════
-let oP=null,oConn=null,oIsP1=false,oMyCode='',oMyName='',oOppName='Opponent',oMyReady=false,oOppReady=false,oLibReady=false;
+let oP=null, oConn=null, oIsP1=false, oMyCode='', oMyName='', oOppName='Opponent';
+let oMyReady=false, oOppReady=false, oLibReady=false;
+let oPingInt=null, oConnectTimeout=null, oStartSent=false;
+
+const PEER_CFG = {
+  debug: 1,
+  config: {
+    iceServers: [
+      { urls: 'stun:stun.l.google.com:19302' },
+      { urls: 'stun:stun1.l.google.com:19302' },
+      { urls: 'stun:stun2.l.google.com:19302' },
+      { urls: 'stun:stun.services.mozilla.com' }
+    ]
+  }
+};
 
 function openOnlineMenu(){
   goScr('scr-online');
 }
 
-function onStatus(msg,st){
-  const d=document.getElementById('on-cdot'),t=document.getElementById('on-status-txt');
+function onStatus(msg, st){
+  const d=document.getElementById('on-cdot'), t=document.getElementById('on-status-txt');
   if(t) t.textContent=msg;
   if(d) d.className='on-cdot'+(st==='on'?' on':st==='off'?' off':'');
 }
@@ -3242,7 +3256,7 @@ function onInitLib(){
   } else {
     oLibReady=false;
     onStatus('Connecting to online server...','');
-    loadExtScript('https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.4/peerjs.min.js', ok => {
+    loadExtScript('https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js', ok => {
       if(ok && typeof Peer !== 'undefined' && navigator.onLine){
         oLibReady=true;
         onStatus('Connected — choose Create or Join.','on');
@@ -3274,40 +3288,111 @@ function onEnsureOnline(){
 
 function onGoJoinScreen(){
   if(!onEnsureOnline()) return;
+  document.getElementById('on-join-err').textContent='';
   goScr('scr-on-join');
 }
 
-function onRandCode(){const ch='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let c='';for(let i=0;i<6;i++)c+=ch[Math.floor(Math.random()*ch.length)];return c.toLowerCase();}
+function onRandCode(){
+  const ch='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let c='';
+  for(let i=0;i<6;i++) c+=ch[Math.floor(Math.random()*ch.length)];
+  return c.toLowerCase();
+}
+
 function onCopyCode(){
   const c=document.getElementById('on-code-box').textContent;
-  if(navigator.clipboard) navigator.clipboard.writeText(c);
+  if(navigator.clipboard) navigator.clipboard.writeText(c).catch(()=>{});
   const b=document.getElementById('on-copy-btn');
   if(b){ b.textContent='✓ Copied!'; setTimeout(()=>b.textContent='📋 Copy code',1500); }
 }
 
+function onUpdateLobbyUI(){
+  if(oIsP1){
+    const p1El=document.getElementById('on-p1-slot');
+    const p2El=document.getElementById('on-p2-slot');
+    const p2Dot=document.getElementById('on-p2-dot');
+    const btn=document.getElementById('on-p1-ready-btn');
+    const st=document.getElementById('on-create-st');
+    if(p1El) p1El.textContent=oMyName + (oMyReady ? ' (YOU — READY ✓)' : ' (you)');
+    if(oConn && oConn.open){
+      if(p2Dot) p2Dot.className='on-dot ok';
+      if(p2El) p2El.textContent=oOppName + (oOppReady ? ' (READY ✓)' : ' (connected)');
+      if(btn){
+        btn.disabled=oMyReady;
+        btn.textContent=oMyReady ? 'Ready ✓ — waiting for '+oOppName+'...' : "I'm ready!";
+      }
+      if(st){
+        if(oMyReady && !oOppReady) st.textContent='Waiting for '+oOppName+' to press Ready...';
+        else if(!oMyReady && oOppReady) st.textContent=oOppName+' is READY! Press "I\'m ready!" to start!';
+        else if(!oMyReady && !oOppReady) st.textContent='Both players connected! Press "I\'m ready!"';
+      }
+    }
+  } else {
+    const w1=document.getElementById('on-w-p1');
+    const w2=document.getElementById('on-w-p2');
+    const btn=document.getElementById('on-wait-btn');
+    const st=document.getElementById('on-wait-st');
+    if(w1) w1.textContent=oOppName + (oOppReady ? ' (READY ✓)' : ' (host)');
+    if(w2) w2.textContent=oMyName + (oMyReady ? ' (YOU — READY ✓)' : ' (you)');
+    if(btn){
+      btn.disabled=oMyReady;
+      btn.textContent=oMyReady ? 'Ready ✓ — waiting for '+oOppName+'...' : "I'm ready!";
+    }
+    if(st){
+      if(oMyReady && !oOppReady) st.textContent='Waiting for '+oOppName+' to press Ready...';
+      else if(!oMyReady && oOppReady) st.textContent=oOppName+' is READY! Press "I\'m ready!" to start!';
+      else if(!oMyReady && !oOppReady) st.textContent='Connected to room! Press "I\'m ready!"';
+    }
+  }
+}
+
 function onBindConn(conn){
   oConn=conn;
+  if(oPingInt) clearInterval(oPingInt);
+  oPingInt=setInterval(()=>{
+    if(oConn && oConn.open){
+      try{ oConn.send({type:'ping', name:oMyName, ready:oMyReady}); }catch(e){}
+    }
+  }, 1500);
+
   oConn.on('data', data=>{
-    if(!data||typeof data!=='object') return;
-    if(data.type==='hello'){
-      oOppName = data.name || 'Opponent';
-      if(oIsP1){
-        document.getElementById('on-p2-slot').textContent=oOppName+' (connected)';
-        document.getElementById('on-p2-dot').className='on-dot ok';
-        document.getElementById('on-p1-ready-btn').disabled=false;
-        document.getElementById('on-p1-ready-btn').textContent="I'm ready!";
-      } else {
-        document.getElementById('on-w-p1').textContent=oOppName+' (host)';
+    if(!data || typeof data!=='object') return;
+
+    if(data.type==='hello' || data.type==='ping'){
+      if(data.name) oOppName = data.name;
+      if(typeof data.ready==='boolean' && data.ready && !oOppReady){
+        oOppReady = true;
+      }
+      onUpdateLobbyUI();
+      if(data.type==='hello'){
+        try{ oConn.send({type:'hello_ack', name:oMyName, ready:oMyReady}); }catch(e){}
+      }
+      if(oMyReady && oOppReady && !oStartSent){
+        onTriggerMatchStart();
+      }
+    }
+    else if(data.type==='hello_ack'){
+      if(data.name) oOppName = data.name;
+      if(typeof data.ready==='boolean') oOppReady = data.ready;
+      onUpdateLobbyUI();
+      if(oMyReady && oOppReady && !oStartSent){
+        onTriggerMatchStart();
       }
     }
     else if(data.type==='ready'){
-      oOppReady=true;
-      const stEl=document.getElementById(oIsP1?'on-create-st':'on-wait-st');
-      if(stEl) stEl.textContent=oOppName+' is ready!';
-      if(oMyReady && oOppReady) onStartMatch();
+      if(data.name) oOppName = data.name;
+      oOppReady = true;
+      onUpdateLobbyUI();
+      if(oMyReady && oOppReady && !oStartSent){
+        onTriggerMatchStart();
+      }
     }
     else if(data.type==='start'){
-      onStartMatch();
+      if(data.name) oOppName = data.name;
+      if(!oStartSent){
+        oStartSent = true;
+        onStartMatch();
+      }
     }
     else if(data.type==='pos' && F && F.running){
       F.p2.x = data.x;
@@ -3338,12 +3423,18 @@ function onBindConn(conn){
       fEndFight(false, data.method || 'Submission');
     }
   });
+
   oConn.on('close',()=>{
+    if(oPingInt){ clearInterval(oPingInt); oPingInt=null; }
     if(F && F.running){
       fEndFight(true, 'Opponent disconnected');
     } else {
-      onStatus('Connection closed.','off');
+      onStatus('Opponent disconnected.','off');
     }
+  });
+
+  oConn.on('error', err=>{
+    console.warn('Conn error:', err);
   });
 }
 
@@ -3353,10 +3444,18 @@ function onSendAction(payload){
   }
 }
 
+function onTriggerMatchStart(){
+  if(oStartSent) return;
+  oStartSent = true;
+  onSendAction({type:'start', name:oMyName});
+  setTimeout(()=>onSendAction({type:'start', name:oMyName}), 150);
+  onStartMatch();
+}
+
 async function onGoCreate(){
   if(!onEnsureOnline()) return;
   onLeave();
-  oIsP1=true; oMyReady=false; oOppReady=false;
+  oIsP1=true; oMyReady=false; oOppReady=false; oStartSent=false;
   oMyName=document.getElementById('on-p1-name').value.trim()||'Player 1';
   oMyCode=onRandCode();
   document.getElementById('on-code-box').textContent=oMyCode.toUpperCase();
@@ -3365,16 +3464,25 @@ async function onGoCreate(){
   document.getElementById('on-p2-dot').className='on-dot';
   document.getElementById('on-p1-ready-btn').disabled=true;
   document.getElementById('on-p1-ready-btn').textContent='Waiting for opponent...';
+  document.getElementById('on-create-st').textContent='Opening room...';
   goScr('scr-on-create');
 
-  oP=new Peer('bjjtry-'+oMyCode);
-  oP.on('open',()=>{ document.getElementById('on-create-st').textContent='Room open — waiting for opponent...'; });
-  oP.on('error',err=>{ document.getElementById('on-create-st').textContent='Network error: '+err.type; });
+  oP=new Peer('bjjtry-'+oMyCode, PEER_CFG);
+  oP.on('open',()=>{
+    document.getElementById('on-create-st').textContent='Room open — share code with your friend!';
+  });
+  oP.on('error',err=>{
+    document.getElementById('on-create-st').textContent='Network error: '+err.type+' (try creating again)';
+  });
   oP.on('connection',conn=>{
     onBindConn(conn);
-    conn.on('open',()=>{
-      conn.send({type:'hello', name:oMyName});
-    });
+    const onOpenHandler = ()=>{
+      oMyName=document.getElementById('on-p1-name').value.trim()||oMyName;
+      onUpdateLobbyUI();
+      try{ conn.send({type:'hello', name:oMyName, ready:oMyReady}); }catch(e){}
+    };
+    if(conn.open) onOpenHandler();
+    else conn.on('open', onOpenHandler);
   });
 }
 
@@ -3383,44 +3491,72 @@ async function onJoinRoom(){
   const raw=document.getElementById('on-join-code').value.trim().toLowerCase();
   const errEl=document.getElementById('on-join-err');
   if(raw.length!==6){ errEl.textContent='Please enter a 6-character code.'; return; }
-  errEl.textContent='Connecting...';
+  errEl.textContent='Connecting to room '+raw.toUpperCase()+'...';
   onLeave();
-  oIsP1=false; oMyReady=false; oOppReady=false;
+  oIsP1=false; oMyReady=false; oOppReady=false; oStartSent=false;
   oMyName=document.getElementById('on-p2-name').value.trim()||'Player 2';
 
-  oP=new Peer();
-  oP.on('error',err=>{ errEl.textContent='Could not connect ('+err.type+'). Check code!'; });
+  oP=new Peer(PEER_CFG);
+  oConnectTimeout=setTimeout(()=>{
+    if(!oConn || !oConn.open){
+      errEl.textContent='Connection timed out. Make sure your friend has the Create Room screen open and check the code!';
+    }
+  }, 12000);
+
+  oP.on('error',err=>{
+    if(oConnectTimeout){ clearTimeout(oConnectTimeout); oConnectTimeout=null; }
+    if(err.type==='peer-unavailable'){
+      errEl.textContent='Room not found! Check the 6-letter code or ask your friend to keep the room open.';
+    } else {
+      errEl.textContent='Connection error ('+err.type+'). Try again!';
+    }
+  });
+
   oP.on('open',()=>{
-    const conn=oP.connect('bjjtry-'+raw);
+    const conn=oP.connect('bjjtry-'+raw, {reliable:true, serialization:'json'});
     onBindConn(conn);
-    conn.on('open',()=>{
+    const onOpenHandler = ()=>{
+      if(oConnectTimeout){ clearTimeout(oConnectTimeout); oConnectTimeout=null; }
       errEl.textContent='';
-      document.getElementById('on-w-p2').textContent=oMyName+' (you)';
-      conn.send({type:'hello', name:oMyName});
+      onUpdateLobbyUI();
       goScr('scr-on-wait');
-    });
+      try{ conn.send({type:'hello', name:oMyName, ready:oMyReady}); }catch(e){}
+      setTimeout(()=>{ try{ conn.send({type:'hello', name:oMyName, ready:oMyReady}); }catch(e){} }, 400);
+    };
+    if(conn.open) onOpenHandler();
+    else conn.on('open', onOpenHandler);
   });
 }
 
 function onSetReady(){
   if(!navigator.onLine){ onEnsureOnline(); return; }
+  if(!oConn || !oConn.open){
+    alert('Not connected to opponent yet! Please wait a moment or rejoin the room.');
+    return;
+  }
+  if(oIsP1) oMyName=document.getElementById('on-p1-name').value.trim()||oMyName;
+  else oMyName=document.getElementById('on-p2-name').value.trim()||oMyName;
+
   oMyReady=true;
-  const btn=document.getElementById(oIsP1?'on-p1-ready-btn':'on-wait-btn');
-  if(btn){ btn.disabled=true; btn.textContent='Ready ✓ (waiting...)'; }
-  onSendAction({type:'ready'});
-  if(oMyReady && oOppReady){
-    onSendAction({type:'start'});
-    onStartMatch();
+  onUpdateLobbyUI();
+  onSendAction({type:'ready', name:oMyName});
+  setTimeout(()=>onSendAction({type:'ready', name:oMyName}), 250);
+
+  if(oMyReady && oOppReady && !oStartSent){
+    onTriggerMatchStart();
   }
 }
 
 function onStartMatch(){
   if(!navigator.onLine){ onEnsureOnline(); return; }
+  if(oPingInt){ clearInterval(oPingInt); oPingInt=null; }
   launchFight({mode:'online', diff:'medium', pName:oMyName, aName:oOppName});
 }
 
 function onLeave(){
-  oMyReady=false; oOppReady=false;
+  oMyReady=false; oOppReady=false; oStartSent=false;
+  if(oPingInt){ clearInterval(oPingInt); oPingInt=null; }
+  if(oConnectTimeout){ clearTimeout(oConnectTimeout); oConnectTimeout=null; }
   if(oConn){try{oConn.close();}catch(e){} oConn=null;}
   if(oP){try{oP.destroy();}catch(e){} oP=null;}
 }
