@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<title>BJJ: Try Game — Shadow 3D (Offline Ready)</title>
+<title>BJJ: Try Game — Shadow 3D</title>
 <style>
 :root{
   --g:#1D9E75;--r:#E24B4A;--am:#EAB308;--bl:#2563EB;--pu:#7F6FDD;
@@ -17,7 +17,7 @@
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 html,body{background:var(--bg);color:var(--tx);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:14px;line-height:1.5;min-height:100%;overflow-x:hidden;}
 body{padding-top:var(--st);padding-bottom:calc(var(--sb) + 8px);}
-#app{max-width:460px;margin:0 auto;padding:0 max(10px,env(safe-area-inset-left,0px)) 24px;}
+#app{max-width:460px;margin:0 auto;padding:0 max(10px,env(safe-area-inset-left,0px)) 24px;transition:max-width .2s;}
 .scr{display:none;padding-top:10px;}.scr.on{display:block;}
 h2{font-size:17px;font-weight:600;margin-bottom:12px;}
 .mu{color:var(--tx2);}.sm{font-size:12px;color:var(--tx2);}
@@ -39,9 +39,9 @@ input[type=text],select{width:100%;background:var(--bg3);border:1px solid var(--
 input[type=text]:focus,select:focus{border-color:var(--g);}
 select option{background:var(--bg3);}
 
-.ttl{font-size:26px;font-weight:700;text-align:center;letter-spacing:-0.5px;padding:20px 0 2px;}
-.sub-ttl{font-size:11px;color:var(--tx3);text-align:center;letter-spacing:3px;margin-bottom:14px;}
-.net-pill{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;font-size:11px;font-weight:600;background:var(--bg2);border:1px solid var(--bo);margin:0 auto 14px;}
+.ttl{font-size:26px;font-weight:700;text-align:center;letter-spacing:-0.5px;padding:16px 0 2px;}
+.sub-ttl{font-size:11px;color:var(--tx3);text-align:center;letter-spacing:3px;margin-bottom:12px;}
+.net-pill{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;font-size:11px;font-weight:600;background:var(--bg2);border:1px solid var(--bo);margin:0 auto 12px;}
 .net-dot{width:7px;height:7px;border-radius:50%;background:var(--g);}
 .net-dot.off{background:var(--am);}
 
@@ -50,6 +50,16 @@ select option{background:var(--bg3);}
 .mi-icon{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0;}
 .mi-title{font-size:15px;font-weight:600;display:flex;align-items:center;gap:6px;}
 .mi-desc{font-size:12px;color:var(--tx2);}
+
+/* SETUP SELECTION CARDS */
+.sel-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:14px 0;}
+.sel-grid.three{grid-template-columns:repeat(3,1fr);}
+.sel-card{background:var(--bg2);border:2px solid var(--bo2);border-radius:14px;padding:18px 10px;text-align:center;cursor:pointer;transition:all .15s;}
+.sel-card:hover{background:var(--bg3);}
+.sel-card.active{border-color:var(--g);background:rgba(29,158,117,0.16);box-shadow:0 0 18px rgba(29,158,117,0.28);}
+.sel-card-icon{font-size:30px;margin-bottom:6px;}
+.sel-card-title{font-size:15px;font-weight:700;}
+.sel-card-sub{font-size:11px;color:var(--tx2);margin-top:3px;}
 
 .nat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-bottom:12px;}
 .nat-btn{padding:10px 8px;border-radius:var(--rad);border:1px solid var(--bo);background:var(--bg2);color:var(--tx);font-size:13px;cursor:pointer;text-align:center;transition:all .12s;}
@@ -296,75 +306,176 @@ select option{background:var(--bg3);}
 #on-status-bar{font-size:12px;color:var(--tx2);text-align:center;margin-bottom:8px;padding:6px;background:var(--bg2);border-radius:var(--rad);border:1px solid var(--bo);}
 .on-cdot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--am);margin-right:5px;vertical-align:middle;}
 .on-cdot.on{background:var(--g);}.on-cdot.off{background:var(--r);}
+
+/* ═══════════════════════════════════════
+   HORIZONTAL / LANDSCAPE MODE LAYOUT
+   ═══════════════════════════════════════ */
+body.is-landscape #app{
+  max-width:1020px;
+  padding:0 16px 14px;
+}
+body.is-landscape #scr-menu .menu-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+}
+body.is-landscape #scr-menu .mi{margin-bottom:0;}
+body.is-landscape .cnav{grid-template-columns:repeat(3,1fr);}
+body.is-landscape .nat-grid{grid-template-columns:repeat(4,1fr);}
+
+/* Landscape Fight Screen: Spacious Left Arena + Right Controls */
+body.is-landscape #scr-fight{padding-top:4px;}
+body.is-landscape .fight-landscape-grid{
+  display:grid;
+  grid-template-columns:1.35fr 1fr;
+  gap:12px;
+  align-items:start;
+}
+body.is-landscape #fight-arena-wrap{
+  padding-bottom:62%;
+  margin-bottom:0;
+}
+body.is-landscape .fight-right-col{
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+}
+body.is-landscape #fight-log{
+  min-height:24px;
+  padding:4px 8px;
+  margin-bottom:2px;
+  font-size:11px;
+}
+body.is-landscape #arcade-controls{
+  margin-top:0;
+  padding:8px;
+}
+body.is-landscape #stick-base{
+  width:110px;height:110px;
+}
+body.is-landscape .act-btn{
+  min-height:48px;
+}
+body.is-landscape #tut-banner{
+  max-width:620px;
+  bottom:8px;
+  padding:10px 14px;
+}
 </style>
 </head>
 <body>
 <div id="fps-counter">60 FPS</div>
 <div id="app">
 
-<!-- MAIN MENU -->
-<div id="scr-menu" class="scr on">
+<!-- STEP 1: LANGUAGE SELECTION (FRANÇAIS / ENGLISH / العربية - NO EMOJIS) -->
+<div id="scr-lang" class="scr on">
   <div class="ttl">BJJ: Try Game</div>
   <div class="sub-ttl">SHADOW 3D GRAPPLING</div>
+  <div class="cd" style="margin-top:8px;">
+    <h2 style="text-align:center;margin-bottom:4px;">Langue / Language / اللغة</h2>
+    <div class="sm mu" style="text-align:center;">Choisissez votre langue / Choose language / اختر لغتك</div>
+    <div class="sel-grid three">
+      <div class="sel-card active" id="opt-lang-fr" onclick="pickLang('fr')">
+        <div class="sel-card-title" style="padding:10px 0;">Français</div>
+      </div>
+      <div class="sel-card" id="opt-lang-en" onclick="pickLang('en')">
+        <div class="sel-card-title" style="padding:10px 0;">English</div>
+      </div>
+      <div class="sel-card" id="opt-lang-ar" onclick="pickLang('ar')">
+        <div class="sel-card-title" style="padding:10px 0;">العربية</div>
+      </div>
+    </div>
+    <button class="btn ac" onclick="confirmLang()" id="btn-confirm-lang">Confirmer / Confirm / تأكيد</button>
+  </div>
+</div>
+
+<!-- STEP 2: ORIENTATION SELECTION (PORTRAIT vs HORIZONTAL - TRANSLATED & NO EMOJIS) -->
+<div id="scr-orient" class="scr">
+  <button class="bk" onclick="goScr('scr-lang')" data-i18n="bk">← Back</button>
+  <div class="ttl" style="padding-top:6px;">BJJ: Try Game</div>
+  <div class="cd" style="margin-top:8px;">
+    <h2 style="text-align:center;margin-bottom:4px;" data-i18n="orient_title">Screen Orientation</h2>
+    <div class="sm mu" style="text-align:center;" data-i18n="orient_desc">Choose Portrait or Horizontal layout before starting</div>
+    <div class="sel-grid">
+      <div class="sel-card active" id="opt-portrait" onclick="pickOrient('portrait')">
+        <div class="sel-card-title" style="padding:6px 0;" data-i18n="orient_port">Portrait</div>
+        <div class="sel-card-sub" data-i18n="orient_port_d">Vertical mobile view</div>
+      </div>
+      <div class="sel-card" id="opt-landscape" onclick="pickOrient('landscape')">
+        <div class="sel-card-title" style="padding:6px 0;" data-i18n="orient_land">Horizontal</div>
+        <div class="sel-card-sub" data-i18n="orient_land_d">Wide arena &amp; side controls</div>
+      </div>
+    </div>
+    <button class="btn ac" onclick="confirmOrient()" data-i18n="orient_confirm">Confirm</button>
+  </div>
+</div>
+
+<!-- MAIN MENU -->
+<div id="scr-menu" class="scr">
+  <div class="ttl">BJJ: Try Game</div>
+  <div class="sub-ttl" data-i18n="sub_ttl">SHADOW 3D GRAPPLING</div>
   <div style="text-align:center;">
-    <div class="net-pill"><span class="net-dot" id="menu-net-dot"></span><span id="menu-net-txt">Offline Ready (Quick &amp; Career 100% Offline)</span></div>
+    <div class="net-pill"><span class="net-dot" id="menu-net-dot"></span><span id="menu-net-txt">Offline Ready</span></div>
   </div>
-  <div class="mi" onclick="goScr('scr-diff')">
-    <div class="mi-icon" style="background:rgba(29,158,117,0.2);">🥋</div>
-    <div>
-      <div class="mi-title">Quick match <span class="bdg gn">OFFLINE</span></div>
-      <div class="mi-desc">Shadow Dojo — Works 100% without internet</div>
+  <div class="menu-grid">
+    <div class="mi" onclick="goScr('scr-diff')">
+      <div class="mi-icon" style="background:rgba(29,158,117,0.2);">🥋</div>
+      <div>
+        <div class="mi-title"><span data-i18n="m_quick">Quick match</span> <span class="bdg gn" data-i18n="b_offline">OFFLINE</span></div>
+        <div class="mi-desc" data-i18n="m_quick_d">Shadow Dojo — Works 100% without internet</div>
+      </div>
+    </div>
+    <div class="mi" onclick="initCareer()">
+      <div class="mi-icon" style="background:rgba(24,95,165,0.2);">🏆</div>
+      <div>
+        <div class="mi-title"><span data-i18n="m_career">Career mode</span> <span class="bdg gn" data-i18n="b_offline">OFFLINE</span></div>
+        <div class="mi-desc" data-i18n="m_career_d">Build your UBJJF legacy &amp; win the World Belt</div>
+      </div>
+    </div>
+    <div class="mi" onclick="openOnlineMenu()">
+      <div class="mi-icon" style="background:rgba(127,119,221,0.2);">🌐</div>
+      <div>
+        <div class="mi-title"><span data-i18n="m_online">Online mode</span> <span class="bdg am" data-i18n="b_online">ONLINE</span></div>
+        <div class="mi-desc" data-i18n="m_online_d">Fight a friend in real time</div>
+      </div>
+    </div>
+    <div class="mi" onclick="openCredits(false)">
+      <div class="mi-icon" style="background:rgba(234,179,8,0.18);">📜</div>
+      <div><div class="mi-title" data-i18n="m_credits">Credits</div><div class="mi-desc" data-i18n="m_credits_d">Authors, Shadow Engine &amp; concept</div></div>
     </div>
   </div>
-  <div class="mi" onclick="initCareer()">
-    <div class="mi-icon" style="background:rgba(24,95,165,0.2);">🏆</div>
-    <div>
-      <div class="mi-title">Career mode <span class="bdg gn">OFFLINE</span></div>
-      <div class="mi-desc">Build your UBJJF legacy &amp; win the World Belt offline</div>
-    </div>
-  </div>
-  <div class="mi" onclick="openOnlineMenu()">
-    <div class="mi-icon" style="background:rgba(127,119,221,0.2);">🌐</div>
-    <div>
-      <div class="mi-title">Online mode <span class="bdg am">INTERNET REQUIRED</span></div>
-      <div class="mi-desc">Fight a friend in real time (requires connection)</div>
-    </div>
-  </div>
-  <div class="mi" onclick="openCredits(false)">
-    <div class="mi-icon" style="background:rgba(234,179,8,0.18);">📜</div>
-    <div><div class="mi-title">Credits</div><div class="mi-desc">Authors, Shadow Engine &amp; concept</div></div>
-  </div>
-  <div style="margin-top:12px;text-align:center;">
+  <div style="margin-top:12px;display:flex;justify-content:center;gap:8px;flex-wrap:wrap;">
+    <button class="btn sm-btn" onclick="goScr('scr-lang')" style="font-size:11px;color:var(--tx2);border-color:var(--bo2);" data-i18n="btn_settings">⚙️ Screen &amp; Language</button>
     <button class="btn sm-btn" onclick="toggleFPS()" id="fps-toggle-btn" style="font-size:11px;color:var(--tx3);border-color:var(--bo);">📊 Show FPS</button>
   </div>
 </div>
 
 <!-- QUICK DIFF -->
 <div id="scr-diff" class="scr">
-  <button class="bk" onclick="goScr('scr-menu')">← Back</button>
-  <h2>Quick match (Offline)</h2>
-  <div class="sm mu" style="margin-bottom:8px;">Choose difficulty</div>
-  <button class="btn" style="border-color:var(--g);color:var(--g);margin-bottom:8px;" onclick="launchFight({mode:'quick',diff:'easy'})">Easy (White Belt AI)</button>
-  <button class="btn" style="border-color:var(--am);color:var(--am);margin-bottom:8px;" onclick="launchFight({mode:'quick',diff:'medium'})">Medium (Purple Belt AI)</button>
-  <button class="btn" style="border-color:var(--r);color:var(--r);margin-bottom:8px;" onclick="launchFight({mode:'quick',diff:'hard'})">Hard (Black Belt AI)</button>
+  <button class="bk" onclick="goScr('scr-menu')" data-i18n="bk">← Back</button>
+  <h2 data-i18n="qm_title">Quick match (Offline)</h2>
+  <div class="sm mu" style="margin-bottom:8px;" data-i18n="qm_choose">Choose difficulty</div>
+  <button class="btn" style="border-color:var(--g);color:var(--g);margin-bottom:8px;" onclick="launchFight({mode:'quick',diff:'easy'})" data-i18n="diff_easy">Easy (White Belt AI)</button>
+  <button class="btn" style="border-color:var(--am);color:var(--am);margin-bottom:8px;" onclick="launchFight({mode:'quick',diff:'medium'})" data-i18n="diff_med">Medium (Purple Belt AI)</button>
+  <button class="btn" style="border-color:var(--r);color:var(--r);margin-bottom:8px;" onclick="launchFight({mode:'quick',diff:'hard'})" data-i18n="diff_hard">Hard (Black Belt AI)</button>
 </div>
 
 <!-- CAREER SETUP: NAT -->
 <div id="scr-nat" class="scr">
-  <button class="bk" onclick="goScr('scr-menu')">← Back</button>
-  <h2>Choose your nationality</h2>
+  <button class="bk" onclick="goScr('scr-menu')" data-i18n="bk">← Back</button>
+  <h2 data-i18n="c_nat">Choose your nationality</h2>
   <div class="nat-grid" id="nat-grid"></div>
-  <button class="btn ac" onclick="goToName()">Continue →</button>
+  <button class="btn ac" onclick="goToName()" data-i18n="cont">Continue →</button>
 </div>
 
 <!-- CAREER SETUP: NAME -->
 <div id="scr-cname" class="scr">
-  <button class="bk" onclick="goScr('scr-nat')">← Back</button>
-  <h2>Your fighter name</h2>
+  <button class="bk" onclick="goScr('scr-nat')" data-i18n="bk">← Back</button>
+  <h2 data-i18n="c_fname">Your fighter name</h2>
   <div class="cd" style="margin-bottom:12px;">
-    <div class="sm mu" style="margin-bottom:6px;">Fighter name</div>
+    <div class="sm mu" style="margin-bottom:6px;" data-i18n="c_fname_lbl">Fighter name</div>
     <input type="text" id="c-name-inp" placeholder="e.g. Alex Rodrigues" maxlength="28">
-    <div style="margin-top:10px;" class="sm mu">Weight class</div>
+    <div style="margin-top:10px;" class="sm mu" data-i18n="c_wc">Weight class</div>
     <select id="c-wc-sel" style="margin-top:5px;">
       <option value="Lightweight">Lightweight (up to 70 kg)</option>
       <option value="Welterweight">Welterweight (up to 77 kg)</option>
@@ -373,22 +484,22 @@ select option{background:var(--bg3);}
       <option value="Heavyweight">Heavyweight (93 kg+)</option>
     </select>
   </div>
-  <button class="btn ac" onclick="goToAttrs()">Continue →</button>
+  <button class="btn ac" onclick="goToAttrs()" data-i18n="cont">Continue →</button>
 </div>
 
 <!-- CAREER SETUP: ATTRS -->
 <div id="scr-attrs" class="scr">
-  <button class="bk" onclick="goScr('scr-cname')">← Back</button>
-  <h2>Build your style</h2>
-  <div style="text-align:right;margin-bottom:9px;" class="sm">Points left: <span id="pts-left" style="font-weight:700;color:var(--g);">10</span></div>
+  <button class="bk" onclick="goScr('scr-cname')" data-i18n="bk">← Back</button>
+  <h2 data-i18n="c_style">Build your style</h2>
+  <div style="text-align:right;margin-bottom:9px;" class="sm"><span data-i18n="pts_left">Points left:</span> <span id="pts-left" style="font-weight:700;color:var(--g);">10</span></div>
   <div id="attrs-wrap"></div>
-  <button class="btn ac" onclick="startCareer()">Start career →</button>
+  <button class="btn ac" onclick="startCareer()" data-i18n="c_start">Start career →</button>
 </div>
 
 <!-- CAREER HUB -->
 <div id="scr-career" class="scr">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-    <button class="bk" style="padding:0;" onclick="goScr('scr-menu')">← Main menu</button>
+    <button class="bk" style="padding:0;" onclick="goScr('scr-menu')" data-i18n="bk_menu">← Main menu</button>
     <div style="display:flex;gap:6px;">
       <button class="btn sm-btn" style="font-size:11px;border-color:var(--am);color:var(--am);" onclick="startCareerTutorial(true)">🎓 Tutorial</button>
       <button class="btn sm-btn" style="font-size:11px;border-color:var(--bo2);color:var(--tx2);" onclick="resetCareerConfirm()">↺ New</button>
@@ -407,16 +518,16 @@ select option{background:var(--bg3);}
     </div>
   </div>
   <div style="margin-bottom:10px;">
-    <div class="sm mu" style="margin-bottom:4px;">Energy</div>
+    <div class="sm mu" style="margin-bottom:4px;" data-i18n="energy">Energy</div>
     <div class="e-bar"><div class="e-fill" id="ch-en-bar" style="width:100%;"></div></div>
   </div>
   <div class="cnav" id="career-nav-grid">
-    <button class="btn" id="nav-btn-schedule" onclick="goScr('scr-schedule')">📅 Schedule<div class="sm mu" style="margin-top:2px;" id="ch-day-nav">Day 1</div></button>
-    <button class="btn" id="nav-btn-gym" onclick="goScr('scr-gym')">🏋️ Gym<div class="sm mu" style="margin-top:2px;" id="ch-gym-nav">Train</div></button>
-    <button class="btn" id="nav-btn-contracts" onclick="goScr('scr-contracts')">🥊 Contracts<div class="sm mu" style="margin-top:2px;" id="ch-ct-nav">0 available</div></button>
-    <button class="btn" id="nav-btn-ranking" onclick="goScr('scr-ranking')">📊 Ranking<div class="sm mu" style="margin-top:2px;" id="ch-rk-nav">#—</div></button>
-    <button class="btn" id="nav-btn-social" onclick="goScr('scr-social')">📱 Social<div class="sm mu" style="margin-top:2px;" id="ch-soc-nav">0 fans</div></button>
-    <button class="btn" id="nav-btn-history" onclick="goScr('scr-chist')">📋 History<div class="sm mu" style="margin-top:2px;" id="ch-hist-nav">0W-0L</div></button>
+    <button class="btn" id="nav-btn-schedule" onclick="goScr('scr-schedule')">📅 <span data-i18n="nav_sch">Schedule</span><div class="sm mu" style="margin-top:2px;" id="ch-day-nav">Day 1</div></button>
+    <button class="btn" id="nav-btn-gym" onclick="goScr('scr-gym')">🏋️ <span data-i18n="nav_gym">Gym</span><div class="sm mu" style="margin-top:2px;" id="ch-gym-nav">Train</div></button>
+    <button class="btn" id="nav-btn-contracts" onclick="goScr('scr-contracts')">🥊 <span data-i18n="nav_ct">Contracts</span><div class="sm mu" style="margin-top:2px;" id="ch-ct-nav">0 available</div></button>
+    <button class="btn" id="nav-btn-ranking" onclick="goScr('scr-ranking')">📊 <span data-i18n="nav_rk">Ranking</span><div class="sm mu" style="margin-top:2px;" id="ch-rk-nav">#—</div></button>
+    <button class="btn" id="nav-btn-social" onclick="goScr('scr-social')">📱 <span data-i18n="nav_soc">Social</span><div class="sm mu" style="margin-top:2px;" id="ch-soc-nav">0 fans</div></button>
+    <button class="btn" id="nav-btn-history" onclick="goScr('scr-chist')">📋 <span data-i18n="nav_hist">History</span><div class="sm mu" style="margin-top:2px;" id="ch-hist-nav">0W-0L</div></button>
   </div>
   <div id="ch-belt-wrap"></div>
   <div id="ch-retire-wrap"></div>
@@ -429,14 +540,14 @@ select option{background:var(--bg3);}
 
 <!-- SCHEDULE -->
 <div id="scr-schedule" class="scr">
-  <button class="bk" onclick="goScr('scr-career')">← Career hub</button>
-  <h2>Schedule</h2>
+  <button class="bk" onclick="goScr('scr-career')" data-i18n="bk_hub">← Career hub</button>
+  <h2 data-i18n="nav_sch">Schedule</h2>
   <div class="cd" style="margin-bottom:10px;">
     <div style="display:flex;justify-content:space-between;align-items:center;">
       <div><div style="font-size:15px;font-weight:600;" id="sch-day">Day 1</div><div class="sm mu" id="sch-week">Week 1</div></div>
       <div style="text-align:right;"><div style="font-size:13px;font-weight:600;" id="sch-en">Energy: 100/100</div><div class="sm mu" id="sch-ct-info">New contracts ready</div></div>
     </div>
-    <div style="margin-top:8px;"><div class="sm mu" style="margin-bottom:3px;">Energy</div>
+    <div style="margin-top:8px;"><div class="sm mu" style="margin-bottom:3px;" data-i18n="energy">Energy</div>
     <div class="e-bar" style="height:10px;"><div class="e-fill" id="sch-en-bar" style="width:100%;"></div></div></div>
   </div>
   <button class="btn" style="margin-bottom:7px;" onclick="doRest()">😴 Rest — +30 energy &nbsp;<span class="sm mu">1 day</span></button>
@@ -446,8 +557,8 @@ select option{background:var(--bg3);}
 
 <!-- GYM -->
 <div id="scr-gym" class="scr">
-  <button class="bk" onclick="goScr('scr-career')">← Career hub</button>
-  <h2>Gym</h2>
+  <button class="bk" onclick="goScr('scr-career')" data-i18n="bk_hub">← Career hub</button>
+  <h2 data-i18n="nav_gym">Gym</h2>
   <div class="cd" style="margin-bottom:10px;"><div class="sm mu" style="margin-bottom:8px;">Current stats</div><div id="gym-stats"></div></div>
   <div class="sm mu" style="margin-bottom:7px;">Each session costs 1 day and 15 energy.</div>
   <div id="gym-actions"></div>
@@ -455,30 +566,31 @@ select option{background:var(--bg3);}
 
 <!-- CONTRACTS -->
 <div id="scr-contracts" class="scr">
-  <button class="bk" onclick="goScr('scr-career')">← Career hub</button>
-  <h2>Fight contracts</h2>
+  <button class="bk" onclick="goScr('scr-career')" data-i18n="bk_hub">← Career hub</button>
+  <h2 data-i18n="nav_ct">Fight contracts</h2>
   <div class="sm mu" style="margin-bottom:10px;" id="ct-info">New contracts every 3 days.</div>
   <div id="ct-list"></div>
 </div>
 
 <!-- PRE-FIGHT -->
 <div id="scr-prefight" class="scr">
-  <button class="bk" onclick="goScr('scr-contracts')">← Contracts</button>
+  <button class="bk" onclick="goScr('scr-contracts')" data-i18n="bk">← Contracts</button>
   <h2>Fight preview</h2>
   <div class="cd" id="pf-card" style="margin-bottom:12px;"></div>
   <div class="cd" id="pf-warn" style="margin-bottom:12px;display:none;border-color:rgba(186,117,23,.5);">
     <div style="color:var(--am);font-weight:600;margin-bottom:3px;">⚠ Low energy</div>
     <div class="sm mu">Energy below 40 — you will lose 1 HP per second from fatigue during the fight.</div>
   </div>
-  <button class="btn ac" onclick="launchCareerFight()">Fight now</button>
+  <button class="btn ac" onclick="launchCareerFight()" data-i18n="fight_now">Fight now</button>
 </div>
 
-<!-- FIGHT SCREEN -->
+<!-- FIGHT SCREEN (SUPPORTS BOTH PORTRAIT & HORIZONTAL LAYOUTS) -->
 <div id="scr-fight" class="scr">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-    <button class="bk" style="padding:0;font-size:12px;" onclick="confirmQuitFight()">← Quit match</button>
-    <button class="btn sm-btn" style="padding:3px 8px;font-size:10px;border-color:var(--am);color:var(--am);" onclick="startFightTutorial()">🎓 Controls Guide</button>
+    <button class="bk" style="padding:0;font-size:12px;" onclick="confirmQuitFight()" data-i18n="quit_match">← Quit match</button>
+    <button class="btn sm-btn" style="padding:3px 8px;font-size:10px;border-color:var(--am);color:var(--am);" onclick="startFightTutorial(true)" data-i18n="ctrl_guide">🎓 Controls Guide</button>
   </div>
+
   <div class="fight-hud">
     <div class="fight-hud-s">
       <div class="fight-hud-lbl" id="f-p1-lbl">YOU</div>
@@ -494,93 +606,99 @@ select option{background:var(--bg3);}
     </div>
   </div>
 
-  <div id="fight-score-row">
-    <div class="f-sc-box"><div class="f-sc-pts" id="f-sc1">0</div><div class="f-sc-lbl" id="f-sc1-lbl">P1</div></div>
-    <div style="color:var(--tx3);font-size:12px;">pts</div>
-    <div class="f-sc-box"><div class="f-sc-pts" id="f-sc2">0</div><div class="f-sc-lbl" id="f-sc2-lbl">P2</div></div>
-  </div>
-
-  <div id="fight-fat-row">
-    <div class="sm mu" style="min-width:56px;">Stamina</div>
-    <div class="fat-bar"><div class="fat-fill" id="f-fat" style="width:100%"></div></div>
-    <div class="sm mu" style="min-width:26px;text-align:right;" id="f-fat-val">100</div>
-  </div>
-
-  <!-- SHADOW DOJO VIEWPORT (3D Three.js + Automatic 2D Offline Fallback!) -->
-  <div id="fight-arena-wrap">
-    <canvas id="fight-canvas"></canvas>
-    <div id="pos-badge">STANDING</div>
-    <div id="combo-hint">Move close &amp; use Blue / Red / Yellow</div>
-    <div id="guard-shield-badge">🛡 ACTIVE GUARD</div>
-    <div id="injury-badge">⚠ RIB INJURY</div>
-    <div id="ref-winner-banner">
-      <div id="ref-winner-pill">✋ REFEREE DECISION</div>
-    </div>
-  </div>
-
-  <div id="fight-ref"></div>
-  <div id="fight-log">Bismillah — Round 1! Approach your opponent.</div>
-
-  <!-- DEFEND GAUGE -->
-  <div id="fight-def-wrap">
-    <div id="fight-def-cd">5</div>
-    <div id="fight-def-track"><div id="fight-def-grad"></div><div id="fight-def-cur" style="left:50%"></div></div>
-    <button id="fight-def-btn" onclick="fDefend()">⚡ ESCAPE / DEFEND</button>
-    <div class="sm mu" style="text-align:center;margin-top:3px;" id="fight-def-hint">Hit when cursor is in the green zone!</div>
-  </div>
-
-  <!-- GET UP SYSTEM -->
-  <div id="getup-wrap">
-    <div id="getup-label">⬆ Bottom Position — Stand Up!</div>
-    <button id="getup-initbtn" ontouchstart="getupInit();event.preventDefault();" onmousedown="getupInit()">⬆ TECHNICAL STAND-UP</button>
-    <div id="getup-key-prompt">
-      <div id="getup-key-label">TAP THIS KEY FAST!</div>
-      <div><button id="getup-key-btn" ontouchstart="getupTap();event.preventDefault();" onmousedown="getupTap()">?</button></div>
-      <div id="getup-taps-row">0 / 0 taps</div>
-    </div>
-    <div id="getup-ai-defend">🛡 Opponent holding you down!</div>
-    <div id="getup-progress-row" style="display:none;">
-      <div id="getup-bar-bg"><div id="getup-bar-fill"></div></div>
-      <div id="getup-pct">0%</div>
-    </div>
-    <div id="getup-timer" style="display:none;">Time left: <span id="getup-cd">5</span>s</div>
-  </div>
-
-  <!-- JOYSTICK + 3 BUTTONS (YELLOW / BLUE / RED) -->
-  <div id="arcade-controls">
-    <div id="analog-zone">
-      <div id="stick-base">
-        <div id="stick-dir-lbl">MOVE</div>
-        <div id="stick-knob"></div>
+  <div class="fight-landscape-grid">
+    <div class="fight-left-col">
+      <!-- SHADOW DOJO VIEWPORT -->
+      <div id="fight-arena-wrap">
+        <canvas id="fight-canvas"></canvas>
+        <div id="pos-badge">STANDING</div>
+        <div id="combo-hint">Move close &amp; use Blue / Red / Yellow</div>
+        <div id="guard-shield-badge">🛡 ACTIVE GUARD</div>
+        <div id="injury-badge">⚠ RIB INJURY</div>
+        <div id="ref-winner-banner">
+          <div id="ref-winner-pill">✋ REFEREE DECISION</div>
+        </div>
       </div>
-      <div id="joy-outs-lbl">Outs: 0/3</div>
     </div>
 
-    <div id="action-cluster">
-      <div class="act-row">
-        <button id="btn-yellow" class="act-btn"
-          ontouchstart="pressYellow();event.preventDefault();"
-          onmousedown="pressYellow()">
-          <span class="act-btn-main">🛡 DEFEND</span>
-          <span class="act-btn-sub" id="lbl-yellow">Parry / Block (-Stam if empty)</span>
-        </button>
-        <button id="btn-blue" class="act-btn"
-          ontouchstart="pressBlue();event.preventDefault();"
-          onmousedown="pressBlue()">
-          <span class="act-btn-main">🥋 POSITION</span>
-          <span class="act-btn-sub" id="lbl-blue">Clinch / +Stick = Takedown</span>
-        </button>
+    <div class="fight-right-col">
+      <div id="fight-score-row">
+        <div class="f-sc-box"><div class="f-sc-pts" id="f-sc1">0</div><div class="f-sc-lbl" id="f-sc1-lbl">P1</div></div>
+        <div style="color:var(--tx3);font-size:12px;">pts</div>
+        <div class="f-sc-box"><div class="f-sc-pts" id="f-sc2">0</div><div class="f-sc-lbl" id="f-sc2-lbl">P2</div></div>
       </div>
-      <div class="act-row">
-        <button id="btn-red" class="act-btn"
-          ontouchstart="pressRed();event.preventDefault();"
-          onmousedown="pressRed()">
-          <span class="act-btn-main">🔥 SUBMIT</span>
-          <span class="act-btn-sub" id="lbl-red">Alone: Feint | +Stick: Sub</span>
-        </button>
+
+      <div id="fight-fat-row">
+        <div class="sm mu" style="min-width:56px;" data-i18n="stamina">Stamina</div>
+        <div class="fat-bar"><div class="fat-fill" id="f-fat" style="width:100%"></div></div>
+        <div class="sm mu" style="min-width:26px;text-align:right;" id="f-fat-val">100</div>
       </div>
-      <div id="move-preview">
-        <strong>Standing:</strong> Blue=Clinch · Blue+←=Pull Guard · Red=Feint · Red+Stick=Flying Sub
+
+      <div id="fight-ref"></div>
+      <div id="fight-log">Round 1! Approach your opponent.</div>
+
+      <!-- DEFEND GAUGE -->
+      <div id="fight-def-wrap">
+        <div id="fight-def-cd">2</div>
+        <div id="fight-def-track"><div id="fight-def-grad"></div><div id="fight-def-cur" style="left:50%"></div></div>
+        <button id="fight-def-btn" onclick="fDefend()">⚡ ESCAPE / DEFEND</button>
+        <div class="sm mu" style="text-align:center;margin-top:3px;" id="fight-def-hint">Hit when cursor is in the green zone!</div>
+      </div>
+
+      <!-- GET UP SYSTEM -->
+      <div id="getup-wrap">
+        <div id="getup-label">⬆ Bottom Position — Stand Up!</div>
+        <button id="getup-initbtn" ontouchstart="getupInit();event.preventDefault();" onmousedown="getupInit()">⬆ TECHNICAL STAND-UP</button>
+        <div id="getup-key-prompt">
+          <div id="getup-key-label">TAP THIS KEY FAST!</div>
+          <div><button id="getup-key-btn" ontouchstart="getupTap();event.preventDefault();" onmousedown="getupTap()">?</button></div>
+          <div id="getup-taps-row">0 / 0 taps</div>
+        </div>
+        <div id="getup-ai-defend">🛡 Opponent holding you down!</div>
+        <div id="getup-progress-row" style="display:none;">
+          <div id="getup-bar-bg"><div id="getup-bar-fill"></div></div>
+          <div id="getup-pct">0%</div>
+        </div>
+        <div id="getup-timer" style="display:none;">Time left: <span id="getup-cd">5</span>s</div>
+      </div>
+
+      <!-- JOYSTICK + 3 BUTTONS (YELLOW / BLUE / RED) -->
+      <div id="arcade-controls">
+        <div id="analog-zone">
+          <div id="stick-base">
+            <div id="stick-dir-lbl">MOVE</div>
+            <div id="stick-knob"></div>
+          </div>
+          <div id="joy-outs-lbl">Outs: 0/3</div>
+        </div>
+
+        <div id="action-cluster">
+          <div class="act-row">
+            <button id="btn-yellow" class="act-btn"
+              ontouchstart="pressYellow();event.preventDefault();"
+              onmousedown="pressYellow()">
+              <span class="act-btn-main" data-i18n="btn_def">🛡 DEFEND</span>
+              <span class="act-btn-sub" id="lbl-yellow">Parry / Block</span>
+            </button>
+            <button id="btn-blue" class="act-btn"
+              ontouchstart="pressBlue();event.preventDefault();"
+              onmousedown="pressBlue()">
+              <span class="act-btn-main" data-i18n="btn_pos">🥋 POSITION</span>
+              <span class="act-btn-sub" id="lbl-blue">Clinch / +Stick = Takedown</span>
+            </button>
+          </div>
+          <div class="act-row">
+            <button id="btn-red" class="act-btn"
+              ontouchstart="pressRed();event.preventDefault();"
+              onmousedown="pressRed()">
+              <span class="act-btn-main" data-i18n="btn_sub">🔥 SUBMIT</span>
+              <span class="act-btn-sub" id="lbl-red">Alone: Feint | +Stick: Sub</span>
+            </button>
+          </div>
+          <div id="move-preview">
+            <strong>Standing:</strong> Blue=Clinch · Blue+←=Pull Guard · Red=Feint · Red+Stick=Flying Sub
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -597,26 +715,26 @@ select option{background:var(--bg3);}
   <div class="cd" id="post-fan-card" style="margin-bottom:8px;text-align:center;display:none;"><div class="sm mu" style="margin-bottom:3px;">Fan change</div><div id="post-fans" style="font-size:19px;font-weight:700;"></div></div>
   <div class="cd" id="post-soc-card" style="margin-bottom:8px;display:none;"><div style="font-size:13px;font-weight:600;margin-bottom:6px;">Fan reaction</div><div id="post-soc-txt" class="sm mu"></div></div>
   <div class="cd" id="post-rank-card" style="margin-bottom:8px;display:none;"><div style="font-size:13px;font-weight:600;margin-bottom:4px;">Ranking update</div><div id="post-rank-txt" class="sm mu"></div></div>
-  <button class="btn ac" onclick="afterFight()">Continue</button>
+  <button class="btn ac" onclick="afterFight()" data-i18n="cont">Continue</button>
 </div>
 
 <!-- RANKING -->
 <div id="scr-ranking" class="scr">
-  <button class="bk" onclick="goScr('scr-career')">← Career hub</button>
+  <button class="bk" onclick="goScr('scr-career')" data-i18n="bk_hub">← Career hub</button>
   <h2>UBJJF Rankings — <span id="rank-wc"></span></h2>
   <div id="rank-list"></div>
 </div>
 
 <!-- HISTORY -->
 <div id="scr-chist" class="scr">
-  <button class="bk" onclick="goScr('scr-career')">← Career hub</button>
+  <button class="bk" onclick="goScr('scr-career')" data-i18n="bk_hub">← Career hub</button>
   <h2>Fight history</h2>
   <div id="hist-list"></div>
 </div>
 
 <!-- SOCIAL -->
 <div id="scr-social" class="scr">
-  <button class="bk" onclick="goScr('scr-career')">← Career hub</button>
+  <button class="bk" onclick="goScr('scr-career')" data-i18n="bk_hub">← Career hub</button>
   <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
     <div id="soc-av" style="width:40px;height:40px;border-radius:50%;background:var(--bl);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">🥋</div>
     <div><div style="font-size:14px;font-weight:700;" id="soc-handle">@fighter</div><div class="sm mu"><span id="soc-fans">0</span> fans</div></div>
@@ -693,59 +811,59 @@ select option{background:var(--bg3);}
 <!-- INTERACTIVE TUTORIAL BANNER -->
 <div id="tut-banner">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-    <span style="font-size:11px;font-weight:800;color:var(--am);letter-spacing:.6px;" id="tut-step-lbl">TUTORIAL 1/6</span>
-    <button onclick="endTutorial()" style="background:none;border:none;color:var(--tx3);font-size:12px;cursor:pointer;">Skip ✕</button>
+    <span style="font-size:11px;font-weight:800;color:var(--am);letter-spacing:.6px;" id="tut-step-lbl">TUTORIAL 1/5</span>
+    <button onclick="endTutorial()" style="background:none;border:none;color:var(--tx3);font-size:12px;cursor:pointer;" data-i18n="tut_skip">Skip ✕</button>
   </div>
-  <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:4px;" id="tut-title">Welcome to Career Mode!</div>
-  <div style="font-size:12px;color:var(--tx2);line-height:1.45;margin-bottom:10px;" id="tut-text">Let's walk through every button and control so you know where everything is.</div>
+  <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:4px;" id="tut-title">Tutorial</div>
+  <div style="font-size:12px;color:var(--tx2);line-height:1.45;margin-bottom:10px;" id="tut-text">Description</div>
   <div style="display:flex;gap:8px;">
-    <button class="btn sm-btn" style="flex:1;" id="tut-prev-btn" onclick="stepTutorial(-1)">← Previous</button>
-    <button class="btn sm-btn ac" style="flex:2;" id="tut-next-btn" onclick="stepTutorial(1)">Next →</button>
+    <button class="btn sm-btn" style="flex:1;" id="tut-prev-btn" onclick="stepTutorial(-1)" data-i18n="tut_prev">← Previous</button>
+    <button class="btn sm-btn ac" style="flex:2;" id="tut-next-btn" onclick="stepTutorial(1)" data-i18n="tut_next">Next →</button>
   </div>
 </div>
 
 <!-- ONLINE SCREENS (INTERNET MANDATORY) -->
 <div id="scr-online" class="scr">
-  <button class="bk" onclick="onLeave();goScr('scr-menu')">← Back</button>
-  <h2>Online mode</h2>
+  <button class="bk" onclick="onLeave();goScr('scr-menu')" data-i18n="bk">← Back</button>
+  <h2 data-i18n="m_online">Online mode</h2>
   <div id="on-status-bar"><span class="on-cdot" id="on-cdot"></span><span id="on-status-txt">Checking internet connection...</span></div>
   <div id="on-offline-block" style="display:none;margin-bottom:12px;border-color:rgba(226,75,74,0.55);background:rgba(226,75,74,0.10);" class="cd">
-    <div style="color:var(--r);font-weight:700;margin-bottom:4px;">📡 Internet connection required</div>
-    <div class="sm" style="margin-bottom:8px;">Online multiplayer requires an active Wi-Fi or mobile data connection. Quick Match and Career Mode remain 100% playable offline!</div>
-    <button class="btn sm-btn" onclick="onRetryConnection()" style="border-color:var(--r);color:var(--r);">🔄 Retry connection</button>
+    <div style="color:var(--r);font-weight:700;margin-bottom:4px;" data-i18n="on_req_title">📡 Internet connection required</div>
+    <div class="sm" style="margin-bottom:8px;" data-i18n="on_req_desc">Online multiplayer requires an active connection. Quick Match and Career Mode remain 100% playable offline!</div>
+    <button class="btn sm-btn" onclick="onRetryConnection()" style="border-color:var(--r);color:var(--r);" data-i18n="on_retry">🔄 Retry connection</button>
   </div>
   <div id="on-actions-wrap">
-    <div class="cd" style="cursor:pointer;margin-bottom:8px;" onclick="onGoCreate()"><div style="font-size:15px;font-weight:600;margin-bottom:3px;">🏠 Create room</div><div class="sm mu">Get a code and share it with your friend</div></div>
-    <div class="cd" style="cursor:pointer;" onclick="onGoJoinScreen()"><div style="font-size:15px;font-weight:600;margin-bottom:3px;">🔗 Join room</div><div class="sm mu">Enter the code your friend sent you</div></div>
+    <div class="cd" style="cursor:pointer;margin-bottom:8px;" onclick="onGoCreate()"><div style="font-size:15px;font-weight:600;margin-bottom:3px;" data-i18n="on_create">🏠 Create room</div><div class="sm mu" data-i18n="on_create_d">Get a code and share it with your friend</div></div>
+    <div class="cd" style="cursor:pointer;" onclick="onGoJoinScreen()"><div style="font-size:15px;font-weight:600;margin-bottom:3px;" data-i18n="on_join">🔗 Join room</div><div class="sm mu" data-i18n="on_join_d">Enter the code your friend sent you</div></div>
   </div>
 </div>
 
 <div id="scr-on-create" class="scr">
-  <button class="bk" onclick="onLeave();goScr('scr-online')">← Back</button>
-  <h2>Create room</h2>
-  <div class="sm mu" style="margin-bottom:6px;">Share this code with your opponent.</div>
+  <button class="bk" onclick="onLeave();goScr('scr-online')" data-i18n="bk">← Back</button>
+  <h2 data-i18n="on_create">Create room</h2>
+  <div class="sm mu" style="margin-bottom:6px;" data-i18n="on_share_code">Share this code with your opponent.</div>
   <div class="on-code-box" id="on-code-box">——</div>
-  <div style="display:flex;justify-content:center;margin-bottom:12px;"><button class="btn sm-btn" id="on-copy-btn" onclick="onCopyCode()">📋 Copy code</button></div>
-  <div class="cd" style="margin-bottom:10px;"><div class="sm mu" style="margin-bottom:5px;">Your fighter name</div><input type="text" id="on-p1-name" placeholder="Fighter name" maxlength="20" value="Player 1"></div>
-  <div class="cd" style="margin-bottom:10px;" id="on-p1-slots"><div class="sm mu" style="margin-bottom:7px;">Players in room</div><div class="on-slot"><div class="on-dot me"></div><span id="on-p1-slot">You (waiting...)</span></div><div class="on-slot"><div class="on-dot" id="on-p2-dot"></div><span id="on-p2-slot">Waiting for opponent...</span></div></div>
+  <div style="display:flex;justify-content:center;margin-bottom:12px;"><button class="btn sm-btn" id="on-copy-btn" onclick="onCopyCode()" data-i18n="on_copy">📋 Copy code</button></div>
+  <div class="cd" style="margin-bottom:10px;"><div class="sm mu" style="margin-bottom:5px;" data-i18n="c_fname_lbl">Your fighter name</div><input type="text" id="on-p1-name" placeholder="Fighter name" maxlength="20" value="Player 1"></div>
+  <div class="cd" style="margin-bottom:10px;" id="on-p1-slots"><div class="sm mu" style="margin-bottom:7px;" data-i18n="on_players">Players in room</div><div class="on-slot"><div class="on-dot me"></div><span id="on-p1-slot">You (waiting...)</span></div><div class="on-slot"><div class="on-dot" id="on-p2-dot"></div><span id="on-p2-slot">Waiting for opponent...</span></div></div>
   <div id="on-create-st" class="sm mu" style="text-align:center;margin-bottom:8px;"></div>
   <button class="btn ac" id="on-p1-ready-btn" onclick="onSetReady()" disabled>Waiting for opponent...</button>
 </div>
 
 <div id="scr-on-join" class="scr">
-  <button class="bk" onclick="onLeave();goScr('scr-online')">← Back</button>
-  <h2>Join room</h2>
-  <div class="cd" style="margin-bottom:10px;"><div class="sm mu" style="margin-bottom:6px;">Room code (6 characters)</div><input type="text" id="on-join-code" placeholder="Enter code" maxlength="6" style="font-size:20px;letter-spacing:4px;text-transform:uppercase;" oninput="this.value=this.value.toUpperCase()"></div>
-  <div class="cd" style="margin-bottom:10px;"><div class="sm mu" style="margin-bottom:5px;">Your fighter name</div><input type="text" id="on-p2-name" placeholder="Fighter name" maxlength="20" value="Player 2"></div>
-  <button class="btn ac" onclick="onJoinRoom()">Join the room</button>
+  <button class="bk" onclick="onLeave();goScr('scr-online')" data-i18n="bk">← Back</button>
+  <h2 data-i18n="on_join">Join room</h2>
+  <div class="cd" style="margin-bottom:10px;"><div class="sm mu" style="margin-bottom:6px;" data-i18n="on_enter_code">Room code (6 characters)</div><input type="text" id="on-join-code" placeholder="Enter code" maxlength="6" style="font-size:20px;letter-spacing:4px;text-transform:uppercase;" oninput="this.value=this.value.toUpperCase()"></div>
+  <div class="cd" style="margin-bottom:10px;"><div class="sm mu" style="margin-bottom:5px;" data-i18n="c_fname_lbl">Your fighter name</div><input type="text" id="on-p2-name" placeholder="Fighter name" maxlength="20" value="Player 2"></div>
+  <button class="btn ac" onclick="onJoinRoom()" data-i18n="on_join_btn">Join the room</button>
   <div id="on-join-err" class="sm" style="color:var(--r);text-align:center;margin-top:8px;min-height:16px;"></div>
 </div>
 
 <div id="scr-on-wait" class="scr">
-  <button class="bk" onclick="onLeave();goScr('scr-online')">← Leave room</button>
-  <h2>Room ready</h2>
+  <button class="bk" onclick="onLeave();goScr('scr-online')" data-i18n="bk">← Leave room</button>
+  <h2 data-i18n="on_ready_room">Room ready</h2>
   <div class="cd" style="margin-bottom:10px;" id="on-wait-slots">
-    <div class="sm mu" style="margin-bottom:7px;">Players in room</div>
+    <div class="sm mu" style="margin-bottom:7px;" data-i18n="on_players">Players in room</div>
     <div class="on-slot"><div class="on-dot ok"></div><span id="on-w-p1">Host connected</span></div>
     <div class="on-slot"><div class="on-dot me"></div><span id="on-w-p2">You (ready)</span></div>
   </div>
@@ -760,12 +878,12 @@ select option{background:var(--bg3);}
     <div style="font-size:14px;color:var(--tx2);margin-bottom:14px;" id="on-res-desc"></div>
   </div>
   <div class="cd" id="on-scorecard" style="margin-bottom:12px;"></div>
-  <button class="btn ac" onclick="onLeave();goScr('scr-menu')">Back to menu</button>
+  <button class="btn ac" onclick="onLeave();goScr('scr-menu')" data-i18n="bk_menu">Back to menu</button>
 </div>
 
 </div><!-- #app -->
 
-<!-- NON-BLOCKING CDN SCRIPTS FOR ONLINE 3D & PEERJS (GAME WORKS 100% OFFLINE WITHOUT THEM!) -->
+<!-- NON-BLOCKING CDN SCRIPTS FOR ONLINE 3D & PEERJS -->
 <script>
 window._threeLoaded = false;
 window._peerLoaded = false;
@@ -793,10 +911,10 @@ function updateMenuNetBadge(){
   if(!dot || !txt) return;
   if(navigator.onLine){
     dot.className = 'net-dot';
-    txt.textContent = 'Online & Offline Ready';
+    txt.textContent = t('net_on');
   } else {
     dot.className = 'net-dot off';
-    txt.textContent = 'Offline Mode — Quick Match & Career Ready';
+    txt.textContent = t('net_off');
   }
 }
 window.addEventListener('online', () => {
@@ -816,7 +934,7 @@ window.addEventListener('online', () => {
 window.addEventListener('offline', () => {
   updateMenuNetBadge();
   if(fightMode === 'online' && F && F.running){
-    fEndFight(false, 'Connection lost (Internet required for Online)');
+    fEndFight(false, 'Connection lost');
   }
   if(document.getElementById('scr-online').classList.contains('on')) onInitLib();
 });
@@ -827,7 +945,193 @@ document.addEventListener('DOMContentLoaded', updateMenuNetBadge);
 'use strict';
 
 // ═══════════════════════════════════════
-// POLYFILL FOR CanvasRenderingContext2D.roundRect (Old Mobile WebViews)
+// ORIENTATION & LOCALIZATION (FR / EN / AR)
+// ═══════════════════════════════════════
+let gameOrient = 'portrait';
+let gameLang = 'fr';
+
+const I18N = {
+  en: {
+    sub_ttl: 'SHADOW 3D GRAPPLING',
+    net_on: 'Online & Offline Ready',
+    net_off: 'Offline Mode — Quick Match & Career Ready',
+    m_quick: 'Quick match', b_offline: 'OFFLINE',
+    m_quick_d: 'Shadow Dojo — Works 100% without internet',
+    m_career: 'Career mode',
+    m_career_d: 'Build your UBJJF legacy & win the World Belt',
+    m_online: 'Online mode', b_online: 'ONLINE',
+    m_online_d: 'Fight a friend in real time',
+    m_credits: 'Credits',
+    m_credits_d: 'Authors, Shadow Engine & concept',
+    btn_settings: '⚙️ Language & Screen',
+    orient_title: 'Screen Orientation', orient_desc: 'Choose Portrait or Horizontal layout', orient_port: 'Portrait', orient_port_d: 'Vertical view', orient_land: 'Horizontal', orient_land_d: 'Wide arena & side controls', orient_confirm: 'Confirm',
+    bk: '← Back', bk_menu: '← Main menu', bk_hub: '← Career hub',
+    qm_title: 'Quick match (Offline)', qm_choose: 'Choose difficulty',
+    diff_easy: 'Easy (White Belt AI)', diff_med: 'Medium (Purple Belt AI)', diff_hard: 'Hard (Black Belt AI)',
+    c_nat: 'Choose your nationality', cont: 'Continue →',
+    c_fname: 'Your fighter name', c_fname_lbl: 'Fighter name', c_wc: 'Weight class',
+    c_style: 'Build your style', pts_left: 'Points left:', c_start: 'Start career →',
+    energy: 'Energy', stamina: 'Stamina',
+    nav_sch: 'Schedule', nav_gym: 'Gym', nav_ct: 'Contracts', nav_rk: 'Ranking', nav_soc: 'Social', nav_hist: 'History',
+    fight_now: 'Fight now', quit_match: '← Quit match', ctrl_guide: '🎓 Controls Guide',
+    btn_def: '🛡 DEFEND', btn_pos: '🥋 POSITION', btn_sub: '🔥 SUBMIT',
+    tut_skip: 'Skip ✕', tut_prev: '← Previous', tut_next: 'Next →', tut_done: 'Finish Tutorial ✓',
+    on_req_title: '📡 Internet connection required',
+    on_req_desc: 'Online multiplayer requires an active connection. Quick Match and Career Mode remain 100% playable offline!',
+    on_retry: '🔄 Retry connection',
+    on_create: '🏠 Create room', on_create_d: 'Get a code and share it with your friend',
+    on_join: '🔗 Join room', on_join_d: 'Enter the code your friend sent you',
+    on_share_code: 'Share this code with your opponent.', on_copy: '📋 Copy code',
+    on_players: 'Players in room', on_enter_code: 'Room code (6 characters)',
+    on_join_btn: 'Join the room', on_ready_room: 'Room ready',
+    ftut_1_t: '1. Analog Joystick (Move & Direction)',
+    ftut_1_d: 'Drag the joystick (or use WASD / Arrows) to move on the tatami. Hold a direction + a button to trigger specific BJJ techniques!',
+    ftut_2_t: '2. 🥋 BLUE Button (Positions & Takedowns)',
+    ftut_2_d: 'Standing: Blue alone = Clinch. Blue + Stick = Double Leg, Single Leg, Judo Throw or Pull Guard. Ground: Pass guard, Sweep or Mount!',
+    ftut_3_t: '3. 🔥 RED Button (Feints & Submissions)',
+    ftut_3_d: 'Red alone (Neutral stick) = Feint. Red + Stick = Flying Submission or Ground Choke / Armbar! Watch your stamina: spamming drains energy fast!',
+    ftut_4_t: '4. 🛡 YELLOW Button (Parry & Block)',
+    ftut_4_d: 'Press Yellow when your opponent prepares an attack to Parry (+1 pt). Avoid holding it randomly or you lose stamina.',
+    ftut_5_t: '5. Ready to Fight!',
+    ftut_5_d: 'You completed the Quick Match tutorial! You are now completely free to enjoy Quick Match, Career Mode, and Online Mode.'
+  },
+  fr: {
+    sub_ttl: 'GRAPPLING 3D SHADOW',
+    net_on: 'En ligne & Hors ligne prêts',
+    net_off: 'Mode Hors ligne — Match rapide & Carrière prêts',
+    m_quick: 'Match rapide', b_offline: 'HORS LIGNE',
+    m_quick_d: 'Dojo Shadow — Fonctionne 100% sans internet',
+    m_career: 'Mode Carrière',
+    m_career_d: 'Construis ta légende UBJJF et gagne la ceinture',
+    m_online: 'Mode En ligne', b_online: 'EN LIGNE',
+    m_online_d: 'Affronte ton pote en temps réel',
+    m_credits: 'Crédits',
+    m_credits_d: 'Auteurs, moteur Shadow & concept',
+    btn_settings: '⚙️ Langue & Écran',
+    orient_title: 'Orientation de l’écran', orient_desc: 'Choisissez le mode Portrait ou Horizontal', orient_port: 'Portrait', orient_port_d: 'Affichage vertical', orient_land: 'Horizontal', orient_land_d: 'Arène large & contrôles sur le côté', orient_confirm: 'Confirmer',
+    bk: '← Retour', bk_menu: '← Menu principal', bk_hub: '← Hub Carrière',
+    qm_title: 'Match rapide (Hors ligne)', qm_choose: 'Choisis la difficulté',
+    diff_easy: 'Facile (IA Ceinture Blanche)', diff_med: 'Moyen (IA Ceinture Violette)', diff_hard: 'Difficile (IA Ceinture Noire)',
+    c_nat: 'Choisis ta nationalité', cont: 'Continuer →',
+    c_fname: 'Nom de ton combattant', c_fname_lbl: 'Nom du combattant', c_wc: 'Catégorie de poids',
+    c_style: 'Crée ton style', pts_left: 'Points restants :', c_start: 'Lancer la carrière →',
+    energy: 'Énergie', stamina: 'Endurance',
+    nav_sch: 'Calendrier', nav_gym: 'Salle (Gym)', nav_ct: 'Contrats', nav_rk: 'Classement', nav_soc: 'Réseaux', nav_hist: 'Historique',
+    fight_now: 'Combattre maintenant', quit_match: '← Quitter le match', ctrl_guide: '🎓 Tutoriel Touches',
+    btn_def: '🛡 DÉFENDRE', btn_pos: '🥋 POSITION', btn_sub: '🔥 SOUMETTRE',
+    tut_skip: 'Passer ✕', tut_prev: '← Précédent', tut_next: 'Suivant →', tut_done: 'Terminer le tuto ✓',
+    on_req_title: '📡 Connexion internet requise',
+    on_req_desc: 'Le mode multijoueur en ligne nécessite une connexion internet. Match rapide et Carrière restent 100% jouables hors ligne !',
+    on_retry: '🔄 Réessayer la connexion',
+    on_create: '🏠 Créer un salon', on_create_d: 'Obtiens un code et partage-le avec ton ami',
+    on_join: '🔗 Rejoindre un salon', on_join_d: 'Entre le code envoyé par ton ami',
+    on_share_code: 'Partage ce code avec ton adversaire.', on_copy: '📋 Copier le code',
+    on_players: 'Joueurs dans le salon', on_enter_code: 'Code du salon (6 caractères)',
+    on_join_btn: 'Rejoindre le salon', on_ready_room: 'Salon prêt',
+    ftut_1_t: '1. Joystick Analogique (Déplacement & Direction)',
+    ftut_1_d: 'Déplace le joystick (ou ZQSD / Flèches) sur le tatami. Maintiens une direction + un bouton pour lancer une technique précise !',
+    ftut_2_t: '2. 🥋 Bouton BLEU (Positions & Amenées au sol)',
+    ftut_2_d: 'Debout : Bleu seul = Clinch. Bleu + Joystick = Double Leg, Single Leg, Projection Judo ou Tirer la Garde. Au sol : Passer la garde, Renverser ou Monter !',
+    ftut_3_t: '3. 🔥 Bouton ROUGE (Feintes & Soumissions)',
+    ftut_3_d: 'Rouge seul (Joystick neutre) = Feinte. Rouge + Joystick = Soumission volante ou Étranglement / Clé de bras au sol ! Attention : spammer vide ton endurance !',
+    ftut_4_t: '4. 🛡 Bouton JAUNE (Parade & Blocage)',
+    ftut_4_d: 'Appuie sur Jaune quand l’adversaire prépare une attaque pour Parer (+1 pt). Ne le spamme pas dans le vide sinon tu perds de l’endurance.',
+    ftut_5_t: '5. Prêt pour le combat !',
+    ftut_5_d: 'Tu as terminé le tutoriel dans Quick Match ! Tu es maintenant totalement libre de jouer dans tous les modes.'
+  },
+  ar: {
+    sub_ttl: 'قتال الجوجيتسو ثلاثي الأبعاد',
+    net_on: 'جاهز للعب أونلاين وأوفلاين',
+    net_off: 'وضع أوفلاين — المباراة السريعة والمسيرة جاهزة',
+    m_quick: 'مباراة سريعة', b_offline: 'أوفلاين',
+    m_quick_d: 'تدرب وقاتل 100% بدون إنترنت',
+    m_career: 'وضع المسيرة',
+    m_career_d: 'ابنِ مسيرتك في UBJJF واربح الحزام العالمي',
+    m_online: 'اللعب أونلاين', b_online: 'أونلاين',
+    m_online_d: 'العب ضد صديقك مباشرة',
+    m_credits: 'الحقوق',
+    m_credits_d: 'المطورون ومحرك Shadow',
+    btn_settings: '⚙️ اللغة والشاشة',
+    orient_title: 'اتجاه الشاشة', orient_desc: 'اختر الوضع العمودي أو الأفقي قبل البدء', orient_port: 'عمودي (Portrait)', orient_port_d: 'عرض عمودي للهاتف', orient_land: 'أفقي (Horizontal)', orient_land_d: 'حلبة عريضة وأزرار جانبية', orient_confirm: 'تأكيد',
+    bk: '← رجوع', bk_menu: '← القائمة الرئيسية', bk_hub: '← مركز المسيرة',
+    qm_title: 'مباراة سريعة (بدون إنترنت)', qm_choose: 'اختر مستوى الصعوبة',
+    diff_easy: 'سهل (حزام أبيض)', diff_med: 'متوسط (حزام بنفسجي)', diff_hard: 'صعب (حزام أسود)',
+    c_nat: 'اختر جنسيتك', cont: 'متابعة →',
+    c_fname: 'اسم المقاتل', c_fname_lbl: 'اسم المقاتل', c_wc: 'فئة الوزن',
+    c_style: 'طور أسلوبك', pts_left: 'النقاط المتبقية:', c_start: 'ابدأ المسيرة →',
+    energy: 'الطاقة', stamina: 'اللياقة',
+    nav_sch: 'الجدول', nav_gym: 'النادي', nav_ct: 'العقود', nav_rk: 'التصنيف', nav_soc: 'التواصل', nav_hist: 'السجل',
+    fight_now: 'قاتل الآن', quit_match: '← انسحاب', ctrl_guide: '🎓 شرح الأزرار',
+    btn_def: '🛡 دفاع', btn_pos: '🥋 وضعية', btn_sub: '🔥 إخضاع',
+    tut_skip: 'تخطي ✕', tut_prev: '← السابق', tut_next: 'التالي →', tut_done: 'إنهاء الشرح ✓',
+    on_req_title: '📡 يتطلب اتصالاً بالإنترنت',
+    on_req_desc: 'اللعب أونلاين مع صديق يتطلب إنترنت. المباراة السريعة والمسيرة تعملان 100% بدون إنترنت!',
+    on_retry: '🔄 إعادة المحاولة',
+    on_create: '🏠 إنشاء غرفة', on_create_d: 'احصل على رمز وشاركه مع صديقك',
+    on_join: '🔗 الانضمام لغرفة', on_join_d: 'أدخل الرمز الذي أرسله صديقك',
+    on_share_code: 'شارك هذا الرمز مع خصمك.', on_copy: '📋 نسخ الرمز',
+    on_players: 'اللاعبون في الغرفة', on_enter_code: 'رمز الغرفة (6 أحرف)',
+    on_join_btn: 'دخول الغرفة', on_ready_room: 'الغرفة جاهزة',
+    ftut_1_t: '1. عصا التحكم (الحركة والاتجاه)',
+    ftut_1_d: 'حرّك العصا للتنقل على البساط. اجمع بين اتجاه العصا وأحد الأزرار لتنفيذ تقنيات الجوجيتسو!',
+    ftut_2_t: '2. 🥋 الزر الأزرق (الوضعيات والإسقاط)',
+    ftut_2_d: 'وقوفاً: أزرق وحده = اشتباك. أزرق + اتجاه = إسقاط مزدوج أو فردي أو رمية جودو. أرضاً: تجاوز الحرس أو السيطرة!',
+    ftut_3_t: '3. 🔥 الزر الأحمر (الخداع والإخضاع)',
+    ftut_3_d: 'أحمر وحده = خداع. أحمر + اتجاه = إخضاع طائر أو خنق / كسر ذراع! انتبه: التكرار العشوائي يستنزف لياقتك بسرعة!',
+    ftut_4_t: '4. 🛡 الزر الأصفر (الصد والدفاع)',
+    ftut_4_d: 'اضغط الأصفر عند هجوم الخصم للصد (+1 نقطة). لا تضغطه عشوائياً حتى لا تفقد لياقتك.',
+    ftut_5_t: '5. أنت جاهز للقتال!',
+    ftut_5_d: 'أنهيت شرح التقنيات في المباراة السريعة! أنت الآن حر تماماً في اللعب بجميع الأوضاع.'
+  }
+};
+
+function t(k){
+  return (I18N[gameLang] && I18N[gameLang][k]) || I18N.en[k] || k;
+}
+
+function applyLanguage(){
+  document.documentElement.lang = gameLang;
+  document.documentElement.dir = (gameLang === 'ar') ? 'rtl' : 'ltr';
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if(key) el.textContent = t(key);
+  });
+  updateMenuNetBadge();
+}
+
+function pickOrient(mode){
+  gameOrient = mode;
+  document.getElementById('opt-portrait').classList.toggle('active', mode==='portrait');
+  document.getElementById('opt-landscape').classList.toggle('active', mode==='landscape');
+}
+
+function pickLang(lang){
+  gameLang = lang;
+  document.getElementById('opt-lang-fr').classList.toggle('active', lang==='fr');
+  document.getElementById('opt-lang-en').classList.toggle('active', lang==='en');
+  document.getElementById('opt-lang-ar').classList.toggle('active', lang==='ar');
+}
+
+function confirmLang(){
+  try{ localStorage.setItem('bjj_lang', gameLang); }catch(e){}
+  applyLanguage();
+  goScr('scr-orient');
+}
+
+function confirmOrient(){
+  if(gameOrient === 'landscape'){
+    document.body.classList.add('is-landscape');
+    try{ if(screen.orientation && screen.orientation.lock) screen.orientation.lock('landscape').catch(()=>{}); }catch(e){}
+  } else {
+    document.body.classList.remove('is-landscape');
+    try{ if(screen.orientation && screen.orientation.unlock) screen.orientation.unlock(); }catch(e){}
+  }
+  try{ localStorage.setItem('bjj_orient', gameOrient); }catch(e){}
+  goScr('scr-menu');
+}
+
+// ═══════════════════════════════════════
+// POLYFILL FOR CanvasRenderingContext2D.roundRect
 // ═══════════════════════════════════════
 if (typeof CanvasRenderingContext2D !== 'undefined' && !CanvasRenderingContext2D.prototype.roundRect) {
   CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
@@ -880,7 +1184,7 @@ function toggleFPS(){
 }
 
 // ═══════════════════════════════════════
-// DATA & BJJ POSITIONS / MOVES
+// DATA & BJJ POSITIONS / MOVES (SECULAR / NEUTRAL)
 // ═══════════════════════════════════════
 const NATS=[
   {f:'🇧🇷',n:'Brazil'},{f:'🇺🇸',n:'USA'},{f:'🇯🇵',n:'Japan'},
@@ -906,7 +1210,7 @@ const GYM_DEF=[
 const AI_NAMES=['Carlos Souza','Yuki Tanaka','Ivan Petrov','Ahmed Hassan',
   'Marco Silva','Luiz Gracie','Kenji Mori','Alexei Volkov','Pedro Costa',
   'Rafael Lima','Takeshi Ono','Miguel Pereira','Lorenzo Braz','Felipe Maia'];
-const FAN_WIN=['Alhamdulillah, technical masterpiece on the tatami! 🥋','That transition to mount was surgical!','Pure Jiu-Jitsu & respect! 🔥','Best grappling match of the year!'];
+const FAN_WIN=['What a technical masterpiece on the tatami! 🥋','That transition to mount was surgical!','Pure Jiu-Jitsu & respect! 🔥','Best grappling match of the year!'];
 const FAN_LOSS=['Back to the dojo, you will return stronger 💪','Tough scramble — keep drilling!','Every black belt was once a white belt.'];
 
 const POS_LABELS={
@@ -949,6 +1253,7 @@ function goScr(id){
   if(id==='scr-schedule') refreshSchedule();
   if(id==='scr-career') refreshCareer();
   if(id==='scr-online') onInitLib();
+  if(id==='scr-fight' && S3.ready) setTimeout(()=>init3DScene(), 30);
 }
 
 function openCredits(isRetirement){
@@ -967,13 +1272,14 @@ function closeCredits(){
 }
 
 // ── INTERACTIVE TUTORIAL ENGINE ──
-let _tutSteps=[], _tutIdx=0, _tutActive=false;
+let _tutSteps=[], _tutIdx=0, _tutActive=false, _tutIsQuickMatch=false, _tutPaused=false;
 
 function startCareerTutorial(force){
   if(!C) return;
   if(!force && C.seenTutorial) return;
   C.seenTutorial=true;
   saveC();
+  _tutIsQuickMatch=false;
   _tutSteps=[
     {el:'ch', title:'1. Fighter Card & Career Progress', text:'Here is your fighter profile, UBJJF rank, fan count, current Day, and remaining Energy (out of 100).'},
     {el:'nav-btn-schedule', title:'2. 📅 Schedule (Rest & Advance Days)', text:'Tap Schedule to rest (+30 Energy, advances 1 day). Rest before fights so you don\'t suffer fatigue!'},
@@ -986,13 +1292,21 @@ function startCareerTutorial(force){
   renderTutorialStep();
 }
 
-function startFightTutorial(){
+function startFightTutorial(force){
+  let seenQuick = false;
+  try{ seenQuick = localStorage.getItem('bjj_quick_tut_done') === '1'; }catch(e){}
+  if(!force && seenQuick) return;
+
+  _tutIsQuickMatch = true;
+  _tutPaused = true;
+  if(fAiInt){ clearTimeout(fAiInt); fAiInt=null; }
+  if(F && F.aiTelegraphTimer){ clearTimeout(F.aiTelegraphTimer); F.aiTelegraphTimer=null; F.aiTelegraph=false; }
   _tutSteps=[
-    {el:'stick-base', title:'1. Analog Joystick (Move & Direction)', text:'Drag the stick (or use WASD / ZQSD / Arrows) to move inside the white tatami circle. Hold a direction + a button for specific BJJ moves!'},
-    {el:'btn-blue', title:'2. 🥋 BLUE Button (Positions & Takedowns)', text:'Standing: Blue alone = Clinch. Blue + Stick = Double Leg, Single Leg, Judo Throw, or Pull Guard. On the ground: Pass guard, Sweep, or Mount!'},
-    {el:'btn-red', title:'3. 🔥 RED Button (Feints & Submissions)', text:'Red alone (Neutral stick) = Feint (+22% accuracy on next move). Red + Stick = Flying Submission or Ground Choke/Armbar!'},
-    {el:'btn-yellow', title:'4. 🛡 YELLOW Button (Parry & Block)', text:'Press Yellow when the opponent telegraphs an attack to Parry (+1 pt). Warning: holding Yellow when nobody attacks drains stamina!'},
-    {el:'fight-arena-wrap', title:'5. Tatami Ring & Referee', text:'Stay inside the white tatami circle (3 outs = DQ). At the end of the match, the referee raises the winner\'s hand!'}
+    {el:'stick-base', title:t('ftut_1_t'), text:t('ftut_1_d')},
+    {el:'btn-blue',   title:t('ftut_2_t'), text:t('ftut_2_d')},
+    {el:'btn-red',    title:t('ftut_3_t'), text:t('ftut_3_d')},
+    {el:'btn-yellow', title:t('ftut_4_t'), text:t('ftut_4_d')},
+    {el:'fight-arena-wrap', title:t('ftut_5_t'), text:t('ftut_5_d')}
   ];
   _tutIdx=0; _tutActive=true;
   renderTutorialStep();
@@ -1012,26 +1326,40 @@ function renderTutorialStep(){
   document.getElementById('tut-title').textContent=st.title;
   document.getElementById('tut-text').textContent=st.text;
   document.getElementById('tut-prev-btn').disabled=(_tutIdx===0);
-  document.getElementById('tut-next-btn').textContent=(_tutIdx===_tutSteps.length-1)?'Got it! ✓':'Next →';
+  document.getElementById('tut-next-btn').textContent=(_tutIdx===_tutSteps.length-1)?t('tut_done'):t('tut_next');
   banner.classList.add('on');
 }
 
 function stepTutorial(delta){
   _tutIdx+=delta;
-  if(_tutIdx>=_tutSteps.length){ endTutorial(); return; }
+  if(_tutIdx>=_tutSteps.length){
+    if(_tutIsQuickMatch){
+      try{ localStorage.setItem('bjj_quick_tut_done', '1'); }catch(e){}
+    }
+    endTutorial();
+    return;
+  }
   if(_tutIdx<0) _tutIdx=0;
   renderTutorialStep();
 }
 
 function endTutorial(){
+  const wasPaused = _tutPaused;
+  if(_tutActive && _tutIsQuickMatch){
+    try{ localStorage.setItem('bjj_quick_tut_done', '1'); }catch(e){}
+  }
   _tutActive=false;
+  _tutPaused=false;
   document.querySelectorAll('.tut-pulse').forEach(e=>e.classList.remove('tut-pulse'));
   const banner=document.getElementById('tut-banner');
   if(banner) banner.classList.remove('on');
+  if(wasPaused && F && F.running && fightMode !== 'online' && !fDef.active && !fGetup.active){
+    fScheduleAI();
+  }
 }
 
 // ═══════════════════════════════════════
-// CAREER STATE & PROGRESSION (WITH BELT & RANKING BUG FIXES)
+// CAREER STATE & PROGRESSION
 // ═══════════════════════════════════════
 let C=null, selNat=null, attrPts=10;
 let attrs={sub:5,td:5,guard:5,cardio:5,chain:5};
@@ -1049,7 +1377,6 @@ function initCareer(){
       if(!C.history) C.history=[];
       if(!C.posts) C.posts=[];
       if(!C.gymStats) C.gymStats={strength:5,agility:5,endurance:5};
-      // Repair existing save if player reached Rank #1 without receiving belt
       if(C.inUBJJF && C.rank===1 && !C.hasBelt){
         C.hasBelt=true;
         saveC();
@@ -1209,7 +1536,6 @@ function doGym(k,l){
 
 function checkGenerateContracts(){
   if(!C)return; if(!C.contracts)C.contracts=[];
-  // Ensure contracts always generate after a fight or every 3 days so player is never stuck without fights
   if(C.contracts.length===0){
     for(let i=0;i<3;i++){
       const isTitleFight = (C.inUBJJF && C.rank<=5 && i===2);
@@ -1350,8 +1676,8 @@ function openBeltCeremony(replayOnly){
   const modal=document.getElementById('belt-modal');
   document.getElementById('belt-champ-title').textContent=(C?C.name.toUpperCase():'CHAMPION')+' — UBJJF CHAMPION!';
   document.getElementById('belt-champ-desc').textContent=replayOnly
-    ? 'Official UBJJF World Championship Black & Gold Belt — Halal Silhouette Trophy Presentation.'
-    : 'Alhamdulillah! You defeated the #1 Champion! The referee raises your hand and awards you the UBJJF Championship Belt!';
+    ? 'Official UBJJF World Championship Black & Gold Belt — Trophy Presentation.'
+    : 'You defeated the #1 Champion! The referee raises your hand and awards you the UBJJF Championship Belt!';
   modal.classList.add('on');
   startBeltCanvasAnimation();
 }
@@ -1472,7 +1798,7 @@ function startBeltCanvasAnimation(){
 }
 
 // ═══════════════════════════════════════
-// HYBRID SHADOW DOJO ENGINE (3D THREE.JS WHEN ONLINE + 2D SHADOW ENGINE WHEN OFFLINE!)
+// HYBRID SHADOW DOJO ENGINE
 // ═══════════════════════════════════════
 let S3={
   ready:false, use2D:false, ctx2d:null,
@@ -1486,7 +1812,6 @@ function init3DScene(){
   const wrap=document.getElementById('fight-arena-wrap');
   const W=wrap.offsetWidth||380, H=wrap.offsetHeight||258;
 
-  // If Three.js is unavailable (e.g., started completely offline without cache), activate native 2D Shadow Dojo Renderer!
   if(typeof THREE==='undefined'){
     S3.use2D = true;
     const dpr = Math.min(window.devicePixelRatio||1, 2);
@@ -1498,7 +1823,6 @@ function init3DScene(){
     return;
   }
 
-  // Switch from 2D fallback to 3D Three.js if Three.js loaded later
   if(S3.use2D){
     S3.use2D = false;
     S3.ready = false;
@@ -1534,7 +1858,6 @@ function init3DScene(){
     dirLight.shadow.camera.top=d; dirLight.shadow.camera.bottom=-d;
     S3.scene.add(dirLight);
 
-    // ── TATAMI MATS FLOOR ──
     const tatamiCanvas=document.createElement('canvas');
     tatamiCanvas.width=512; tatamiCanvas.height=512;
     const tctx=tatamiCanvas.getContext('2d');
@@ -1567,7 +1890,6 @@ function init3DScene(){
     ring.position.y=0.012;
     S3.scene.add(ring);
 
-    // ── JAPANESE SHOJI DOJO WALLS ──
     const wallGroup=new THREE.Group();
     const backWall=new THREE.Mesh(
       new THREE.BoxGeometry(20, 7, 0.3),
@@ -1606,7 +1928,6 @@ function init3DScene(){
   }
 }
 
-// ── 2D OFFLINE SHADOW DOJO RENDERER (ZERO INTERNET NEEDED!) ──
 function render2DShadowDojo(fState, dt){
   const wrap=document.getElementById('fight-arena-wrap');
   const W=wrap.offsetWidth||380, H=wrap.offsetHeight||258;
@@ -1625,27 +1946,23 @@ function render2DShadowDojo(fState, dt){
   ctx.save();
   ctx.translate(shakeX, shakeY);
 
-  // Shoji Dojo Background
   const wallGrad=ctx.createLinearGradient(0,0,0,H*0.42);
   wallGrad.addColorStop(0,'#9fb0be');
   wallGrad.addColorStop(1,'#cbd5e1');
   ctx.fillStyle=wallGrad;
   ctx.fillRect(-10,-10,W+20,H*0.44);
 
-  // Wooden Shoji beams
   ctx.fillStyle='#27272a';
   for(let x=20; x<W; x+=75) ctx.fillRect(x, 0, 5, H*0.42);
   ctx.fillRect(0, H*0.18, W, 4);
   ctx.fillRect(0, H*0.38, W, 7);
 
-  // Tatami Mat Perspective Floor
   const matGrad=ctx.createLinearGradient(0,H*0.38,0,H);
   matGrad.addColorStop(0,'#4b5b55');
   matGrad.addColorStop(1,'#5f736b');
   ctx.fillStyle=matGrad;
   ctx.fillRect(-10,H*0.38,W+20,H*0.66);
 
-  // Tatami grid lines
   ctx.strokeStyle='rgba(20,30,26,0.35)';
   ctx.lineWidth=1.5;
   for(let r=1;r<=4;r++){
@@ -1653,7 +1970,6 @@ function render2DShadowDojo(fState, dt){
     ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke();
   }
 
-  // White Tatami Boundary Ellipse
   const cx=W*0.5, cy=H*0.69;
   const rx=W*0.43, ry=H*0.26;
   ctx.strokeStyle='rgba(248,250,252,0.75)';
@@ -1671,7 +1987,6 @@ function render2DShadowDojo(fState, dt){
   function drawShadowFighter(x, y, beltColor, giColor, facing, stance, raisedArm){
     ctx.save();
     ctx.translate(x, y);
-    // Ground shadow
     ctx.fillStyle='rgba(0,0,0,0.34)';
     ctx.beginPath();
     ctx.ellipse(0, 4, stance==='ground'?34:20, 7, 0, 0, Math.PI*2);
@@ -1679,19 +1994,14 @@ function render2DShadowDojo(fState, dt){
 
     const bob = Math.sin(t*5)*2;
     if(stance==='ceremony'){
-      // Upright Gi silhouette with raised inner arm
       ctx.fillStyle=giColor;
       ctx.strokeStyle='#09090b'; ctx.lineWidth=2;
       ctx.beginPath(); ctx.roundRect(-13, -54, 26, 34, 6); ctx.fill(); ctx.stroke();
-      // Legs
       ctx.fillRect(-11, -20, 9, 22); ctx.fillRect(2, -20, 9, 22);
-      // Belt
       ctx.fillStyle=beltColor;
       ctx.fillRect(-13, -30, 26, 5);
-      // Head
       ctx.fillStyle='#050507';
       ctx.beginPath(); ctx.arc(0, -64, 9, 0, Math.PI*2); ctx.fill();
-      // Arms
       ctx.strokeStyle=giColor; ctx.lineWidth=6; ctx.lineCap='round';
       ctx.beginPath(); ctx.moveTo(-12,-48);
       if(raisedArm==='left') ctx.lineTo(-22,-80); else ctx.lineTo(-18,-26);
@@ -1700,7 +2010,6 @@ function render2DShadowDojo(fState, dt){
       if(raisedArm==='right') ctx.lineTo(22,-80); else ctx.lineTo(18,-26);
       ctx.stroke();
     } else if(stance==='ground'){
-      // Grappling ground silhouette
       ctx.fillStyle=giColor;
       ctx.strokeStyle='#09090b'; ctx.lineWidth=2;
       ctx.beginPath(); ctx.roundRect(-24, -22+bob*0.4, 48, 18, 8); ctx.fill(); ctx.stroke();
@@ -1709,22 +2018,16 @@ function render2DShadowDojo(fState, dt){
       ctx.fillStyle='#050507';
       ctx.beginPath(); ctx.arc(facing*24, -18+bob*0.4, 8, 0, Math.PI*2); ctx.fill();
     } else {
-      // Standing BJJ Shadow stance
       ctx.fillStyle=giColor;
       ctx.strokeStyle='#09090b'; ctx.lineWidth=2;
-      // Legs
       ctx.beginPath(); ctx.moveTo(-8,-22); ctx.lineTo(-14,0); ctx.lineWidth=8; ctx.strokeStyle=giColor; ctx.stroke();
       ctx.beginPath(); ctx.moveTo(8,-22); ctx.lineTo(14,0); ctx.stroke();
-      // Torso
       ctx.fillStyle=giColor; ctx.strokeStyle='#09090b'; ctx.lineWidth=2;
       ctx.beginPath(); ctx.roundRect(-13, -50+bob, 26, 30, 6); ctx.fill(); ctx.stroke();
-      // Belt
       ctx.fillStyle=beltColor;
       ctx.fillRect(-13, -28+bob, 26, 5);
-      // Head
       ctx.fillStyle='#050507';
       ctx.beginPath(); ctx.arc(facing*3, -59+bob, 8.5, 0, Math.PI*2); ctx.fill();
-      // Guard arms
       ctx.strokeStyle=giColor; ctx.lineWidth=5.5; ctx.lineCap='round';
       ctx.beginPath(); ctx.moveTo(0, -44+bob); ctx.lineTo(facing*20, -38+bob); ctx.stroke();
     }
@@ -1742,7 +2045,6 @@ function render2DShadowDojo(fState, dt){
     const refX = (p1pos.x + p2pos.x)*0.5;
     const refY = Math.min(p1pos.y, p2pos.y) - 26;
 
-    // Draw Referee in background
     drawShadowFighter(refX, refY, '#EAB308', '#1e293b', 1, 'stand', null);
 
     if(ph==='stand'){
@@ -2115,13 +2417,13 @@ function update3DPose(fState, dt){
 }
 
 // ═══════════════════════════════════════
-// BJJ FIGHT ENGINE — BUG-FREE COMBAT & OFFLINE AI
+// BJJ FIGHT ENGINE — SPAM PENALTY + 2s HARD ONLINE DEFENSE
 // ═══════════════════════════════════════
 let fightMode='quick', F=null;
 let fKeyState={up:false,down:false,left:false,right:false};
 let fStickVec={x:0, y:0, dir:'neutral'};
 let fGameInt=null, fTimerInt=null, fAiInt=null, fFatInt=null, fCeremonyInt=null;
-let fDef={active:false,pos:50,dir:1,speed:1.4,int:null,cdInt:null,cd:5,onOk:null,onFail:null};
+let fDef={active:false,pos:50,dir:1,speed:1.4,int:null,cdInt:null,cd:2,onOk:null,onFail:null};
 let fNear=false, fLocked=false, fFightEnded=false, fIsTitleBout=false;
 let fDefWin=0.14, fDiff='medium', fFatigued=false;
 
@@ -2141,8 +2443,34 @@ function initF(){
     feintBonus:0, feintTimer:null,
     aiTelegraph:false, aiTelegraphMove:'', aiTelegraphTimer:null,
     pendingOnlineAtk:null, pendingOnlineTimer:null,
-    winnerIsP1:true
+    winnerIsP1:true,
+    lastActionTime:0,
+    spamCount:0
   };
+}
+
+// Anti-Spam Stamina Drain System:
+// Spamming techniques rapidly without pacing drains massive stamina!
+function applyActionStaminaCost(baseCost){
+  if(!F) return;
+  const now = performance.now();
+  const gap = now - (F.lastActionTime || 0);
+  F.lastActionTime = now;
+
+  if(gap < 1500){
+    F.spamCount = (F.spamCount || 0) + 1;
+  } else {
+    F.spamCount = 0;
+  }
+
+  let totalCost = baseCost;
+  if(F.spamCount >= 1){
+    const spamPenalty = 16 * F.spamCount;
+    totalCost += spamPenalty;
+    fRef('⚠ SPAM PENALTY! −' + totalCost + ' Stamina');
+  }
+  F.p1.fat = Math.max(0, F.p1.fat - totalCost);
+  fFatUI();
 }
 
 function launchFight(opts){
@@ -2188,6 +2516,9 @@ function launchFight(opts){
   setTimeout(()=>{
     init3DScene();
     update3DPose(F, 0.016);
+    if(fightMode === 'quick'){
+      startFightTutorial(false);
+    }
   }, 40);
 
   fSetPhase('stand');
@@ -2198,7 +2529,7 @@ function launchFight(opts){
   fUpdateHUD();
   fUpdateScore();
   fFatUI();
-  fLog('Bismillah — Round 1! Move close & use Blue (Position), Red (Submit/Feint), Yellow (Defend).');
+  fLog('Round 1! Move close & use Blue (Position), Red (Submit/Feint), Yellow (Defend).');
 }
 
 function confirmQuitFight(){
@@ -2363,6 +2694,7 @@ function pressYellow(){
   }
 
   if(F.guardActive) return;
+  applyActionStaminaCost(4);
   F.guardActive=true;
   document.getElementById('guard-shield-badge').style.display='block';
   fLog('🛡 Guard raised — waiting for opponent move...');
@@ -2394,6 +2726,13 @@ function pressBlue(){
     return;
   }
 
+  if(F.p1.fat <= 0){
+    fLog('Exhausted (0 Stamina)! Rest a moment to recover before attacking!');
+    return;
+  }
+
+  applyActionStaminaCost(6);
+
   if(F.aiTelegraph){
     clearTimeout(F.aiTelegraphTimer);
     F.aiTelegraph=false;
@@ -2406,6 +2745,7 @@ function pressBlue(){
   const fatMod = F.p1.fat<30 ? -0.15 : (F.feintBonus || 0);
   F.feintBonus = 0;
 
+  // ── ONLINE MODE: 2 SECOND HARD GAUGE FOR DEFENDER ──
   if(fightMode==='online'){
     let moveName='Clinch (Collar Tie)', nextPhase='clinch', ptsAdd=0;
     if(ph==='stand'){
@@ -2445,15 +2785,20 @@ function pressBlue(){
         F.pendingOnlineAtk = null;
         F.submitting = false;
         fLockTechs(false);
-        fLog('No response from opponent — ready.');
+        fLog('Ready.');
       }
-    }, 4500);
-    fLog('⏳ Attempting ' + moveName + ' — opponent has 3s to defend!');
-    fRef('⚡ OPPONENT DEFENDING (3s)...');
-    onSendAction({ type:'incoming_atk', kind:'pos', moveName, nextPhase, ptsAdd, speed:1.4, winHalf:0.14, duration:3 });
+    }, 3600);
+    fLog('⏳ ' + moveName + ' — opponent has 2s (HARD) to defend!');
+    fRef('⚡ OPPONENT DEFENDING (2s HARD)...');
+    onSendAction({
+      type:'incoming_atk', kind:'pos', moveName, nextPhase, ptsAdd,
+      speed:DIFF_CFG.hard.defSpd, winHalf:DIFF_CFG.hard.defWin, duration:2,
+      attackerFat: F.p1.fat
+    });
     return;
   }
 
+  // ── OFFLINE AI / CAREER MODE ──
   if(ph==='stand'){
     if(dir==='neutral'){
       const ok = Math.random() < (0.78 + skillBonus + fatMod);
@@ -2581,9 +2926,13 @@ function pressRed(){
     return;
   }
 
+  if(F.p1.fat <= 0){
+    fLog('Exhausted (0 Stamina)! You cannot attack right now!');
+    return;
+  }
+
   if(dir==='neutral' && fightMode!=='online'){
-    if(F.p1.fat < 5){ fLog('Too exhausted to feint!'); return; }
-    F.p1.fat = Math.max(0, F.p1.fat - 4);
+    applyActionStaminaCost(4);
     F.feintBonus = 0.22;
     fFatUI();
     fRef('🎭 FEINT! Opponent baited (+22% next move)');
@@ -2592,6 +2941,8 @@ function pressRed(){
     F.feintTimer = setTimeout(()=>{ if(F) F.feintBonus=0; }, 2500);
     return;
   }
+
+  applyActionStaminaCost(8);
 
   if(F.aiTelegraph){
     clearTimeout(F.aiTelegraphTimer);
@@ -2613,28 +2964,40 @@ function pressRed(){
           F.submitting = false;
           fLockTechs(false);
         }
-      }, 4500);
-      fLog('🔥 ' + onlineFlyName + '! Opponent has 3s to defend!');
-      fRef('⚡ OPPONENT DEFENDING SUBMISSION (3s)...');
-      onSendAction({ type:'incoming_atk', kind:'sub', moveName:onlineFlyName, isFlying:true, speed:1.4, winHalf:0.14, duration:3 });
+      }, 3600);
+      fLog('🔥 ' + onlineFlyName + '! Opponent has 2s (HARD) to defend!');
+      fRef('⚡ OPPONENT DEFENDING SUBMISSION (2s)...');
+      onSendAction({
+        type:'incoming_atk', kind:'sub', moveName:onlineFlyName, isFlying:true,
+        speed:DIFF_CFG.hard.defSpd, winHalf:DIFF_CFG.hard.defWin, duration:2,
+        attackerFat: F.p1.fat
+      });
       return;
     }
+
+    // Offline AI: if AI has 0 stamina, instant submission!
+    if(F.p2.fat <= 0){
+      F.p2.hp = 0;
+      fLog('🏆 ' + flyName + '! Opponent had 0 stamina — INSTANT TAP OUT!');
+      fUpdateHUD(); fCheckHP();
+      return;
+    }
+
     F.submitting = true;
     fLockTechs(true);
     fLog('🦅 '+flyName+'! Hit the green zone or risk a bad landing!');
 
     fShowDef('🦅 '+flyName+' — Hit GREEN zone!', 1.85, 0.11,
       ()=>{
-        const aiEsc = fightMode==='online' ? false : (Math.random() < (DIFF_CFG[fDiff].adef * 0.65));
+        const aiEsc = Math.random() < (DIFF_CFG[fDiff].adef * 0.65);
         F.submitting = false;
         if(aiEsc){
           fSetPhase('closed_guard_bottom');
           fLog('Opponent slipped out of '+flyName+' — you land in Closed Guard!');
-          fLockTechs(false); if(fightMode!=='online') fScheduleAI();
+          fLockTechs(false); fScheduleAI();
         } else {
           F.p2.hp = 0;
           fLog('🏆 '+flyName+' LOCKED IN! TAP OUT!');
-          onSendAction({type:'sub_win', method:flyName});
           fUpdateHUD(); fLockTechs(false); fCheckHP();
         }
       },
@@ -2654,10 +3017,10 @@ function pressRed(){
           fRef('⚠ CRASHED! Opponent takes Top Mount!');
           fLog('Missed '+flyName+'! Opponent capitalized and pinned you on the mat!');
         }
-        onSendAction({type:'sync', phase:F.phase, pts:F.p1.pts, hp:F.p2.hp});
         fUpdateHUD(); fFatUI(); fLockTechs(false);
-        if(F&&F.running&&fightMode!=='online') fScheduleAI();
-      }
+        if(F&&F.running) fScheduleAI();
+      },
+      4
     );
     return;
   }
@@ -2695,6 +3058,7 @@ function pressRed(){
   let careerSubBonus = 0;
   if(fightMode==='career' && C) careerSubBonus = C.attrs.sub * 0.004;
 
+  // ── ONLINE MODE SUBMISSION (2s HARD GAUGE OR INSTANT IF DEFENDER AT 0 STAMINA) ──
   if(fightMode==='online'){
     F.submitting = true;
     fLockTechs(true);
@@ -2706,10 +3070,22 @@ function pressRed(){
         F.submitting = false;
         fLockTechs(false);
       }
-    }, 4500);
-    fLog('🔥 Attempting ' + subName + ' — opponent has 3s to defend!');
-    fRef('⚡ OPPONENT DEFENDING SUBMISSION (3s)...');
-    onSendAction({ type:'incoming_atk', kind:'sub', moveName:subName, isFlying:false, speed:1.4, winHalf:0.14, duration:3 });
+    }, 3600);
+    fLog('🔥 Attempting ' + subName + ' — opponent has 2s (HARD) to defend!');
+    fRef('⚡ OPPONENT DEFENDING SUBMISSION (2s)...');
+    onSendAction({
+      type:'incoming_atk', kind:'sub', moveName:subName, isFlying:false,
+      speed:DIFF_CFG.hard.defSpd, winHalf:DIFF_CFG.hard.defWin, duration:2,
+      attackerFat: F.p1.fat
+    });
+    return;
+  }
+
+  // Offline AI: if AI has 0 stamina, instant submission!
+  if(F.p2.fat <= 0){
+    F.p2.hp = 0;
+    fLog('🏆 ' + subName + '! Opponent had 0 stamina — INSTANT TAP OUT!');
+    fUpdateHUD(); fCheckHP();
     return;
   }
 
@@ -2720,7 +3096,7 @@ function pressRed(){
   const fatBonus = F.p1.fat < 30 ? -0.04 : 0;
   fShowDef('Lock '+subName+' — Hit GREEN zone!', DIFF_CFG[fDiff].defSpd, Math.max(0.07, subPower + careerSubBonus + fatBonus),
     ()=>{
-      const aidef = fightMode==='online' ? false : (Math.random() < (DIFF_CFG[fDiff].adef * 0.72));
+      const aidef = Math.random() < (DIFF_CFG[fDiff].adef * 0.72);
       F.submitting = false;
       if(aidef){
         F.p1.fat = Math.max(0, F.p1.fat - 10);
@@ -2729,10 +3105,9 @@ function pressRed(){
       } else {
         F.p2.hp = 0;
         fLog('🏆 '+subName+'! OPPONENT TAPS OUT!');
-        onSendAction({type:'sub_win', method:subName});
       }
       fUpdateHUD(); fFatUI(); fLockTechs(false);
-      fCheckHP(); if(F&&F.running&&fightMode!=='online') fScheduleAI();
+      fCheckHP(); if(F&&F.running) fScheduleAI();
     },
     ()=>{
       F.submitting = false;
@@ -2740,8 +3115,9 @@ function pressRed(){
       if(ph==='full_mount' || ph==='side_control') fSetPhase('closed_guard_top');
       fLog('Bad timing on '+subName+' — opponent escaped and recovered guard!');
       fFatUI(); fLockTechs(false);
-      if(F&&F.running&&fightMode!=='online') fScheduleAI();
-    }
+      if(F&&F.running) fScheduleAI();
+    },
+    4
   );
 }
 
@@ -2771,7 +3147,7 @@ function fTick(){
       moved = true;
     }
 
-    if(fightMode!=='online'){
+    if(fightMode!=='online' && !_tutPaused){
       const aiSpd=DIFF_CFG[fDiff].aiSpd;
       const dxAI=me.x-ai.x, dyAI=me.y-ai.y;
       const distAI=Math.hypot(dxAI, dyAI);
@@ -2804,9 +3180,11 @@ function fTick(){
     }
   }
 
-  if(!moved && !F.guardActive && Math.random()<0.18){
-    me.fat = Math.min(100, me.fat + 1);
-  } else if(moved && Math.random()<0.05){
+  // Natural stamina regeneration when pacing / not spamming
+  const timeSinceAtk = performance.now() - (F.lastActionTime || 0);
+  if(!moved && !F.guardActive && timeSinceAtk > 1400 && Math.random()<0.25){
+    me.fat = Math.min(100, me.fat + 2);
+  } else if(moved && Math.random()<0.04){
     me.fat = Math.max(0, me.fat - 1);
   }
   fFatUI();
@@ -2817,7 +3195,7 @@ function fTick(){
   if(fightMode==='online' && oConn && oConn.open){
     _onlineSyncTick++;
     if(_onlineSyncTick%2===0){
-      try{ oConn.send({type:'pos', x:1-me.x, y:me.y}); }catch(e){}
+      try{ oConn.send({type:'pos', x:1-me.x, y:me.y, fat:me.fat}); }catch(e){}
     }
   }
 
@@ -2833,7 +3211,7 @@ function fUpdateOutsLabel(){
 function fStartTimer(){
   if(fTimerInt) clearInterval(fTimerInt);
   fTimerInt=setInterval(()=>{
-    if(!F||!F.running) return;
+    if(!F||!F.running||_tutPaused) return;
     F.timer--;
     const m=Math.floor(F.timer/60), s=F.timer%60;
     document.getElementById('f-timer').textContent=m+':'+(s<10?'0':'')+s;
@@ -2853,7 +3231,7 @@ function fStartFatigue(){
 // ── AI ATTACK SCHEDULER ──
 function fScheduleAI(){
   if(fAiInt){clearTimeout(fAiInt);fAiInt=null;}
-  if(!F||!F.running||fightMode==='online') return;
+  if(!F||!F.running||fightMode==='online'||_tutPaused) return;
   const base=DIFF_CFG[fDiff].aiAttackDelay;
   fAiInt=setTimeout(()=>{
     if(!fDef.active&&!fLocked&&F&&F.running&&F.p1.hp>0&&F.p2.hp>0&&!fGetup.active) fAiAttack();
@@ -2862,7 +3240,7 @@ function fScheduleAI(){
 }
 
 function fAiAttack(){
-  if(fightMode==='online'||!F||!F.running) return;
+  if(fightMode==='online'||!F||!F.running||_tutPaused) return;
   const isStand = (F.phase==='stand' || F.phase==='clinch');
   if(isStand && !fNear){
     fScheduleAI();
@@ -2888,9 +3266,18 @@ function fAiAttack(){
       return;
     }
 
+    // If player has 0 stamina during a submission, instant tap out due to exhaustion!
+    if(!isStand && F.p1.fat <= 0){
+      F.p1.hp = 0;
+      fUpdateHUD();
+      fLog('💥 0 Stamina! Exhausted — you could not defend ' + moveName + '!');
+      fCheckHP();
+      return;
+    }
+
     fLockTechs(true);
-    fShowDef('Defend '+moveName+' — Vise le VERT !', DIFF_CFG[fDiff].defSpd, fDefWin,
-      ()=>{ fLog('✅ Défendu & échappé à '+moveName+' !'); fRef('🛡 DÉFENDU !'); fLockTechs(false); fScheduleAI(); },
+    fShowDef('Defend '+moveName+' — Hit GREEN!', DIFF_CFG[fDiff].defSpd, fDefWin,
+      ()=>{ fLog('✅ Defended & escaped '+moveName+'!'); fRef('🛡 DEFENDED!'); fLockTechs(false); fScheduleAI(); },
       ()=>{
         let d = isStand ? DIFF_CFG[fDiff].dmg : Math.round(DIFF_CFG[fDiff].dmg*2.1);
         if(fightMode==='career'&&C) d=Math.max(1,Math.round(d*(1-C.gymStats.endurance*0.015)));
@@ -2907,7 +3294,8 @@ function fAiAttack(){
         }
         fUpdateHUD(); fLockTechs(false);
         fCheckHP(); if(F&&F.running) fScheduleAI();
-      }
+      },
+      4
     );
   }, 850);
 }
@@ -3014,9 +3402,9 @@ function fSetPhase(ph){
   updateMoveHints();
 }
 
-// ── DEFEND / SUBMISSION TIMING GAUGE ──
+// ── DEFEND / SUBMISSION TIMING GAUGE (2s HARD SPEED IN ONLINE MODE) ──
 function fShowDef(hint, speed, winHalf, onOk, onFail, durationSec){
-  const dur = (typeof durationSec === 'number' && durationSec > 0) ? durationSec : 5;
+  const dur = (typeof durationSec === 'number' && durationSec > 0) ? durationSec : 2;
   document.getElementById('fight-def-wrap').style.display='block';
   document.getElementById('fight-def-hint').textContent=hint;
   document.getElementById('fight-def-btn').disabled=false;
@@ -3030,10 +3418,10 @@ function fShowDef(hint, speed, winHalf, onOk, onFail, durationSec){
     if(fDef.pos<=0){fDef.pos=0;fDef.dir=1;}
     document.getElementById('fight-def-cur').style.left=fDef.pos.toFixed(1)+'%';
   },16);
-  fDef.cd=dur; document.getElementById('fight-def-cd').textContent=dur;
+  fDef.cd=dur; document.getElementById('fight-def-cd').textContent=dur + 's';
   if(fDef.cdInt) clearInterval(fDef.cdInt);
   fDef.cdInt=setInterval(()=>{
-    fDef.cd--; document.getElementById('fight-def-cd').textContent=fDef.cd;
+    fDef.cd--; document.getElementById('fight-def-cd').textContent=Math.max(0,fDef.cd) + 's';
     if(fDef.cd<=0){
       clearInterval(fDef.cdInt); fDef.active=false; fHideDef();
       if(fDef.onFail) fDef.onFail();
@@ -3107,7 +3495,7 @@ function fNextRound(){
   fSetPhase('stand');
   document.getElementById('f-rnd').textContent=F.rnd;
   fUpdateHUD(); fUpdateScore();
-  fLog('Round '+F.rnd+' — Hajime!');
+  fLog('Round '+F.rnd+' — Begin!');
   setTimeout(()=>{ if(F&&F.running&&fightMode!=='online') fScheduleAI(); },1000);
 }
 function fEndDQ(){
@@ -3144,6 +3532,7 @@ function fEndFight(playerWon, method){
 }
 
 function fAllClear(){
+  _tutPaused=false;
   if(fGameInt){clearInterval(fGameInt);fGameInt=null;}
   if(fTimerInt){clearInterval(fTimerInt);fTimerInt=null;}
   if(fAiInt){clearTimeout(fAiInt);fAiInt=null;}
@@ -3181,7 +3570,7 @@ function fShowPost(playerWon,method){
     ${method?`<div class="sm mu" style="margin-top:6px;">Method: ${method}</div>`:''}`;
 
   if(fightMode==='quick'||!C){
-    document.getElementById('post-desc').textContent=playerWon?'Alhamdulillah! Clean Jiu-Jitsu victory.':'Keep drilling on the tatami.';
+    document.getElementById('post-desc').textContent=playerWon?'Clean Jiu-Jitsu victory on the mat!':'Keep drilling on the tatami.';
     document.getElementById('post-fan-card').style.display='none';
     document.getElementById('post-soc-card').style.display='none';
     document.getElementById('post-rank-card').style.display='none';
@@ -3226,7 +3615,6 @@ function fShowPost(playerWon,method){
     }
   }
 
-  // Award UBJJF Championship Belt whenever player reaches #1 or wins Title Bout!
   if(playerWon && C.inUBJJF && (fIsTitleBout || C.rank===1) && !C.hasBelt){
     C.hasBelt=true;
     C.rank=1;
@@ -3293,21 +3681,36 @@ document.addEventListener('keyup',e=>{
 window.addEventListener('resize',()=>{ if(S3.ready) init3DScene(); });
 
 // ═══════════════════════════════════════
-// ONLINE MODE (FIXED: RELIABLE CONNECTION, HEARTBEAT, STUN & SYNC)
+// ONLINE MODE (FIXED P2P CONNECTION + 2s HARD DEFENSE + 0-STAMINA INSTANT SUB)
 // ═══════════════════════════════════════
 let oP=null, oConn=null, oIsP1=false, oMyCode='', oMyName='', oOppName='Opponent';
 let oMyReady=false, oOppReady=false, oLibReady=false;
 let oPingInt=null, oConnectTimeout=null, oStartSent=false;
 
+// Reliable Public ICE / STUN + TURN fallback servers for Mobile/NAT traversal
 const PEER_CFG = {
   debug: 1,
+  secure: true,
   config: {
     iceServers: [
       { urls: 'stun:stun.l.google.com:19302' },
       { urls: 'stun:stun1.l.google.com:19302' },
       { urls: 'stun:stun2.l.google.com:19302' },
-      { urls: 'stun:stun.services.mozilla.com' }
-    ]
+      { urls: 'stun:stun3.l.google.com:19302' },
+      { urls: 'stun:stun4.l.google.com:19302' },
+      { urls: 'stun:stun.relay.metered.ca:80' },
+      {
+        urls: 'turn:global.relay.metered.ca:80',
+        username: 'e8dd65b92f62d3e365b807c9',
+        credential: '3k/6K6G6t5n9G+B2'
+      },
+      {
+        urls: 'turn:global.relay.metered.ca:443?transport=tcp',
+        username: 'e8dd65b92f62d3e365b807c9',
+        credential: '3k/6K6G6t5n9G+B2'
+      }
+    ],
+    iceCandidatePoolSize: 10
   }
 };
 
@@ -3389,7 +3792,7 @@ function onCopyCode(){
   const c=document.getElementById('on-code-box').textContent;
   if(navigator.clipboard) navigator.clipboard.writeText(c).catch(()=>{});
   const b=document.getElementById('on-copy-btn');
-  if(b){ b.textContent='✓ Copied!'; setTimeout(()=>b.textContent='📋 Copy code',1500); }
+  if(b){ b.textContent='✓ Copied!'; setTimeout(()=>b.textContent=t('on_copy'),1500); }
 }
 
 function onUpdateLobbyUI(){
@@ -3439,7 +3842,7 @@ function onBindConn(conn){
     if(oConn && oConn.open){
       try{ oConn.send({type:'ping', name:oMyName, ready:oMyReady}); }catch(e){}
     }
-  }, 1500);
+  }, 1200);
 
   oConn.on('data', data=>{
     if(!data || typeof data!=='object') return;
@@ -3483,7 +3886,9 @@ function onBindConn(conn){
     else if(data.type==='pos' && F && F.running){
       F.p2.x = data.x;
       F.p2.y = data.y;
+      if(typeof data.fat === 'number') F.p2.fat = data.fat;
     }
+    // ── INCOMING ONLINE ATTACK (2 SECONDS HARD GAUGE + INSTANT SUB AT 0 STAMINA) ──
     else if(data.type==='incoming_atk' && F && F.running){
       if(fDef.active) return;
       if(F.guardActive){
@@ -3492,13 +3897,27 @@ function onBindConn(conn){
         document.getElementById('guard-shield-badge').style.display='none';
       }
 
-      fLockTechs(true);
       const isSub = data.kind === 'sub';
-      const promptTxt = (isSub ? '🔥 DÉFENDS LA SOUMISSION : ' : '🛡 DÉFENDS : ') + data.moveName + ' — Vise le VERT (3s) !';
-      fRef('⚠ DÉFENDS : ' + data.moveName.toUpperCase() + ' (3s) !');
-      fLog('⚠ Adversaire tente ' + data.moveName + ' ! Clique au bon moment dans le vert (3s) !');
 
-      fShowDef(promptTxt, 1.4, 0.14,
+      // CRITICAL RULE: If defender has 0 stamina during a submission, instant submission without defense!
+      if(isSub && F.p1.fat <= 0){
+        F.p1.hp = 0;
+        fUpdateHUD();
+        fRef('💥 0 STAMINA — EXHAUSTED!');
+        fLog('💥 0 Stamina! Too exhausted to defend ' + data.moveName + ' — INSTANT SUBMISSION!');
+        onSendAction({ type:'def_result', defended:false, kind:'sub', moveName:data.moveName, exhausted:true });
+        fEndFight(false, data.moveName + ' (Exhausted 0 Stamina)');
+        return;
+      }
+
+      fLockTechs(true);
+      const hardSpeed = DIFF_CFG.hard.defSpd; // 1.95 (Hard speed)
+      const hardWin   = DIFF_CFG.hard.defWin; // 0.08 (Hard green window)
+      const promptTxt = (isSub ? '🔥 DEFEND SUBMISSION: ' : '🛡 DEFEND: ') + data.moveName + ' — Hit GREEN (2s HARD)!';
+      fRef('⚡ DEFEND (2s HARD): ' + data.moveName.toUpperCase() + '!');
+      fLog('⚠ Opponent attacks with ' + data.moveName + '! 2 seconds (HARD) to defend!');
+
+      fShowDef(promptTxt, hardSpeed, hardWin,
         ()=>{
           fLockTechs(false);
           S3.cameraShake = 0.2;
@@ -3537,7 +3956,7 @@ function onBindConn(conn){
             onSendAction({ type:'def_result', defended:false, kind:'pos', moveName:data.moveName, nextPhase:data.nextPhase, ptsAdd:data.ptsAdd||0 });
           }
         },
-        data.duration || 3
+        2 // Strict 2-second defense gauge
       );
     }
     else if(data.type==='def_result' && F && F.running){
@@ -3553,202 +3972,225 @@ function onBindConn(conn){
         if(data.parried) F.p2.pts += 1;
         if(data.kind==='sub' && pend.isFlying){
           fSetPhase('closed_guard_bottom');
-          fLog('🛡 Opponent defended your ' + (data.moveName||'flying submission') + ' — you landed in Closed Guard!');
-        } else if(data.kind==='sub' && (F.phase==='full_mount' || F.phase==='side_control')){
+        } else if(data.kind==='sub' && F.phase==='full_mount'){
           fSetPhase('closed_guard_top');
-          fLog('🛡 Opponent escaped ' + (data.moveName||'submission') + ' and recovered guard!');
-        } else if(F.phase==='clinch'){
-          fSetPhase('stand');
-          fLog('🛡 Opponent sprawled / broke free from your ' + (data.moveName||'attack') + '!');
-        } else {
-          fLog('🛡 Opponent defended your ' + (data.moveName||'move') + '!');
         }
-        fRef('🛡 OPPONENT DEFENDED!');
         fUpdateScore(); fFatUI();
+        fRef('🛡 OPPONENT DEFENDED!');
+        fLog('Opponent defended your ' + (data.moveName||'move') + '!');
       } else {
+        S3.cameraShake = 0.28;
         if(data.kind==='sub'){
           F.p2.hp = 0;
           fUpdateHUD();
-          fLog('🏆 ' + (data.moveName||'Submission') + '! OPPONENT TAPS OUT!');
-          fEndFight(true, data.moveName || 'Submission');
+          const endReason = data.exhausted
+            ? (data.moveName || 'Submission') + ' (Opponent 0 Stamina)'
+            : (data.moveName || 'Submission');
+          fLog('🏆 ' + endReason + ' LOCKED IN! OPPONENT TAPS OUT!');
+          fEndFight(true, endReason);
         } else {
-          const nextPh = data.nextPhase || pend.nextPhase || 'clinch';
-          const ptsAdd = typeof data.ptsAdd==='number' ? data.ptsAdd : (pend.ptsAdd||0);
-          if(nextPh==='clinch'){
-            F.p2.x = F.p1.x + (F.p2.x>=F.p1.x ? 0.08 : -0.08);
-          }
-          fSetPhase(nextPh);
-          F.p1.pts += ptsAdd;
-          S3.cameraShake = 0.25;
+          const targetPh = data.nextPhase || pend.nextPhase || 'clinch';
+          const ptsEarned = data.ptsAdd || pend.ptsAdd || 0;
+          if(ptsEarned) F.p1.pts += ptsEarned;
+          fSetPhase(targetPh);
           fUpdateScore();
-          fRef(ptsAdd>0 ? ('🏅 ' + (data.moveName||'Move') + '! +' + ptsAdd + ' pts') : ('🥋 ' + (data.moveName||'Position') + '!'));
-          fLog('✅ ' + (data.moveName||'Move') + ' succeeded! Now in ' + POS_LABELS[nextPh] + '!');
+          fRef('🏅 ' + (data.moveName||'MOVE').toUpperCase() + (ptsEarned?(' +'+ptsEarned+' pts'):''));
+          fLog('Landed ' + (data.moveName||'move') + '! Now in ' + POS_LABELS[targetPh] + '!');
         }
       }
     }
-    else if(data.type==='sync' && F && F.running){
-      const mirrorMap={
-        closed_guard_top:'closed_guard_bottom',
-        closed_guard_bottom:'closed_guard_top',
-        half_guard:'bottom_pinned',
-        full_mount:'bottom_pinned',
-        side_control:'bottom_pinned',
-        back_control:'bottom_pinned',
-        bottom_pinned:'full_mount'
-      };
-      if(data.phase) fSetPhase(mirrorMap[data.phase] || data.phase);
-      if(typeof data.pts==='number') F.p2.pts = data.pts;
-      if(typeof data.hp==='number') F.p1.hp = data.hp;
-      fUpdateHUD(); fUpdateScore(); fCheckHP();
-    }
     else if(data.type==='parry' && F && F.running){
-      F.p2.pts = data.pts || (F.p2.pts+1);
+      F.p2.pts = data.pts || (F.p2.pts + 1);
       fUpdateScore();
-      fRef('⚡ Opponent parried!');
+      fRef('🛡 Opponent Parried! (+1 pt)');
+    }
+    else if(data.type==='sync' && F && F.running){
+      if(data.phase) fSetPhase(data.phase);
+      if(typeof data.pts==='number') F.p2.pts=data.pts;
+      if(typeof data.hp==='number') F.p1.hp=data.hp;
+      fUpdateHUD(); fUpdateScore();
+      fCheckHP();
     }
     else if(data.type==='sub_win' && F && F.running){
-      F.p1.hp = 0;
-      fUpdateHUD();
-      fEndFight(false, data.method || 'Submission');
+      F.p1.hp=0; fUpdateHUD();
+      fEndFight(false, data.method||'Submission');
     }
   });
 
   oConn.on('close',()=>{
     if(oPingInt){ clearInterval(oPingInt); oPingInt=null; }
-    if(F && F.running){
-      fEndFight(true, 'Opponent disconnected');
-    } else {
-      onStatus('Opponent disconnected.','off');
+    if(F&&F.running&&fightMode==='online'){
+      fEndFight(true,'Opponent disconnected');
+    } else if(document.getElementById('scr-on-create').classList.contains('on')){
+      oOppReady=false; oMyReady=false;
+      document.getElementById('on-p2-dot').className='on-dot';
+      document.getElementById('on-p2-slot').textContent='Opponent disconnected — waiting...';
+      document.getElementById('on-p1-ready-btn').disabled=true;
+      document.getElementById('on-p1-ready-btn').textContent='Waiting for opponent...';
+    } else if(document.getElementById('scr-on-wait').classList.contains('on')){
+      alert('Host closed the room.');
+      onLeave(); goScr('scr-online');
     }
   });
 
   oConn.on('error', err=>{
-    console.warn('Conn error:', err);
+    console.warn('Peer connection error:', err);
   });
 }
 
-function onSendAction(payload){
-  if(fightMode==='online' && oConn && oConn.open){
-    try{ oConn.send(payload); }catch(e){}
+function onGoCreate(){
+  if(!onEnsureOnline()) return;
+  oIsP1=true; oMyReady=false; oOppReady=false; oStartSent=false;
+  oMyCode=onRandCode();
+  oMyName=(document.getElementById('on-p1-name').value.trim()||'Player 1');
+  document.getElementById('on-code-box').textContent=oMyCode.toUpperCase();
+  document.getElementById('on-p1-slot').textContent=oMyName+' (you)';
+  document.getElementById('on-p2-dot').className='on-dot';
+  document.getElementById('on-p2-slot').textContent='Waiting for opponent...';
+  document.getElementById('on-create-st').textContent='Creating room...';
+  document.getElementById('on-p1-ready-btn').disabled=true;
+  document.getElementById('on-p1-ready-btn').textContent='Waiting for opponent...';
+  goScr('scr-on-create');
+
+  if(oP){try{oP.destroy();}catch(e){}}
+  oP=new Peer('bjjroom_'+oMyCode, PEER_CFG);
+
+  oP.on('open',()=>{
+    document.getElementById('on-create-st').textContent='Room open! Share code '+oMyCode.toUpperCase()+' with your friend.';
+  });
+
+  oP.on('connection',conn=>{
+    oMyName=(document.getElementById('on-p1-name').value.trim()||'Player 1');
+    onBindConn(conn);
+    conn.on('open',()=>{
+      document.getElementById('on-p2-dot').className='on-dot ok';
+      document.getElementById('on-p2-slot').textContent=oOppName+' (connected)';
+      document.getElementById('on-create-st').textContent='Opponent joined! Both press Ready!';
+      document.getElementById('on-p1-ready-btn').disabled=false;
+      document.getElementById('on-p1-ready-btn').textContent="I'm ready!";
+      try{ conn.send({type:'hello', name:oMyName, ready:oMyReady}); }catch(e){}
+      onUpdateLobbyUI();
+    });
+  });
+
+  oP.on('error',e=>{
+    if(e.type === 'unavailable-id'){
+      // Retry with fresh code if ID collision
+      onGoCreate();
+      return;
+    }
+    document.getElementById('on-create-st').textContent='Connection error ('+e.type+'). Check your internet.';
+  });
+}
+
+function onJoinRoom(){
+  if(!onEnsureOnline()) return;
+  const rawCode=document.getElementById('on-join-code').value.trim().toLowerCase().replace(/[^a-z0-9]/g,'');
+  oMyName=(document.getElementById('on-p2-name').value.trim()||'Player 2');
+  const errEl=document.getElementById('on-join-err');
+  if(rawCode.length<4){errEl.textContent='Enter the 6-character room code.';return;}
+  errEl.textContent='Connecting to room '+rawCode.toUpperCase()+'...';
+  oIsP1=false; oMyReady=false; oOppReady=false; oStartSent=false;
+
+  if(oP){try{oP.destroy();}catch(e){}}
+  if(oConnectTimeout){clearTimeout(oConnectTimeout);oConnectTimeout=null;}
+
+  oP=new Peer(PEER_CFG);
+
+  oP.on('open',()=>{
+    const conn=oP.connect('bjjroom_'+rawCode, {
+      reliable: true,
+      serialization: 'json',
+      metadata: { name: oMyName }
+    });
+    onBindConn(conn);
+
+    oConnectTimeout = setTimeout(()=>{
+      if(!conn.open){
+        errEl.textContent='Room not found or network timeout. Check the code and ensure your friend is in Create Room.';
+      }
+    }, 10000);
+
+    conn.on('open',()=>{
+      if(oConnectTimeout){clearTimeout(oConnectTimeout);oConnectTimeout=null;}
+      errEl.textContent='';
+      document.getElementById('on-w-p2').textContent=oMyName+' (you)';
+      document.getElementById('on-wait-btn').disabled=false;
+      document.getElementById('on-wait-btn').textContent="I'm ready!";
+      goScr('scr-on-wait');
+      try{ conn.send({type:'hello', name:oMyName, ready:oMyReady}); }catch(e){}
+      onUpdateLobbyUI();
+    });
+
+    conn.on('error', err=>{
+      if(oConnectTimeout){clearTimeout(oConnectTimeout);oConnectTimeout=null;}
+      errEl.textContent='Could not connect to room: ' + (err.message || err);
+    });
+  });
+
+  oP.on('error', e=>{
+    if(oConnectTimeout){clearTimeout(oConnectTimeout);oConnectTimeout=null;}
+    if(e.type==='peer-unavailable'){
+      errEl.textContent='Room "'+rawCode.toUpperCase()+'" not found! Ask your friend to stay on the Create Room screen.';
+    } else {
+      errEl.textContent='Network error ('+e.type+'). Please check your internet connection.';
+    }
+  });
+}
+
+function onSetReady(){
+  if(!oConn || !oConn.open){
+    alert('Not connected to opponent yet.');
+    return;
+  }
+  oMyName = oIsP1
+    ? (document.getElementById('on-p1-name').value.trim()||oMyName||'Player 1')
+    : (document.getElementById('on-p2-name').value.trim()||oMyName||'Player 2');
+  oMyReady=true;
+  onUpdateLobbyUI();
+  try{ oConn.send({type:'ready', name:oMyName}); }catch(e){}
+  if(oMyReady && oOppReady && !oStartSent){
+    onTriggerMatchStart();
   }
 }
 
 function onTriggerMatchStart(){
   if(oStartSent) return;
   oStartSent = true;
-  onSendAction({type:'start', name:oMyName});
-  setTimeout(()=>onSendAction({type:'start', name:oMyName}), 150);
+  if(oConn && oConn.open){
+    try{ oConn.send({type:'start', name:oMyName}); }catch(e){}
+  }
   onStartMatch();
 }
 
-async function onGoCreate(){
-  if(!onEnsureOnline()) return;
-  onLeave();
-  oIsP1=true; oMyReady=false; oOppReady=false; oStartSent=false;
-  oMyName=document.getElementById('on-p1-name').value.trim()||'Player 1';
-  oMyCode=onRandCode();
-  document.getElementById('on-code-box').textContent=oMyCode.toUpperCase();
-  document.getElementById('on-p1-slot').textContent=oMyName+' (you)';
-  document.getElementById('on-p2-slot').textContent='Waiting for opponent...';
-  document.getElementById('on-p2-dot').className='on-dot';
-  document.getElementById('on-p1-ready-btn').disabled=true;
-  document.getElementById('on-p1-ready-btn').textContent='Waiting for opponent...';
-  document.getElementById('on-create-st').textContent='Opening room...';
-  goScr('scr-on-create');
-
-  oP=new Peer('bjjtry-'+oMyCode, PEER_CFG);
-  oP.on('open',()=>{
-    document.getElementById('on-create-st').textContent='Room open — share code with your friend!';
-  });
-  oP.on('error',err=>{
-    document.getElementById('on-create-st').textContent='Network error: '+err.type+' (try creating again)';
-  });
-  oP.on('connection',conn=>{
-    onBindConn(conn);
-    const onOpenHandler = ()=>{
-      oMyName=document.getElementById('on-p1-name').value.trim()||oMyName;
-      onUpdateLobbyUI();
-      try{ conn.send({type:'hello', name:oMyName, ready:oMyReady}); }catch(e){}
-    };
-    if(conn.open) onOpenHandler();
-    else conn.on('open', onOpenHandler);
-  });
-}
-
-async function onJoinRoom(){
-  if(!onEnsureOnline()) return;
-  const raw=document.getElementById('on-join-code').value.trim().toLowerCase();
-  const errEl=document.getElementById('on-join-err');
-  if(raw.length!==6){ errEl.textContent='Please enter a 6-character code.'; return; }
-  errEl.textContent='Connecting to room '+raw.toUpperCase()+'...';
-  onLeave();
-  oIsP1=false; oMyReady=false; oOppReady=false; oStartSent=false;
-  oMyName=document.getElementById('on-p2-name').value.trim()||'Player 2';
-
-  oP=new Peer(PEER_CFG);
-  oConnectTimeout=setTimeout(()=>{
-    if(!oConn || !oConn.open){
-      errEl.textContent='Connection timed out. Make sure your friend has the Create Room screen open and check the code!';
-    }
-  }, 12000);
-
-  oP.on('error',err=>{
-    if(oConnectTimeout){ clearTimeout(oConnectTimeout); oConnectTimeout=null; }
-    if(err.type==='peer-unavailable'){
-      errEl.textContent='Room not found! Check the 6-letter code or ask your friend to keep the room open.';
-    } else {
-      errEl.textContent='Connection error ('+err.type+'). Try again!';
-    }
-  });
-
-  oP.on('open',()=>{
-    const conn=oP.connect('bjjtry-'+raw, {reliable:true, serialization:'json'});
-    onBindConn(conn);
-    const onOpenHandler = ()=>{
-      if(oConnectTimeout){ clearTimeout(oConnectTimeout); oConnectTimeout=null; }
-      errEl.textContent='';
-      onUpdateLobbyUI();
-      goScr('scr-on-wait');
-      try{ conn.send({type:'hello', name:oMyName, ready:oMyReady}); }catch(e){}
-      setTimeout(()=>{ try{ conn.send({type:'hello', name:oMyName, ready:oMyReady}); }catch(e){} }, 400);
-    };
-    if(conn.open) onOpenHandler();
-    else conn.on('open', onOpenHandler);
-  });
-}
-
-function onSetReady(){
-  if(!navigator.onLine){ onEnsureOnline(); return; }
-  if(!oConn || !oConn.open){
-    alert('Not connected to opponent yet! Please wait a moment or rejoin the room.');
-    return;
-  }
-  if(oIsP1) oMyName=document.getElementById('on-p1-name').value.trim()||oMyName;
-  else oMyName=document.getElementById('on-p2-name').value.trim()||oMyName;
-
-  oMyReady=true;
-  onUpdateLobbyUI();
-  onSendAction({type:'ready', name:oMyName});
-  setTimeout(()=>onSendAction({type:'ready', name:oMyName}), 250);
-
-  if(oMyReady && oOppReady && !oStartSent){
-    onTriggerMatchStart();
-  }
-}
-
 function onStartMatch(){
-  if(!navigator.onLine){ onEnsureOnline(); return; }
   if(oPingInt){ clearInterval(oPingInt); oPingInt=null; }
-  launchFight({mode:'online', diff:'medium', pName:oMyName, aName:oOppName});
+  launchFight({mode:'online', diff:'hard', pName:oMyName, aName:oOppName});
+}
+
+function onSendAction(act){
+  if(fightMode==='online' && oConn && oConn.open){
+    try{ oConn.send(act); }catch(e){}
+  }
 }
 
 function onLeave(){
-  oMyReady=false; oOppReady=false; oStartSent=false;
   if(oPingInt){ clearInterval(oPingInt); oPingInt=null; }
   if(oConnectTimeout){ clearTimeout(oConnectTimeout); oConnectTimeout=null; }
-  if(oConn){try{oConn.close();}catch(e){} oConn=null;}
-  if(oP){try{oP.destroy();}catch(e){} oP=null;}
+  oMyReady=false; oOppReady=false; oStartSent=false;
+  if(oConn){try{oConn.close();}catch(e){}oConn=null;}
+  if(oP){try{oP.destroy();}catch(e){}oP=null;}
 }
+
+// ── RESTORE SAVED ORIENTATION / LANGUAGE IF ANY ──
+(function initBootPrefs(){
+  try{
+    const savedOrient = localStorage.getItem('bjj_orient');
+    const savedLang = localStorage.getItem('bjj_lang');
+    if(savedOrient) pickOrient(savedOrient);
+    if(savedLang) pickLang(savedLang);
+  }catch(e){}
+})();
 </script>
 </body>
 </html>
