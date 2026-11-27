@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
@@ -51,15 +51,19 @@ select option{background:var(--bg3);}
 .mi-title{font-size:15px;font-weight:600;display:flex;align-items:center;gap:6px;}
 .mi-desc{font-size:12px;color:var(--tx2);}
 
-/* SETUP SELECTION CARDS */
-.sel-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:14px 0;}
+/* SETUP & OUTFIT SELECTION CARDS */
+.sel-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:12px 0;}
 .sel-grid.three{grid-template-columns:repeat(3,1fr);}
-.sel-card{background:var(--bg2);border:2px solid var(--bo2);border-radius:14px;padding:18px 10px;text-align:center;cursor:pointer;transition:all .15s;}
+.sel-card{background:var(--bg2);border:2px solid var(--bo2);border-radius:14px;padding:14px 10px;text-align:center;cursor:pointer;transition:all .15s;}
 .sel-card:hover{background:var(--bg3);}
 .sel-card.active{border-color:var(--g);background:rgba(29,158,117,0.16);box-shadow:0 0 18px rgba(29,158,117,0.28);}
-.sel-card-icon{font-size:30px;margin-bottom:6px;}
-.sel-card-title{font-size:15px;font-weight:700;}
+.sel-card-icon{font-size:28px;margin-bottom:4px;}
+.sel-card-title{font-size:14px;font-weight:700;}
 .sel-card-sub{font-size:11px;color:var(--tx2);margin-top:3px;}
+
+.swatch-gi{width:46px;height:46px;border-radius:11px;margin:0 auto 8px;border:2px solid rgba(255,255,255,0.28);box-shadow:0 3px 10px rgba(0,0,0,0.45);}
+.swatch-belt{width:56px;height:14px;border-radius:4px;margin:0 auto 8px;border:1px solid rgba(255,255,255,0.3);position:relative;}
+.swatch-belt::after{content:'';position:absolute;right:6px;top:0;bottom:0;width:8px;background:#dc2626;}
 
 .nat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-bottom:12px;}
 .nat-btn{padding:10px 8px;border-radius:var(--rad);border:1px solid var(--bo);background:var(--bg2);color:var(--tx);font-size:13px;cursor:pointer;text-align:center;transition:all .12s;}
@@ -211,12 +215,13 @@ select option{background:var(--bg3);}
 
 #fps-counter{position:fixed;top:calc(env(safe-area-inset-top,0px) + 4px);right:max(8px,env(safe-area-inset-right,0px));font-size:10px;font-weight:700;color:var(--g);background:rgba(0,0,0,0.6);padding:2px 6px;border-radius:4px;z-index:999;display:none;}
 
-/* ── ARCADE CONTROLS ── */
+/* ── ARCADE CONTROLS (JOYSTICK ALONE LEFT, BUTTONS TOGETHER RIGHT) ── */
 #arcade-controls{
-  display:flex;align-items:center;justify-content:space-between;
-  gap:10px;margin-top:6px;padding:8px 6px;
+  display:flex;align-items:flex-end;justify-content:space-between;
+  gap:12px;margin-top:8px;padding:10px 8px;
   background:var(--bg2);border:1px solid var(--bo);border-radius:14px;
   user-select:none;-webkit-user-select:none;
+  direction:ltr;
 }
 #analog-zone{
   display:flex;flex-direction:column;align-items:center;gap:4px;flex-shrink:0;
@@ -257,7 +262,7 @@ select option{background:var(--bg3);}
 #joy-outs-lbl{font-size:10px;color:var(--tx3);text-align:center;}
 
 #action-cluster{
-  flex:1;display:flex;flex-direction:column;gap:7px;min-width:0;
+  display:flex;flex-direction:column;gap:7px;width:58%;max-width:250px;margin-left:auto;
 }
 .act-row{display:flex;gap:8px;justify-content:center;}
 .act-btn{
@@ -309,6 +314,7 @@ select option{background:var(--bg3);}
 
 /* ═══════════════════════════════════════
    HORIZONTAL / LANDSCAPE MODE LAYOUT
+   (JOYSTICK & CONTROLS ON LEFT, ARENA ON RIGHT)
    ═══════════════════════════════════════ */
 body.is-landscape #app{
   max-width:1020px;
@@ -323,38 +329,59 @@ body.is-landscape #scr-menu .mi{margin-bottom:0;}
 body.is-landscape .cnav{grid-template-columns:repeat(3,1fr);}
 body.is-landscape .nat-grid{grid-template-columns:repeat(4,1fr);}
 
-/* Landscape Fight Screen: Spacious Left Arena + Right Controls */
 body.is-landscape #scr-fight{padding-top:4px;}
 body.is-landscape .fight-landscape-grid{
-  display:grid;
-  grid-template-columns:1.35fr 1fr;
-  gap:12px;
-  align-items:start;
-}
-body.is-landscape #fight-arena-wrap{
-  padding-bottom:62%;
-  margin-bottom:0;
-}
-body.is-landscape .fight-right-col{
   display:flex;
   flex-direction:column;
-  gap:5px;
+  gap:6px;
+  direction:ltr;
+}
+body.is-landscape .fight-arena-col{
+  width:100%;
+}
+body.is-landscape #fight-arena-wrap{
+  padding-bottom:36%;
+  margin-bottom:0;
+}
+body.is-landscape .fight-controls-col{
+  width:100%;
+  display:flex;
+  flex-direction:column;
+  gap:4px;
 }
 body.is-landscape #fight-log{
-  min-height:24px;
-  padding:4px 8px;
-  margin-bottom:2px;
+  min-height:22px;
+  padding:3px 8px;
+  margin-bottom:0;
   font-size:11px;
 }
 body.is-landscape #arcade-controls{
-  margin-top:0;
-  padding:8px;
+  margin-top:2px;
+  padding:6px 14px;
+  justify-content:space-between;
+  align-items:center;
+  background:transparent;
+  border:none;
+}
+body.is-landscape #analog-zone{
+  background:var(--bg2);
+  border:1px solid var(--bo2);
+  border-radius:16px;
+  padding:8px 12px;
+}
+body.is-landscape #action-cluster{
+  background:var(--bg2);
+  border:1px solid var(--bo2);
+  border-radius:16px;
+  padding:8px 10px;
+  width:270px;
+  max-width:44%;
 }
 body.is-landscape #stick-base{
-  width:110px;height:110px;
+  width:112px;height:112px;
 }
 body.is-landscape .act-btn{
-  min-height:48px;
+  min-height:46px;
 }
 body.is-landscape #tut-banner{
   max-width:620px;
@@ -367,7 +394,7 @@ body.is-landscape #tut-banner{
 <div id="fps-counter">60 FPS</div>
 <div id="app">
 
-<!-- STEP 1: LANGUAGE SELECTION (FRANÇAIS / ENGLISH / العربية - NO EMOJIS) -->
+<!-- STEP 1: LANGUAGE SELECTION (FRANÇAIS / ENGLISH / العربية) -->
 <div id="scr-lang" class="scr on">
   <div class="ttl">BJJ: Try Game</div>
   <div class="sub-ttl">SHADOW 3D GRAPPLING</div>
@@ -389,7 +416,7 @@ body.is-landscape #tut-banner{
   </div>
 </div>
 
-<!-- STEP 2: ORIENTATION SELECTION (PORTRAIT vs HORIZONTAL - TRANSLATED & NO EMOJIS) -->
+<!-- STEP 2: ORIENTATION SELECTION -->
 <div id="scr-orient" class="scr">
   <button class="bk" onclick="goScr('scr-lang')" data-i18n="bk">← Back</button>
   <div class="ttl" style="padding-top:6px;">BJJ: Try Game</div>
@@ -403,7 +430,7 @@ body.is-landscape #tut-banner{
       </div>
       <div class="sel-card" id="opt-landscape" onclick="pickOrient('landscape')">
         <div class="sel-card-title" style="padding:6px 0;" data-i18n="orient_land">Horizontal</div>
-        <div class="sel-card-sub" data-i18n="orient_land_d">Wide arena &amp; side controls</div>
+        <div class="sel-card-sub" data-i18n="orient_land_d">Wide arena &amp; left joystick</div>
       </div>
     </div>
     <button class="btn ac" onclick="confirmOrient()" data-i18n="orient_confirm">Confirm</button>
@@ -439,6 +466,13 @@ body.is-landscape #tut-banner{
         <div class="mi-desc" data-i18n="m_online_d">Fight a friend in real time</div>
       </div>
     </div>
+    <div class="mi" onclick="goScr('scr-outfit')">
+      <div class="mi-icon" style="background:rgba(37,99,235,0.22);">👘</div>
+      <div>
+        <div class="mi-title"><span data-i18n="m_outfit">Outfit</span> <span class="bdg bl" id="menu-outfit-badge">White • White</span></div>
+        <div class="mi-desc" data-i18n="m_outfit_d">Customize your Gi &amp; Belt (Player X only)</div>
+      </div>
+    </div>
     <div class="mi" onclick="openCredits(false)">
       <div class="mi-icon" style="background:rgba(234,179,8,0.18);">📜</div>
       <div><div class="mi-title" data-i18n="m_credits">Credits</div><div class="mi-desc" data-i18n="m_credits_d">Authors, Shadow Engine &amp; concept</div></div>
@@ -448,6 +482,57 @@ body.is-landscape #tut-banner{
     <button class="btn sm-btn" onclick="goScr('scr-lang')" style="font-size:11px;color:var(--tx2);border-color:var(--bo2);" data-i18n="btn_settings">⚙️ Screen &amp; Language</button>
     <button class="btn sm-btn" onclick="toggleFPS()" id="fps-toggle-btn" style="font-size:11px;color:var(--tx3);border-color:var(--bo);">📊 Show FPS</button>
   </div>
+</div>
+
+<!-- OUTFIT & BELT SCREEN (TENUE & CEINTURE — PLAYER X ONLY) -->
+<div id="scr-outfit" class="scr">
+  <button class="bk" onclick="goScr('scr-menu')" data-i18n="bk">← Back</button>
+  <h2 data-i18n="outfit_title">Outfit &amp; Belt</h2>
+  <div class="sm mu" style="margin-bottom:10px;" data-i18n="outfit_sub">Unlocked from the start. Only you (Player X) see your custom outfit in matches.</div>
+
+  <div class="cd" style="margin-bottom:10px;">
+    <div style="font-size:14px;font-weight:700;margin-bottom:4px;" data-i18n="gi_section">Kimono (Gi)</div>
+    <div class="sel-grid" style="margin-bottom:2px;">
+      <div class="sel-card active" id="opt-gi-white" onclick="pickGi('white')">
+        <div class="swatch-gi" style="background:#f8fafc;"></div>
+        <div class="sel-card-title" data-i18n="col_white">White</div>
+        <div class="sel-card-sub" data-i18n="default_unlocked">Default • Unlocked</div>
+      </div>
+      <div class="sel-card" id="opt-gi-blue" onclick="pickGi('blue')">
+        <div class="swatch-gi" style="background:#1d4ed8;"></div>
+        <div class="sel-card-title" data-i18n="col_blue">Blue</div>
+        <div class="sel-card-sub" data-i18n="unlocked_start">Unlocked</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cd" style="margin-bottom:12px;">
+    <div style="font-size:14px;font-weight:700;margin-bottom:4px;" data-i18n="belt_section">Belt</div>
+    <div class="sel-grid" style="margin-bottom:2px;">
+      <div class="sel-card active" id="opt-belt-white" onclick="pickBelt('white')">
+        <div class="swatch-belt" style="background:#f8fafc;"></div>
+        <div class="sel-card-title" data-i18n="col_white">White</div>
+        <div class="sel-card-sub" data-i18n="default_unlocked">Default • Unlocked</div>
+      </div>
+      <div class="sel-card" id="opt-belt-blue" onclick="pickBelt('blue')">
+        <div class="swatch-belt" style="background:#2563eb;"></div>
+        <div class="sel-card-title" data-i18n="col_blue">Blue</div>
+        <div class="sel-card-sub" data-i18n="unlocked_start">Unlocked</div>
+      </div>
+      <div class="sel-card" id="opt-belt-purple" onclick="pickBelt('purple')">
+        <div class="swatch-belt" style="background:#7e22ce;"></div>
+        <div class="sel-card-title" data-i18n="col_purple">Purple</div>
+        <div class="sel-card-sub" data-i18n="unlocked_start">Unlocked</div>
+      </div>
+      <div class="sel-card" id="opt-belt-black" onclick="pickBelt('black')">
+        <div class="swatch-belt" style="background:#111827;"></div>
+        <div class="sel-card-title" data-i18n="col_black">Black</div>
+        <div class="sel-card-sub" data-i18n="unlocked_start">Unlocked</div>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn ac" onclick="goScr('scr-menu')" data-i18n="outfit_save">Save &amp; Back</button>
 </div>
 
 <!-- QUICK DIFF -->
@@ -584,7 +669,7 @@ body.is-landscape #tut-banner{
   <button class="btn ac" onclick="launchCareerFight()" data-i18n="fight_now">Fight now</button>
 </div>
 
-<!-- FIGHT SCREEN (SUPPORTS BOTH PORTRAIT & HORIZONTAL LAYOUTS) -->
+<!-- FIGHT SCREEN (PORTRAIT & HORIZONTAL WITH JOYSTICK ON LEFT) -->
 <div id="scr-fight" class="scr">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
     <button class="bk" style="padding:0;font-size:12px;" onclick="confirmQuitFight()" data-i18n="quit_match">← Quit match</button>
@@ -607,8 +692,8 @@ body.is-landscape #tut-banner{
   </div>
 
   <div class="fight-landscape-grid">
-    <div class="fight-left-col">
-      <!-- SHADOW DOJO VIEWPORT -->
+    <!-- ARENA COLUMN (TOP IN PORTRAIT, RIGHT IN HORIZONTAL) -->
+    <div class="fight-arena-col">
       <div id="fight-arena-wrap">
         <canvas id="fight-canvas"></canvas>
         <div id="pos-badge">STANDING</div>
@@ -621,7 +706,8 @@ body.is-landscape #tut-banner{
       </div>
     </div>
 
-    <div class="fight-right-col">
+    <!-- CONTROLS COLUMN (BOTTOM IN PORTRAIT, LEFT IN HORIZONTAL) -->
+    <div class="fight-controls-col">
       <div id="fight-score-row">
         <div class="f-sc-box"><div class="f-sc-pts" id="f-sc1">0</div><div class="f-sc-lbl" id="f-sc1-lbl">P1</div></div>
         <div style="color:var(--tx3);font-size:12px;">pts</div>
@@ -662,7 +748,7 @@ body.is-landscape #tut-banner{
         <div id="getup-timer" style="display:none;">Time left: <span id="getup-cd">5</span>s</div>
       </div>
 
-      <!-- JOYSTICK + 3 BUTTONS (YELLOW / BLUE / RED) -->
+      <!-- JOYSTICK (ALWAYS ON LEFT) + 3 BUTTONS (YELLOW / BLUE / RED) -->
       <div id="arcade-controls">
         <div id="analog-zone">
           <div id="stick-base">
@@ -822,7 +908,7 @@ body.is-landscape #tut-banner{
   </div>
 </div>
 
-<!-- ONLINE SCREENS (INTERNET MANDATORY) -->
+<!-- ONLINE SCREENS -->
 <div id="scr-online" class="scr">
   <button class="bk" onclick="onLeave();goScr('scr-menu')" data-i18n="bk">← Back</button>
   <h2 data-i18n="m_online">Online mode</h2>
@@ -883,7 +969,7 @@ body.is-landscape #tut-banner{
 
 </div><!-- #app -->
 
-<!-- NON-BLOCKING CDN SCRIPTS FOR ONLINE 3D & PEERJS -->
+<!-- NON-BLOCKING CDN SCRIPTS -->
 <script>
 window._threeLoaded = false;
 window._peerLoaded = false;
@@ -900,8 +986,16 @@ function loadExtScript(src, onloadCb){
 loadExtScript('https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js', ok => {
   window._threeLoaded = ok && (typeof THREE !== 'undefined');
 });
-loadExtScript('https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.4/peerjs.min.js', ok => {
-  window._peerLoaded = ok && (typeof Peer !== 'undefined');
+function loadPeerWithFallback(cb){
+  loadExtScript('https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js', ok1 => {
+    if(ok1 && typeof Peer !== 'undefined'){ if(cb) cb(true); return; }
+    loadExtScript('https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.4/peerjs.min.js', ok2 => {
+      if(cb) cb(ok2 && typeof Peer !== 'undefined');
+    });
+  });
+}
+loadPeerWithFallback(ok => {
+  window._peerLoaded = ok;
   if(document.getElementById('scr-online').classList.contains('on')) onInitLib();
 });
 
@@ -945,6 +1039,68 @@ document.addEventListener('DOMContentLoaded', updateMenuNetBadge);
 'use strict';
 
 // ═══════════════════════════════════════
+// OUTFIT & BELT STATE (PLAYER X ONLY — UNLOCKED AT START)
+// ═══════════════════════════════════════
+let playerOutfit = { gi: 'white', belt: 'white' };
+
+const GI_COLORS = {
+  white: { hex3d: 0xf8fafc, hex2d: '#f8fafc' },
+  blue:  { hex3d: 0x1d4ed8, hex2d: '#1d4ed8' }
+};
+const BELT_COLORS = {
+  white:  { hex3d: 0xf1f5f9, hex2d: '#f1f5f9' },
+  blue:   { hex3d: 0x2563eb, hex2d: '#2563eb' },
+  purple: { hex3d: 0x7e22ce, hex2d: '#7e22ce' },
+  black:  { hex3d: 0x111827, hex2d: '#111827' }
+};
+
+function getPlayerXColors(){
+  const gi = GI_COLORS[playerOutfit.gi] || GI_COLORS.white;
+  const belt = BELT_COLORS[playerOutfit.belt] || BELT_COLORS.white;
+  return { gi, belt };
+}
+
+function pickGi(col){
+  if(!GI_COLORS[col]) return;
+  playerOutfit.gi = col;
+  try{ localStorage.setItem('bjj_outfit', JSON.stringify(playerOutfit)); }catch(e){}
+  updateOutfitUI();
+  applyPlayerXOutfitTo3D();
+}
+
+function pickBelt(col){
+  if(!BELT_COLORS[col]) return;
+  playerOutfit.belt = col;
+  try{ localStorage.setItem('bjj_outfit', JSON.stringify(playerOutfit)); }catch(e){}
+  updateOutfitUI();
+  applyPlayerXOutfitTo3D();
+}
+
+function updateOutfitUI(){
+  ['white','blue'].forEach(c=>{
+    const el = document.getElementById('opt-gi-'+c);
+    if(el) el.classList.toggle('active', playerOutfit.gi === c);
+  });
+  ['white','blue','purple','black'].forEach(c=>{
+    const el = document.getElementById('opt-belt-'+c);
+    if(el) el.classList.toggle('active', playerOutfit.belt === c);
+  });
+  const badge = document.getElementById('menu-outfit-badge');
+  if(badge){
+    const giLabel = t('col_' + playerOutfit.gi);
+    const beltLabel = t('col_' + playerOutfit.belt);
+    badge.textContent = giLabel + ' • ' + beltLabel;
+  }
+}
+
+function applyPlayerXOutfitTo3D(){
+  if(!S3.ready || !S3.p1 || S3.use2D || typeof THREE === 'undefined') return;
+  const cols = getPlayerXColors();
+  if(S3.p1.giMat) S3.p1.giMat.color.setHex(cols.gi.hex3d);
+  if(S3.p1.beltMat) S3.p1.beltMat.color.setHex(cols.belt.hex3d);
+}
+
+// ═══════════════════════════════════════
 // ORIENTATION & LOCALIZATION (FR / EN / AR)
 // ═══════════════════════════════════════
 let gameOrient = 'portrait';
@@ -961,10 +1117,20 @@ const I18N = {
     m_career_d: 'Build your UBJJF legacy & win the World Belt',
     m_online: 'Online mode', b_online: 'ONLINE',
     m_online_d: 'Fight a friend in real time',
+    m_outfit: 'Outfit',
+    m_outfit_d: 'Customize your Gi & Belt (Player X only)',
+    outfit_title: 'Outfit & Belt',
+    outfit_sub: 'Unlocked from the start. Only you (Player X) see your custom outfit in matches.',
+    gi_section: 'Kimono (Gi)',
+    belt_section: 'Belt',
+    col_white: 'White', col_blue: 'Blue', col_purple: 'Purple', col_black: 'Black',
+    default_unlocked: 'Default • Unlocked',
+    unlocked_start: 'Unlocked',
+    outfit_save: 'Save & Back',
     m_credits: 'Credits',
     m_credits_d: 'Authors, Shadow Engine & concept',
     btn_settings: '⚙️ Language & Screen',
-    orient_title: 'Screen Orientation', orient_desc: 'Choose Portrait or Horizontal layout', orient_port: 'Portrait', orient_port_d: 'Vertical view', orient_land: 'Horizontal', orient_land_d: 'Wide arena & side controls', orient_confirm: 'Confirm',
+    orient_title: 'Screen Orientation', orient_desc: 'Choose Portrait or Horizontal layout', orient_port: 'Portrait', orient_port_d: 'Vertical view', orient_land: 'Horizontal', orient_land_d: 'Wide arena & left joystick', orient_confirm: 'Confirm',
     bk: '← Back', bk_menu: '← Main menu', bk_hub: '← Career hub',
     qm_title: 'Quick match (Offline)', qm_choose: 'Choose difficulty',
     diff_easy: 'Easy (White Belt AI)', diff_med: 'Medium (Purple Belt AI)', diff_hard: 'Hard (Black Belt AI)',
@@ -1005,10 +1171,20 @@ const I18N = {
     m_career_d: 'Construis ta légende UBJJF et gagne la ceinture',
     m_online: 'Mode En ligne', b_online: 'EN LIGNE',
     m_online_d: 'Affronte ton pote en temps réel',
+    m_outfit: 'Tenue',
+    m_outfit_d: 'Choisis ton Kimono & ta Ceinture (Joueur X uniquement)',
+    outfit_title: 'Tenue & Ceinture',
+    outfit_sub: 'Débloqué dès le début. Seul toi (Joueur X) vois ta tenue personnalisée en combat.',
+    gi_section: 'Kimono (Gi)',
+    belt_section: 'Ceinture',
+    col_white: 'Blanche', col_blue: 'Bleue', col_purple: 'Violette', col_black: 'Noire',
+    default_unlocked: 'Par défaut • Acquis',
+    unlocked_start: 'Acquis au début',
+    outfit_save: 'Valider & Retour',
     m_credits: 'Crédits',
     m_credits_d: 'Auteurs, moteur Shadow & concept',
     btn_settings: '⚙️ Langue & Écran',
-    orient_title: 'Orientation de l’écran', orient_desc: 'Choisissez le mode Portrait ou Horizontal', orient_port: 'Portrait', orient_port_d: 'Affichage vertical', orient_land: 'Horizontal', orient_land_d: 'Arène large & contrôles sur le côté', orient_confirm: 'Confirmer',
+    orient_title: 'Orientation de l’écran', orient_desc: 'Choisissez le mode Portrait ou Horizontal', orient_port: 'Portrait', orient_port_d: 'Affichage vertical', orient_land: 'Horizontal', orient_land_d: 'Arène large & joystick à gauche', orient_confirm: 'Confirmer',
     bk: '← Retour', bk_menu: '← Menu principal', bk_hub: '← Hub Carrière',
     qm_title: 'Match rapide (Hors ligne)', qm_choose: 'Choisis la difficulté',
     diff_easy: 'Facile (IA Ceinture Blanche)', diff_med: 'Moyen (IA Ceinture Violette)', diff_hard: 'Difficile (IA Ceinture Noire)',
@@ -1049,10 +1225,20 @@ const I18N = {
     m_career_d: 'ابنِ مسيرتك في UBJJF واربح الحزام العالمي',
     m_online: 'اللعب أونلاين', b_online: 'أونلاين',
     m_online_d: 'العب ضد صديقك مباشرة',
+    m_outfit: 'الزي',
+    m_outfit_d: 'اختر لون البدلة والحزام (للاعب X فقط)',
+    outfit_title: 'الزي والحزام',
+    outfit_sub: 'مفتوح منذ البداية. أنت فقط (اللاعب X) ترى زيك المخصص أثناء القتال.',
+    gi_section: 'البدلة (كيمونو)',
+    belt_section: 'الحزام',
+    col_white: 'أبيض', col_blue: 'أزرق', col_purple: 'بنفسجي', col_black: 'أسود',
+    default_unlocked: 'افتراضي • مفتوح',
+    unlocked_start: 'مفتوح منذ البداية',
+    outfit_save: 'حفظ ورجوع',
     m_credits: 'الحقوق',
     m_credits_d: 'المطورون ومحرك Shadow',
     btn_settings: '⚙️ اللغة والشاشة',
-    orient_title: 'اتجاه الشاشة', orient_desc: 'اختر الوضع العمودي أو الأفقي قبل البدء', orient_port: 'عمودي (Portrait)', orient_port_d: 'عرض عمودي للهاتف', orient_land: 'أفقي (Horizontal)', orient_land_d: 'حلبة عريضة وأزرار جانبية', orient_confirm: 'تأكيد',
+    orient_title: 'اتجاه الشاشة', orient_desc: 'اختر الوضع العمودي أو الأفقي قبل البدء', orient_port: 'عمودي (Portrait)', orient_port_d: 'عرض عمودي للهاتف', orient_land: 'أفقي (Horizontal)', orient_land_d: 'حلبة عريضة وعصا التحكم على اليسار', orient_confirm: 'تأكيد',
     bk: '← رجوع', bk_menu: '← القائمة الرئيسية', bk_hub: '← مركز المسيرة',
     qm_title: 'مباراة سريعة (بدون إنترنت)', qm_choose: 'اختر مستوى الصعوبة',
     diff_easy: 'سهل (حزام أبيض)', diff_med: 'متوسط (حزام بنفسجي)', diff_hard: 'صعب (حزام أسود)',
@@ -1097,6 +1283,7 @@ function applyLanguage(){
     if(key) el.textContent = t(key);
   });
   updateMenuNetBadge();
+  updateOutfitUI();
 }
 
 function pickOrient(mode){
@@ -1184,7 +1371,7 @@ function toggleFPS(){
 }
 
 // ═══════════════════════════════════════
-// DATA & BJJ POSITIONS / MOVES (SECULAR / NEUTRAL)
+// DATA & BJJ POSITIONS / MOVES
 // ═══════════════════════════════════════
 const NATS=[
   {f:'🇧🇷',n:'Brazil'},{f:'🇺🇸',n:'USA'},{f:'🇯🇵',n:'Japan'},
@@ -1253,6 +1440,7 @@ function goScr(id){
   if(id==='scr-schedule') refreshSchedule();
   if(id==='scr-career') refreshCareer();
   if(id==='scr-online') onInitLib();
+  if(id==='scr-outfit') updateOutfitUI();
   if(id==='scr-fight' && S3.ready) setTimeout(()=>init3DScene(), 30);
 }
 
@@ -1724,17 +1912,18 @@ function startBeltCanvasAnimation(){
     ctx.restore();
 
     const cx=W/2, cy=H*0.56;
+    const p1Cols = getPlayerXColors();
     ctx.save();
     ctx.fillStyle='#050507';
     ctx.beginPath(); ctx.arc(cx, cy-68, 13, 0, Math.PI*2); ctx.fill();
-    ctx.lineWidth=8; ctx.strokeStyle='#f8fafc'; ctx.lineCap='round';
+    ctx.lineWidth=8; ctx.strokeStyle=p1Cols.gi.hex2d; ctx.lineCap='round';
     const raise=Math.min(1, t*1.4);
     ctx.beginPath(); ctx.moveTo(cx-16, cy-46); ctx.lineTo(cx-34, cy-46 - raise*34); ctx.stroke();
     ctx.beginPath(); ctx.moveTo(cx+16, cy-46); ctx.lineTo(cx+34, cy-46 - raise*34); ctx.stroke();
     ctx.fillStyle='#050507';
     ctx.beginPath(); ctx.arc(cx-34, cy-46 - raise*34, 5, 0, Math.PI*2); ctx.fill();
     ctx.beginPath(); ctx.arc(cx+34, cy-46 - raise*34, 5, 0, Math.PI*2); ctx.fill();
-    ctx.fillStyle='#f8fafc';
+    ctx.fillStyle=p1Cols.gi.hex2d;
     ctx.beginPath();
     ctx.roundRect(cx-20, cy-52, 40, 46, 8);
     ctx.fill();
@@ -1911,7 +2100,9 @@ function init3DScene(){
     }
     S3.scene.add(wallGroup);
 
-    S3.p1=createShadowGrappler(0x1D9E75, 0xf8fafc);
+    // Player X (p1) uses their custom Gi & Belt; Player Y / AI (p2) stays standard
+    const p1Cols = getPlayerXColors();
+    S3.p1=createShadowGrappler(p1Cols.belt.hex3d, p1Cols.gi.hex3d);
     S3.p2=createShadowGrappler(0xE24B4A, 0xf8fafc);
     S3.ref=createShadowGrappler(0xEAB308, 0x1e293b);
     S3.ref.root.position.set(0, 0, -2.2);
@@ -1925,6 +2116,7 @@ function init3DScene(){
     S3.renderer.setSize(W, H, false);
     S3.camera.aspect=W/H;
     S3.camera.updateProjectionMatrix();
+    applyPlayerXOutfitTo3D();
   }
 }
 
@@ -2034,10 +2226,15 @@ function render2DShadowDojo(fState, dt){
     ctx.restore();
   }
 
+  // Player X (p1) renders with custom outfit; Player Y / AI (p2) keeps default
+  const p1Cols = getPlayerXColors();
+  const p1Belt2D = p1Cols.belt.hex2d;
+  const p1Gi2D   = p1Cols.gi.hex2d;
+
   const ph = fState.phase;
   if(ph==='ceremony'){
     drawShadowFighter(cx, cy-16, '#EAB308', '#1e293b', 1, 'ceremony', fState.winnerIsP1?'left':'right');
-    drawShadowFighter(cx-44, cy-6, '#1D9E75', '#f8fafc', 1, 'ceremony', fState.winnerIsP1?'right':null);
+    drawShadowFighter(cx-44, cy-6, p1Belt2D, p1Gi2D, 1, 'ceremony', fState.winnerIsP1?'right':null);
     drawShadowFighter(cx+44, cy-6, '#E24B4A', '#f8fafc', -1, 'ceremony', !fState.winnerIsP1?'left':null);
   } else {
     const p1pos = mapPos(fState.p1.x, fState.p1.y);
@@ -2049,20 +2246,20 @@ function render2DShadowDojo(fState, dt){
 
     if(ph==='stand'){
       const f1 = p2pos.x >= p1pos.x ? 1 : -1;
-      drawShadowFighter(p1pos.x, p1pos.y, '#1D9E75', '#f8fafc', f1, 'stand', null);
+      drawShadowFighter(p1pos.x, p1pos.y, p1Belt2D, p1Gi2D, f1, 'stand', null);
       drawShadowFighter(p2pos.x, p2pos.y, '#E24B4A', '#f8fafc', -f1, 'stand', null);
     } else if(ph==='clinch'){
       const mx=(p1pos.x+p2pos.x)*0.5, my=(p1pos.y+p2pos.y)*0.5;
-      drawShadowFighter(mx-14, my, '#1D9E75', '#f8fafc', 1, 'stand', null);
+      drawShadowFighter(mx-14, my, p1Belt2D, p1Gi2D, 1, 'stand', null);
       drawShadowFighter(mx+14, my, '#E24B4A', '#f8fafc', -1, 'stand', null);
     } else {
       const mx=(p1pos.x+p2pos.x)*0.5, my=(p1pos.y+p2pos.y)*0.5;
       const p1OnTop = (ph==='closed_guard_top'||ph==='half_guard'||ph==='side_control'||ph==='full_mount'||ph==='back_control');
       if(p1OnTop){
         drawShadowFighter(mx, my+4, '#E24B4A', '#f8fafc', -1, 'ground', null);
-        drawShadowFighter(mx, my-12, '#1D9E75', '#f8fafc', 1, 'ground', null);
+        drawShadowFighter(mx, my-12, p1Belt2D, p1Gi2D, 1, 'ground', null);
       } else {
-        drawShadowFighter(mx, my+4, '#1D9E75', '#f8fafc', 1, 'ground', null);
+        drawShadowFighter(mx, my+4, p1Belt2D, p1Gi2D, 1, 'ground', null);
         drawShadowFighter(mx, my-12, '#E24B4A', '#f8fafc', -1, 'ground', null);
       }
     }
@@ -2191,7 +2388,7 @@ function createShadowGrappler(beltHex, outfitHex){
   const legL=buildLeg(-1);
   const legR=buildLeg(1);
 
-  return {root, hips, torso, headGroup, armL, armR, legL, legR};
+  return {root, hips, torso, headGroup, armL, armR, legL, legR, giMat, beltMat};
 }
 
 function update3DPose(fState, dt){
@@ -2449,8 +2646,6 @@ function initF(){
   };
 }
 
-// Anti-Spam Stamina Drain System:
-// Spamming techniques rapidly without pacing drains massive stamina!
 function applyActionStaminaCost(baseCost){
   if(!F) return;
   const now = performance.now();
@@ -2515,6 +2710,7 @@ function launchFight(opts){
 
   setTimeout(()=>{
     init3DScene();
+    applyPlayerXOutfitTo3D();
     update3DPose(F, 0.016);
     if(fightMode === 'quick'){
       startFightTutorial(false);
@@ -2589,6 +2785,7 @@ function updateStickDirection(){
     updateStickDirection();
   }
   function resetStick(){
+    if(!dragging && fStickVec.x === 0 && fStickVec.y === 0) return;
     dragging=false;
     knob.style.transform='translate(-50%, -50%)';
     knob.classList.remove('active');
@@ -2604,6 +2801,7 @@ function updateStickDirection(){
   base.addEventListener('mousedown',e=>{ dragging=true; handleMove(e.clientX, e.clientY); });
   window.addEventListener('mousemove',e=>{ if(dragging) handleMove(e.clientX, e.clientY); });
   window.addEventListener('mouseup',()=>{ if(dragging) resetStick(); });
+  window.addEventListener('blur',resetStick);
 })();
 
 function updateMoveHints(){
@@ -2745,7 +2943,6 @@ function pressBlue(){
   const fatMod = F.p1.fat<30 ? -0.15 : (F.feintBonus || 0);
   F.feintBonus = 0;
 
-  // ── ONLINE MODE: 2 SECOND HARD GAUGE FOR DEFENDER ──
   if(fightMode==='online'){
     let moveName='Clinch (Collar Tie)', nextPhase='clinch', ptsAdd=0;
     if(ph==='stand'){
@@ -2798,7 +2995,6 @@ function pressBlue(){
     return;
   }
 
-  // ── OFFLINE AI / CAREER MODE ──
   if(ph==='stand'){
     if(dir==='neutral'){
       const ok = Math.random() < (0.78 + skillBonus + fatMod);
@@ -2975,7 +3171,6 @@ function pressRed(){
       return;
     }
 
-    // Offline AI: if AI has 0 stamina, instant submission!
     if(F.p2.fat <= 0){
       F.p2.hp = 0;
       fLog('🏆 ' + flyName + '! Opponent had 0 stamina — INSTANT TAP OUT!');
@@ -3058,7 +3253,6 @@ function pressRed(){
   let careerSubBonus = 0;
   if(fightMode==='career' && C) careerSubBonus = C.attrs.sub * 0.004;
 
-  // ── ONLINE MODE SUBMISSION (2s HARD GAUGE OR INSTANT IF DEFENDER AT 0 STAMINA) ──
   if(fightMode==='online'){
     F.submitting = true;
     fLockTechs(true);
@@ -3081,7 +3275,6 @@ function pressRed(){
     return;
   }
 
-  // Offline AI: if AI has 0 stamina, instant submission!
   if(F.p2.fat <= 0){
     F.p2.hp = 0;
     fLog('🏆 ' + subName + '! Opponent had 0 stamina — INSTANT TAP OUT!');
@@ -3180,7 +3373,6 @@ function fTick(){
     }
   }
 
-  // Natural stamina regeneration when pacing / not spamming
   const timeSinceAtk = performance.now() - (F.lastActionTime || 0);
   if(!moved && !F.guardActive && timeSinceAtk > 1400 && Math.random()<0.25){
     me.fat = Math.min(100, me.fat + 2);
@@ -3266,7 +3458,6 @@ function fAiAttack(){
       return;
     }
 
-    // If player has 0 stamina during a submission, instant tap out due to exhaustion!
     if(!isStand && F.p1.fat <= 0){
       F.p1.hp = 0;
       fUpdateHUD();
@@ -3402,7 +3593,7 @@ function fSetPhase(ph){
   updateMoveHints();
 }
 
-// ── DEFEND / SUBMISSION TIMING GAUGE (2s HARD SPEED IN ONLINE MODE) ──
+// ── DEFEND / SUBMISSION TIMING GAUGE ──
 function fShowDef(hint, speed, winHalf, onOk, onFail, durationSec){
   const dur = (typeof durationSec === 'number' && durationSec > 0) ? durationSec : 2;
   document.getElementById('fight-def-wrap').style.display='block';
@@ -3503,8 +3694,11 @@ function fEndDQ(){
   fEndFight(false,'Disqualification — 3 outs');
 }
 
-function fEndFight(playerWon, method){
+function fEndFight(playerWon, method, fromRemote){
   if(!F||fFightEnded) return;
+  if(fightMode==='online' && !fromRemote && oConn && oConn.open){
+    try{ oConn.send({type:'match_over', oppWon:!playerWon, method:method||'Decision'}); }catch(e){}
+  }
   fFightEnded=true; F.running=false;
   fAllClear(); fHideDef(); fLockTechs(true); hideGetup();
 
@@ -3541,9 +3735,11 @@ function fAllClear(){
   if(fDef.int){clearInterval(fDef.int);fDef.int=null;}
   if(fDef.cdInt){clearInterval(fDef.cdInt);fDef.cdInt=null;}
   if(fGetup.timerInt){clearInterval(fGetup.timerInt);fGetup.timerInt=null;}
-  if(F&&F.guardTimer){clearTimeout(F.guardTimer);}
-  if(F&&F.feintTimer){clearTimeout(F.feintTimer);}
-  if(F&&F.aiTelegraphTimer){clearTimeout(F.aiTelegraphTimer);}
+  if(fGetup.aiDefInt){clearInterval(fGetup.aiDefInt);fGetup.aiDefInt=null;}
+  if(F&&F.guardTimer){clearTimeout(F.guardTimer);F.guardTimer=null;}
+  if(F&&F.feintTimer){clearTimeout(F.feintTimer);F.feintTimer=null;}
+  if(F&&F.aiTelegraphTimer){clearTimeout(F.aiTelegraphTimer);F.aiTelegraphTimer=null;}
+  if(F&&F.pendingOnlineTimer){clearTimeout(F.pendingOnlineTimer);F.pendingOnlineTimer=null;}
 }
 
 function fShowPost(playerWon,method){
@@ -3681,33 +3877,38 @@ document.addEventListener('keyup',e=>{
 window.addEventListener('resize',()=>{ if(S3.ready) init3DScene(); });
 
 // ═══════════════════════════════════════
-// ONLINE MODE (FIXED P2P CONNECTION + 2s HARD DEFENSE + 0-STAMINA INSTANT SUB)
+// ONLINE MODE (P2P + 2s HARD DEFENSE + 0-STAMINA INSTANT SUB)
+// Note: Player X's outfit choice is strictly local and never sent to Player Y.
 // ═══════════════════════════════════════
 let oP=null, oConn=null, oIsP1=false, oMyCode='', oMyName='', oOppName='Opponent';
 let oMyReady=false, oOppReady=false, oLibReady=false;
 let oPingInt=null, oConnectTimeout=null, oStartSent=false;
 
-// Reliable Public ICE / STUN + TURN fallback servers for Mobile/NAT traversal
 const PEER_CFG = {
   debug: 1,
   secure: true,
+  pingInterval: 5000,
   config: {
     iceServers: [
       { urls: 'stun:stun.l.google.com:19302' },
       { urls: 'stun:stun1.l.google.com:19302' },
       { urls: 'stun:stun2.l.google.com:19302' },
-      { urls: 'stun:stun3.l.google.com:19302' },
-      { urls: 'stun:stun4.l.google.com:19302' },
-      { urls: 'stun:stun.relay.metered.ca:80' },
+      { urls: 'stun:stun.cloudflare.com:3478' },
+      { urls: 'stun:openrelay.metered.ca:80' },
       {
-        urls: 'turn:global.relay.metered.ca:80',
-        username: 'e8dd65b92f62d3e365b807c9',
-        credential: '3k/6K6G6t5n9G+B2'
+        urls: 'turn:openrelay.metered.ca:80',
+        username: 'openrelayproject',
+        credential: 'openrelayproject'
       },
       {
-        urls: 'turn:global.relay.metered.ca:443?transport=tcp',
-        username: 'e8dd65b92f62d3e365b807c9',
-        credential: '3k/6K6G6t5n9G+B2'
+        urls: 'turn:openrelay.metered.ca:443',
+        username: 'openrelayproject',
+        credential: 'openrelayproject'
+      },
+      {
+        urls: 'turn:openrelay.metered.ca:443?transport=tcp',
+        username: 'openrelayproject',
+        credential: 'openrelayproject'
       }
     ],
     iceCandidatePoolSize: 10
@@ -3716,480 +3917,383 @@ const PEER_CFG = {
 
 function openOnlineMenu(){
   goScr('scr-online');
-}
-
-function onStatus(msg, st){
-  const d=document.getElementById('on-cdot'), t=document.getElementById('on-status-txt');
-  if(t) t.textContent=msg;
-  if(d) d.className='on-cdot'+(st==='on'?' on':st==='off'?' off':'');
-}
-
-function onInitLib(){
-  const offBox = document.getElementById('on-offline-block');
-  const actWrap = document.getElementById('on-actions-wrap');
-
-  if(!navigator.onLine){
-    oLibReady = false;
-    onStatus('No internet connection — Online mode disabled.','off');
-    if(offBox) offBox.style.display='block';
-    if(actWrap) actWrap.style.opacity='0.4';
-    return;
-  }
-
-  if(offBox) offBox.style.display='none';
-  if(actWrap) actWrap.style.opacity='1';
-
-  if(typeof Peer!=='undefined'){
-    oLibReady=true;
-    onStatus('Connected — choose Create or Join.','on');
-  } else {
-    oLibReady=false;
-    onStatus('Connecting to online server...','');
-    loadExtScript('https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js', ok => {
-      if(ok && typeof Peer !== 'undefined' && navigator.onLine){
-        oLibReady=true;
-        onStatus('Connected — choose Create or Join.','on');
-      } else {
-        onStatus('Online server unreachable — check your internet connection.','off');
-        if(offBox) offBox.style.display='block';
-      }
-    });
-  }
-}
-
-function onRetryConnection(){
   onInitLib();
 }
 
-function onEnsureOnline(){
+function onRetryConnection(){
+  onSetBar('Checking internet connection...', '');
   if(!navigator.onLine){
     onInitLib();
-    alert('Internet connection is required for Online mode. Quick Match and Career Mode work offline!');
-    return false;
+    return;
   }
-  if(!oLibReady || typeof Peer==='undefined'){
-    onInitLib();
-    alert('Still connecting to the online server. Check your internet and try again.');
-    return false;
-  }
-  return true;
-}
-
-function onGoJoinScreen(){
-  if(!onEnsureOnline()) return;
-  document.getElementById('on-join-err').textContent='';
-  goScr('scr-on-join');
-}
-
-function onRandCode(){
-  const ch='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  let c='';
-  for(let i=0;i<6;i++) c+=ch[Math.floor(Math.random()*ch.length)];
-  return c.toLowerCase();
-}
-
-function onCopyCode(){
-  const c=document.getElementById('on-code-box').textContent;
-  if(navigator.clipboard) navigator.clipboard.writeText(c).catch(()=>{});
-  const b=document.getElementById('on-copy-btn');
-  if(b){ b.textContent='✓ Copied!'; setTimeout(()=>b.textContent=t('on_copy'),1500); }
-}
-
-function onUpdateLobbyUI(){
-  if(oIsP1){
-    const p1El=document.getElementById('on-p1-slot');
-    const p2El=document.getElementById('on-p2-slot');
-    const p2Dot=document.getElementById('on-p2-dot');
-    const btn=document.getElementById('on-p1-ready-btn');
-    const st=document.getElementById('on-create-st');
-    if(p1El) p1El.textContent=oMyName + (oMyReady ? ' (YOU — READY ✓)' : ' (you)');
-    if(oConn && oConn.open){
-      if(p2Dot) p2Dot.className='on-dot ok';
-      if(p2El) p2El.textContent=oOppName + (oOppReady ? ' (READY ✓)' : ' (connected)');
-      if(btn){
-        btn.disabled=oMyReady;
-        btn.textContent=oMyReady ? 'Ready ✓ — waiting for '+oOppName+'...' : "I'm ready!";
-      }
-      if(st){
-        if(oMyReady && !oOppReady) st.textContent='Waiting for '+oOppName+' to press Ready...';
-        else if(!oMyReady && oOppReady) st.textContent=oOppName+' is READY! Press "I\'m ready!" to start!';
-        else if(!oMyReady && !oOppReady) st.textContent='Both players connected! Press "I\'m ready!"';
-      }
-    }
+  if(!window._peerLoaded || typeof Peer === 'undefined'){
+    loadPeerWithFallback(ok => {
+      window._peerLoaded = ok;
+      onInitLib();
+    });
   } else {
-    const w1=document.getElementById('on-w-p1');
-    const w2=document.getElementById('on-w-p2');
-    const btn=document.getElementById('on-wait-btn');
-    const st=document.getElementById('on-wait-st');
-    if(w1) w1.textContent=oOppName + (oOppReady ? ' (READY ✓)' : ' (host)');
-    if(w2) w2.textContent=oMyName + (oMyReady ? ' (YOU — READY ✓)' : ' (you)');
-    if(btn){
-      btn.disabled=oMyReady;
-      btn.textContent=oMyReady ? 'Ready ✓ — waiting for '+oOppName+'...' : "I'm ready!";
-    }
-    if(st){
-      if(oMyReady && !oOppReady) st.textContent='Waiting for '+oOppName+' to press Ready...';
-      else if(!oMyReady && oOppReady) st.textContent=oOppName+' is READY! Press "I\'m ready!" to start!';
-      else if(!oMyReady && !oOppReady) st.textContent='Connected to room! Press "I\'m ready!"';
-    }
+    onInitLib();
   }
 }
 
-function onBindConn(conn){
-  oConn=conn;
-  if(oPingInt) clearInterval(oPingInt);
-  oPingInt=setInterval(()=>{
-    if(oConn && oConn.open){
-      try{ oConn.send({type:'ping', name:oMyName, ready:oMyReady}); }catch(e){}
-    }
-  }, 1200);
+function onInitLib(){
+  const blockEl = document.getElementById('on-offline-block');
+  const actionsEl = document.getElementById('on-actions-wrap');
 
-  oConn.on('data', data=>{
-    if(!data || typeof data!=='object') return;
+  if(!navigator.onLine){
+    oLibReady = false;
+    onSetBar('No internet connection detected', 'off');
+    if(blockEl) blockEl.style.display = 'block';
+    if(actionsEl) actionsEl.style.display = 'none';
+    return;
+  }
 
-    if(data.type==='hello' || data.type==='ping'){
-      if(data.name) oOppName = data.name;
-      if(typeof data.ready==='boolean' && data.ready && !oOppReady){
-        oOppReady = true;
-      }
-      onUpdateLobbyUI();
-      if(data.type==='hello'){
-        try{ oConn.send({type:'hello_ack', name:oMyName, ready:oMyReady}); }catch(e){}
-      }
-      if(oMyReady && oOppReady && !oStartSent){
-        onTriggerMatchStart();
-      }
-    }
-    else if(data.type==='hello_ack'){
-      if(data.name) oOppName = data.name;
-      if(typeof data.ready==='boolean') oOppReady = data.ready;
-      onUpdateLobbyUI();
-      if(oMyReady && oOppReady && !oStartSent){
-        onTriggerMatchStart();
-      }
-    }
-    else if(data.type==='ready'){
-      if(data.name) oOppName = data.name;
-      oOppReady = true;
-      onUpdateLobbyUI();
-      if(oMyReady && oOppReady && !oStartSent){
-        onTriggerMatchStart();
-      }
-    }
-    else if(data.type==='start'){
-      if(data.name) oOppName = data.name;
-      if(!oStartSent){
-        oStartSent = true;
-        onStartMatch();
-      }
-    }
-    else if(data.type==='pos' && F && F.running){
-      F.p2.x = data.x;
-      F.p2.y = data.y;
-      if(typeof data.fat === 'number') F.p2.fat = data.fat;
-    }
-    // ── INCOMING ONLINE ATTACK (2 SECONDS HARD GAUGE + INSTANT SUB AT 0 STAMINA) ──
-    else if(data.type==='incoming_atk' && F && F.running){
-      if(fDef.active) return;
-      if(F.guardActive){
-        F.guardActive=false;
-        clearTimeout(F.guardTimer);
-        document.getElementById('guard-shield-badge').style.display='none';
-      }
-
-      const isSub = data.kind === 'sub';
-
-      // CRITICAL RULE: If defender has 0 stamina during a submission, instant submission without defense!
-      if(isSub && F.p1.fat <= 0){
-        F.p1.hp = 0;
-        fUpdateHUD();
-        fRef('💥 0 STAMINA — EXHAUSTED!');
-        fLog('💥 0 Stamina! Too exhausted to defend ' + data.moveName + ' — INSTANT SUBMISSION!');
-        onSendAction({ type:'def_result', defended:false, kind:'sub', moveName:data.moveName, exhausted:true });
-        fEndFight(false, data.moveName + ' (Exhausted 0 Stamina)');
-        return;
-      }
-
-      fLockTechs(true);
-      const hardSpeed = DIFF_CFG.hard.defSpd; // 1.95 (Hard speed)
-      const hardWin   = DIFF_CFG.hard.defWin; // 0.08 (Hard green window)
-      const promptTxt = (isSub ? '🔥 DEFEND SUBMISSION: ' : '🛡 DEFEND: ') + data.moveName + ' — Hit GREEN (2s HARD)!';
-      fRef('⚡ DEFEND (2s HARD): ' + data.moveName.toUpperCase() + '!');
-      fLog('⚠ Opponent attacks with ' + data.moveName + '! 2 seconds (HARD) to defend!');
-
-      fShowDef(promptTxt, hardSpeed, hardWin,
-        ()=>{
-          fLockTechs(false);
-          S3.cameraShake = 0.2;
-          fRef('🛡 DEFENDED ' + data.moveName.toUpperCase() + '!');
-          fLog('✅ You defended ' + data.moveName + '!');
-          if(isSub && F.phase==='full_mount'){
-            fSetPhase('closed_guard_bottom');
-          }
-          onSendAction({ type:'def_result', defended:true, parried:false, kind:data.kind, moveName:data.moveName });
-        },
-        ()=>{
-          fLockTechs(false);
-          S3.cameraShake = 0.3;
-          if(isSub){
-            F.p1.hp = 0;
-            fUpdateHUD();
-            fLog('💥 Caught in ' + data.moveName + '! TAP OUT!');
-            onSendAction({ type:'def_result', defended:false, kind:'sub', moveName:data.moveName });
-            fEndFight(false, data.moveName);
-          } else {
-            const mirrorMap={
-              clinch:'clinch',
-              closed_guard_top:'closed_guard_bottom',
-              closed_guard_bottom:'closed_guard_top',
-              half_guard:'bottom_pinned',
-              side_control:'bottom_pinned',
-              full_mount:'bottom_pinned',
-              back_control:'bottom_pinned'
-            };
-            const myNewPhase = mirrorMap[data.nextPhase] || data.nextPhase || 'bottom_pinned';
-            fSetPhase(myNewPhase);
-            if(data.ptsAdd) F.p2.pts += data.ptsAdd;
-            fUpdateScore();
-            fRef('⚠ OPPONENT LANDED ' + data.moveName.toUpperCase() + '!');
-            fLog('Opponent landed ' + data.moveName + '! Now in ' + POS_LABELS[myNewPhase] + '.');
-            onSendAction({ type:'def_result', defended:false, kind:'pos', moveName:data.moveName, nextPhase:data.nextPhase, ptsAdd:data.ptsAdd||0 });
-          }
-        },
-        2 // Strict 2-second defense gauge
-      );
-    }
-    else if(data.type==='def_result' && F && F.running){
-      if(F.pendingOnlineTimer){ clearTimeout(F.pendingOnlineTimer); F.pendingOnlineTimer=null; }
-      const pend = F.pendingOnlineAtk || {};
-      F.pendingOnlineAtk = null;
-      F.submitting = false;
-      fLockTechs(false);
-
-      if(data.defended){
-        S3.cameraShake = 0.18;
-        F.p1.fat = Math.max(0, F.p1.fat - 10);
-        if(data.parried) F.p2.pts += 1;
-        if(data.kind==='sub' && pend.isFlying){
-          fSetPhase('closed_guard_bottom');
-        } else if(data.kind==='sub' && F.phase==='full_mount'){
-          fSetPhase('closed_guard_top');
-        }
-        fUpdateScore(); fFatUI();
-        fRef('🛡 OPPONENT DEFENDED!');
-        fLog('Opponent defended your ' + (data.moveName||'move') + '!');
+  if(typeof Peer !== 'undefined'){
+    oLibReady = true;
+    onSetBar('Connected — ready to play online', 'on');
+    if(blockEl) blockEl.style.display = 'none';
+    if(actionsEl) actionsEl.style.display = 'block';
+  } else {
+    oLibReady = false;
+    onSetBar('Connecting to P2P server...', '');
+    if(blockEl) blockEl.style.display = 'none';
+    if(actionsEl) actionsEl.style.display = 'block';
+    setTimeout(() => {
+      if(typeof Peer !== 'undefined'){
+        oLibReady = true;
+        onSetBar('Connected — ready to play online', 'on');
+        if(blockEl) blockEl.style.display = 'none';
+        if(actionsEl) actionsEl.style.display = 'block';
       } else {
-        S3.cameraShake = 0.28;
-        if(data.kind==='sub'){
-          F.p2.hp = 0;
-          fUpdateHUD();
-          const endReason = data.exhausted
-            ? (data.moveName || 'Submission') + ' (Opponent 0 Stamina)'
-            : (data.moveName || 'Submission');
-          fLog('🏆 ' + endReason + ' LOCKED IN! OPPONENT TAPS OUT!');
-          fEndFight(true, endReason);
-        } else {
-          const targetPh = data.nextPhase || pend.nextPhase || 'clinch';
-          const ptsEarned = data.ptsAdd || pend.ptsAdd || 0;
-          if(ptsEarned) F.p1.pts += ptsEarned;
-          fSetPhase(targetPh);
-          fUpdateScore();
-          fRef('🏅 ' + (data.moveName||'MOVE').toUpperCase() + (ptsEarned?(' +'+ptsEarned+' pts'):''));
-          fLog('Landed ' + (data.moveName||'move') + '! Now in ' + POS_LABELS[targetPh] + '!');
-        }
+        onSetBar('Unable to reach multiplayer server', 'off');
+        if(blockEl) blockEl.style.display = 'block';
+        if(actionsEl) actionsEl.style.display = 'none';
       }
-    }
-    else if(data.type==='parry' && F && F.running){
-      F.p2.pts = data.pts || (F.p2.pts + 1);
-      fUpdateScore();
-      fRef('🛡 Opponent Parried! (+1 pt)');
-    }
-    else if(data.type==='sync' && F && F.running){
-      if(data.phase) fSetPhase(data.phase);
-      if(typeof data.pts==='number') F.p2.pts=data.pts;
-      if(typeof data.hp==='number') F.p1.hp=data.hp;
-      fUpdateHUD(); fUpdateScore();
-      fCheckHP();
-    }
-    else if(data.type==='sub_win' && F && F.running){
-      F.p1.hp=0; fUpdateHUD();
-      fEndFight(false, data.method||'Submission');
-    }
-  });
+    }, 3500);
+  }
+}
 
-  oConn.on('close',()=>{
-    if(oPingInt){ clearInterval(oPingInt); oPingInt=null; }
-    if(F&&F.running&&fightMode==='online'){
-      fEndFight(true,'Opponent disconnected');
-    } else if(document.getElementById('scr-on-create').classList.contains('on')){
-      oOppReady=false; oMyReady=false;
-      document.getElementById('on-p2-dot').className='on-dot';
-      document.getElementById('on-p2-slot').textContent='Opponent disconnected — waiting...';
-      document.getElementById('on-p1-ready-btn').disabled=true;
-      document.getElementById('on-p1-ready-btn').textContent='Waiting for opponent...';
-    } else if(document.getElementById('scr-on-wait').classList.contains('on')){
-      alert('Host closed the room.');
-      onLeave(); goScr('scr-online');
-    }
-  });
+function onSetBar(txt,state){
+  const tEl=document.getElementById('on-status-txt'), d=document.getElementById('on-cdot');
+  if(tEl) tEl.textContent=txt; if(d) d.className='on-cdot'+(state?' '+state:'');
+}
+function onGenCode(){ const ch='ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let c=''; for(let i=0;i<6;i++)c+=ch[Math.floor(Math.random()*ch.length)]; return c; }
 
-  oConn.on('error', err=>{
-    console.warn('Peer connection error:', err);
-  });
+function onStartHeartbeat(){
+  if(oPingInt) clearInterval(oPingInt);
+  oPingInt = setInterval(()=>{
+    if(oConn && oConn.open){
+      try{ oConn.send({type:'ping', ts:Date.now()}); }catch(e){}
+    }
+  }, 3000);
 }
 
 function onGoCreate(){
-  if(!onEnsureOnline()) return;
+  if(!navigator.onLine){ onInitLib(); return; }
+  if(!oLibReady){ alert('Connecting to P2P server, please wait a moment or check your internet.'); onInitLib(); return; }
   oIsP1=true; oMyReady=false; oOppReady=false; oStartSent=false;
-  oMyCode=onRandCode();
-  oMyName=(document.getElementById('on-p1-name').value.trim()||'Player 1');
-  document.getElementById('on-code-box').textContent=oMyCode.toUpperCase();
+  oMyCode=onGenCode();
+  oMyName=(document.getElementById('on-p1-name').value.trim())||(C?C.name:'Player 1');
+  document.getElementById('on-p1-name').value=oMyName;
+  document.getElementById('on-code-box').textContent=oMyCode;
   document.getElementById('on-p1-slot').textContent=oMyName+' (you)';
-  document.getElementById('on-p2-dot').className='on-dot';
   document.getElementById('on-p2-slot').textContent='Waiting for opponent...';
-  document.getElementById('on-create-st').textContent='Creating room...';
-  document.getElementById('on-p1-ready-btn').disabled=true;
-  document.getElementById('on-p1-ready-btn').textContent='Waiting for opponent...';
+  document.getElementById('on-p2-dot').className='on-dot';
+  const rbtn=document.getElementById('on-p1-ready-btn');
+  rbtn.disabled=true; rbtn.textContent='Waiting for opponent...';
+  document.getElementById('on-create-st').textContent='Opening room '+oMyCode+'...';
   goScr('scr-on-create');
-
   if(oP){try{oP.destroy();}catch(e){}}
-  oP=new Peer('bjjroom_'+oMyCode, PEER_CFG);
-
-  oP.on('open',()=>{
-    document.getElementById('on-create-st').textContent='Room open! Share code '+oMyCode.toUpperCase()+' with your friend.';
-  });
-
+  oP=new Peer('bjj5-'+oMyCode, PEER_CFG);
+  oP.on('open',()=>{ document.getElementById('on-create-st').textContent='Room open! Share code '+oMyCode+' with your friend.'; });
+  oP.on('disconnected',()=>{ if(oP && !oP.destroyed){ try{ oP.reconnect(); }catch(e){} } });
   oP.on('connection',conn=>{
-    oMyName=(document.getElementById('on-p1-name').value.trim()||'Player 1');
-    onBindConn(conn);
+    oConn=conn;
     conn.on('open',()=>{
+      onStartHeartbeat();
+      conn.send({type:'hello',name:oMyName});
+      document.getElementById('on-p2-slot').textContent='Opponent connected!';
       document.getElementById('on-p2-dot').className='on-dot ok';
-      document.getElementById('on-p2-slot').textContent=oOppName+' (connected)';
-      document.getElementById('on-create-st').textContent='Opponent joined! Both press Ready!';
-      document.getElementById('on-p1-ready-btn').disabled=false;
-      document.getElementById('on-p1-ready-btn').textContent="I'm ready!";
-      try{ conn.send({type:'hello', name:oMyName, ready:oMyReady}); }catch(e){}
-      onUpdateLobbyUI();
+      document.getElementById('on-create-st').textContent='Opponent connected — press I\'m ready!';
+      rbtn.disabled=false; rbtn.textContent='I\'m ready!';
     });
+    conn.on('data',onHandleData);
+    conn.on('close',onOppLeft);
+    conn.on('error',()=>{ document.getElementById('on-create-st').textContent='Connection hiccup — retrying...'; });
   });
-
-  oP.on('error',e=>{
-    if(e.type === 'unavailable-id'){
-      // Retry with fresh code if ID collision
-      onGoCreate();
-      return;
-    }
-    document.getElementById('on-create-st').textContent='Connection error ('+e.type+'). Check your internet.';
+  oP.on('error',err=>{
+    if(err.type==='unavailable-id'){ oMyCode=onGenCode(); onGoCreate(); return; }
+    document.getElementById('on-create-st').textContent='Network error ('+err.type+') — check internet & try again.';
   });
 }
 
-function onJoinRoom(){
-  if(!onEnsureOnline()) return;
-  const rawCode=document.getElementById('on-join-code').value.trim().toLowerCase().replace(/[^a-z0-9]/g,'');
-  oMyName=(document.getElementById('on-p2-name').value.trim()||'Player 2');
-  const errEl=document.getElementById('on-join-err');
-  if(rawCode.length<4){errEl.textContent='Enter the 6-character room code.';return;}
-  errEl.textContent='Connecting to room '+rawCode.toUpperCase()+'...';
-  oIsP1=false; oMyReady=false; oOppReady=false; oStartSent=false;
+function onGoJoinScreen(){
+  if(!navigator.onLine){ onInitLib(); return; }
+  if(!oLibReady){ alert('Connecting to P2P server, please wait a moment.'); onInitLib(); return; }
+  document.getElementById('on-join-code').value='';
+  document.getElementById('on-join-err').textContent='';
+  if(C) document.getElementById('on-p2-name').value=C.name;
+  goScr('scr-on-join');
+}
 
+function onJoinRoom(){
+  if(!navigator.onLine){ document.getElementById('on-join-err').textContent='No internet connection.'; return; }
+  const code=document.getElementById('on-join-code').value.trim().toUpperCase();
+  const err=document.getElementById('on-join-err');
+  if(code.length!==6){err.textContent='Enter the 6-character room code.';return;}
+  if(!oLibReady){err.textContent='Server not ready.';return;}
+  oIsP1=false; oMyReady=false; oOppReady=false; oStartSent=false;
+  oMyName=(document.getElementById('on-p2-name').value.trim())||(C?C.name:'Player 2');
+  err.textContent='Connecting to room '+code+'...';
   if(oP){try{oP.destroy();}catch(e){}}
   if(oConnectTimeout){clearTimeout(oConnectTimeout);oConnectTimeout=null;}
 
   oP=new Peer(PEER_CFG);
-
   oP.on('open',()=>{
-    const conn=oP.connect('bjjroom_'+rawCode, {
-      reliable: true,
-      serialization: 'json',
-      metadata: { name: oMyName }
-    });
-    onBindConn(conn);
-
-    oConnectTimeout = setTimeout(()=>{
-      if(!conn.open){
-        errEl.textContent='Room not found or network timeout. Check the code and ensure your friend is in Create Room.';
+    oConn=oP.connect('bjj5-'+code, {reliable:true, serialization:'json'});
+    oConnectTimeout=setTimeout(()=>{
+      if(!oConn || !oConn.open){
+        err.textContent='Connection timed out. Verify the 6-letter code or ask host to recreate the room.';
       }
-    }, 10000);
+    }, 12000);
 
-    conn.on('open',()=>{
+    oConn.on('open',()=>{
       if(oConnectTimeout){clearTimeout(oConnectTimeout);oConnectTimeout=null;}
-      errEl.textContent='';
+      err.textContent='';
+      onStartHeartbeat();
+      oConn.send({type:'hello',name:oMyName});
+      document.getElementById('on-w-p1').textContent=oOppName+' (host)';
       document.getElementById('on-w-p2').textContent=oMyName+' (you)';
-      document.getElementById('on-wait-btn').disabled=false;
-      document.getElementById('on-wait-btn').textContent="I'm ready!";
+      document.getElementById('on-wait-st').textContent='Connected! Press I\'m ready!';
+      const wb=document.getElementById('on-wait-btn'); wb.disabled=false; wb.textContent='I\'m ready!';
       goScr('scr-on-wait');
-      try{ conn.send({type:'hello', name:oMyName, ready:oMyReady}); }catch(e){}
-      onUpdateLobbyUI();
     });
-
-    conn.on('error', err=>{
-      if(oConnectTimeout){clearTimeout(oConnectTimeout);oConnectTimeout=null;}
-      errEl.textContent='Could not connect to room: ' + (err.message || err);
-    });
+    oConn.on('data',onHandleData);
+    oConn.on('close',onOppLeft);
+    oConn.on('error',()=>{ err.textContent='Could not connect to room '+code+'.'; });
   });
-
-  oP.on('error', e=>{
+  oP.on('error',err2=>{
     if(oConnectTimeout){clearTimeout(oConnectTimeout);oConnectTimeout=null;}
-    if(e.type==='peer-unavailable'){
-      errEl.textContent='Room "'+rawCode.toUpperCase()+'" not found! Ask your friend to stay on the Create Room screen.';
-    } else {
-      errEl.textContent='Network error ('+e.type+'). Please check your internet connection.';
-    }
+    err.textContent=err2.type==='peer-unavailable'?'Room not found — check the 6-letter code.':'Network error: '+err2.type;
   });
 }
 
 function onSetReady(){
-  if(!oConn || !oConn.open){
-    alert('Not connected to opponent yet.');
+  if(!oConn||!oConn.open)return;
+  oMyReady=true;
+  oConn.send({type:'ready',name:oMyName});
+  const btn=document.getElementById(oIsP1?'on-p1-ready-btn':'on-wait-btn');
+  if(btn){btn.disabled=true;btn.textContent='Ready ✓ — waiting for opponent...';}
+  onCheckStart();
+}
+
+function onCheckStart(){
+  if(oMyReady && oOppReady && !oStartSent){
+    oStartSent=true;
+    if(oIsP1 && oConn && oConn.open){
+      try{ oConn.send({type:'start_fight', hostName:oMyName}); }catch(e){}
+    }
+    setTimeout(onLaunchFight, 350);
+  }
+}
+
+function onLaunchFight(){
+  launchFight({mode:'online',diff:'hard',pName:oMyName,aName:oOppName});
+}
+
+function onSendAction(data){
+  if(fightMode==='online'&&oConn&&oConn.open){
+    try{oConn.send(data);}catch(e){}
+  }
+}
+
+function onHandleData(d){
+  if(!d||!d.type)return;
+  if(d.type==='ping'){
+    if(oConn && oConn.open){ try{ oConn.send({type:'pong'}); }catch(e){} }
     return;
   }
-  oMyName = oIsP1
-    ? (document.getElementById('on-p1-name').value.trim()||oMyName||'Player 1')
-    : (document.getElementById('on-p2-name').value.trim()||oMyName||'Player 2');
-  oMyReady=true;
-  onUpdateLobbyUI();
-  try{ oConn.send({type:'ready', name:oMyName}); }catch(e){}
-  if(oMyReady && oOppReady && !oStartSent){
-    onTriggerMatchStart();
+  if(d.type==='pong') return;
+
+  if(d.type==='hello'){
+    oOppName=d.name||'Opponent';
+    if(oIsP1){
+      document.getElementById('on-p2-slot').textContent=oOppName+' (connected)';
+      if(!d.reply && oConn && oConn.open){
+        try{ oConn.send({type:'hello', name:oMyName, reply:true}); }catch(e){}
+      }
+    } else {
+      document.getElementById('on-w-p1').textContent=oOppName+' (host)';
+    }
+  } else if(d.type==='ready'){
+    oOppReady=true;
+    if(d.name) oOppName=d.name;
+    const st=document.getElementById(oIsP1?'on-create-st':'on-wait-st');
+    if(st) st.textContent=oOppName+' is ready!';
+    onCheckStart();
+  } else if(d.type==='start_fight'){
+    if(d.hostName) oOppName=d.hostName;
+    if(!oStartSent){
+      oStartSent=true;
+      setTimeout(onLaunchFight, 150);
+    }
+  } else if(d.type==='pos'&&F&&F.running){
+    F.p2.x=d.x; F.p2.y=d.y;
+    if(typeof d.fat === 'number') F.p2.fat = d.fat;
+  } else if(d.type==='parry'&&F&&F.running){
+    F.p2.pts = d.pts || (F.p2.pts+1);
+    fUpdateScore();
+    fRef('🛡 Opponent parried!');
+  } else if(d.type==='incoming_atk'&&F&&F.running){
+    if(F.guardActive){
+      F.guardActive = false;
+      if(F.guardTimer) clearTimeout(F.guardTimer);
+      document.getElementById('guard-shield-badge').style.display='none';
+      fRef('🛡 BLOCKED with Guard!');
+      fLog('Your Yellow guard blocked ' + d.moveName + '!');
+      onSendAction({type:'atk_result', defended:true, kind:d.kind, moveName:d.moveName, nextPhase:d.nextPhase, ptsAdd:d.ptsAdd});
+      return;
+    }
+
+    if(F.p1.fat <= 0){
+      fRef('💥 0 STAMINA — CANNOT DEFEND!');
+      if(d.kind === 'sub'){
+        F.p1.hp = 0;
+        fUpdateHUD();
+        onSendAction({type:'atk_result', defended:false, kind:'sub', moveName:d.moveName, zeroStaminaTap:true});
+        fLog('💥 0 Stamina! Instant tap out to ' + d.moveName + '!');
+        fCheckHP();
+      } else {
+        F.p2.pts += (d.ptsAdd || 0);
+        const oppPhase = invertPhaseForDefender(d.nextPhase);
+        fSetPhase(oppPhase);
+        fUpdateScore(); fUpdateHUD();
+        onSendAction({type:'atk_result', defended:false, kind:'pos', moveName:d.moveName, nextPhase:d.nextPhase, ptsAdd:d.ptsAdd});
+        fLog('💥 0 Stamina! Opponent landed ' + d.moveName + '!');
+      }
+      return;
+    }
+
+    fLockTechs(true);
+    const spd = d.speed || DIFF_CFG.hard.defSpd;
+    const winHalf = d.winHalf || DIFF_CFG.hard.defWin;
+    const dur = d.duration || 2;
+    fLog('⚡ INCOMING: ' + d.moveName + '! Hit GREEN within 2s!');
+    fRef('⚡ DEFEND NOW (2s HARD)!');
+
+    fShowDef('⚡ Defend ' + d.moveName + ' — Hit GREEN!', spd, winHalf,
+      ()=>{
+        fLockTechs(false);
+        fRef('🛡 DEFENDED!');
+        fLog('✅ You defended ' + d.moveName + '!');
+        onSendAction({type:'atk_result', defended:true, kind:d.kind, moveName:d.moveName, nextPhase:d.nextPhase, ptsAdd:d.ptsAdd});
+      },
+      ()=>{
+        fLockTechs(false);
+        if(d.kind === 'sub'){
+          F.p1.hp = 0;
+          fUpdateHUD();
+          onSendAction({type:'atk_result', defended:false, kind:'sub', moveName:d.moveName});
+          fLog('💥 Caught in ' + d.moveName + '! You tapped out!');
+          fCheckHP();
+        } else {
+          F.p2.pts += (d.ptsAdd || 0);
+          const oppPhase = invertPhaseForDefender(d.nextPhase);
+          fSetPhase(oppPhase);
+          fUpdateScore();
+          fUpdateHUD();
+          onSendAction({type:'atk_result', defended:false, kind:'pos', moveName:d.moveName, nextPhase:d.nextPhase, ptsAdd:d.ptsAdd});
+          fLog('💥 Opponent landed ' + d.moveName + ' (+' + (d.ptsAdd||0) + ' pts)!');
+        }
+      },
+      dur
+    );
+  } else if(d.type==='atk_result'&&F&&F.running){
+    if(F.pendingOnlineTimer){ clearTimeout(F.pendingOnlineTimer); F.pendingOnlineTimer=null; }
+    F.pendingOnlineAtk = null;
+    F.submitting = false;
+    fLockTechs(false);
+
+    if(d.defended){
+      F.p1.fat = Math.max(0, F.p1.fat - 10);
+      fFatUI();
+      fRef('🛡 OPPONENT DEFENDED!');
+      fLog('Opponent timed the green zone and escaped ' + d.moveName + '!');
+    } else {
+      if(d.kind === 'sub'){
+        F.p2.hp = 0;
+        fUpdateHUD();
+        fLog(d.zeroStaminaTap
+          ? ('🏆 ' + d.moveName + '! Opponent had 0 stamina — INSTANT TAP OUT!')
+          : ('🏆 ' + d.moveName + '! OPPONENT TAPPED OUT!'));
+        fCheckHP();
+      } else {
+        F.p1.pts += (d.ptsAdd || 0);
+        if(d.nextPhase) fSetPhase(d.nextPhase);
+        S3.cameraShake = 0.25;
+        fUpdateScore();
+        fUpdateHUD();
+        fRef('🏅 ' + d.moveName + (d.ptsAdd ? ' +' + d.ptsAdd + ' pts' : ''));
+        fLog(d.moveName + ' succeeded!');
+      }
+    }
+  } else if(d.type==='sync'&&F&&F.running){
+    if(d.phase) fSetPhase(d.phase);
+    if(d.pts!==undefined) F.p2.pts=d.pts;
+    fUpdateHUD(); fUpdateScore(); fCheckHP();
+  } else if(d.type==='match_over'&&F&&!fFightEnded){
+    fEndFight(!!d.oppWon, d.method||'Decision', true);
   }
 }
 
-function onTriggerMatchStart(){
-  if(oStartSent) return;
-  oStartSent = true;
-  if(oConn && oConn.open){
-    try{ oConn.send({type:'start', name:oMyName}); }catch(e){}
-  }
-  onStartMatch();
+function invertPhaseForDefender(attackerPhase){
+  const map = {
+    stand: 'stand',
+    clinch: 'clinch',
+    closed_guard_top: 'closed_guard_bottom',
+    closed_guard_bottom: 'closed_guard_top',
+    half_guard: 'bottom_pinned',
+    side_control: 'bottom_pinned',
+    full_mount: 'bottom_pinned',
+    back_control: 'bottom_pinned',
+    bottom_pinned: 'full_mount'
+  };
+  return map[attackerPhase] || 'bottom_pinned';
 }
 
-function onStartMatch(){
-  if(oPingInt){ clearInterval(oPingInt); oPingInt=null; }
-  launchFight({mode:'online', diff:'hard', pName:oMyName, aName:oOppName});
-}
-
-function onSendAction(act){
-  if(fightMode==='online' && oConn && oConn.open){
-    try{ oConn.send(act); }catch(e){}
-  }
-}
-
+function onOppLeft(){ if(F&&F.running) fEndFight(true,'Opponent disconnected'); }
 function onLeave(){
-  if(oPingInt){ clearInterval(oPingInt); oPingInt=null; }
-  if(oConnectTimeout){ clearTimeout(oConnectTimeout); oConnectTimeout=null; }
-  oMyReady=false; oOppReady=false; oStartSent=false;
+  if(oPingInt){clearInterval(oPingInt);oPingInt=null;}
+  if(oConnectTimeout){clearTimeout(oConnectTimeout);oConnectTimeout=null;}
   if(oConn){try{oConn.close();}catch(e){}oConn=null;}
   if(oP){try{oP.destroy();}catch(e){}oP=null;}
+  oMyReady=false; oOppReady=false; oStartSent=false;
+}
+function onCopyCode(){
+  if(!oMyCode)return;
+  if(navigator.clipboard) navigator.clipboard.writeText(oMyCode).catch(()=>{});
+  const btn=document.getElementById('on-copy-btn');
+  if(btn){btn.textContent='✓ Copied!';setTimeout(()=>{btn.textContent=t('on_copy');},2000);}
 }
 
-// ── RESTORE SAVED ORIENTATION / LANGUAGE IF ANY ──
-(function initBootPrefs(){
+// ═══════════════════════════════════════
+// INITIALIZE SAVED LANGUAGE, ORIENTATION & OUTFIT
+// ═══════════════════════════════════════
+(function initPrefs(){
   try{
-    const savedOrient = localStorage.getItem('bjj_orient');
     const savedLang = localStorage.getItem('bjj_lang');
+    if(savedLang && I18N[savedLang]) pickLang(savedLang);
+    const savedOrient = localStorage.getItem('bjj_orient');
     if(savedOrient) pickOrient(savedOrient);
-    if(savedLang) pickLang(savedLang);
+    const savedOutfit = localStorage.getItem('bjj_outfit');
+    if(savedOutfit){
+      const parsed = JSON.parse(savedOutfit);
+      if(parsed && GI_COLORS[parsed.gi]) playerOutfit.gi = parsed.gi;
+      if(parsed && BELT_COLORS[parsed.belt]) playerOutfit.belt = parsed.belt;
+    }
   }catch(e){}
+  applyLanguage();
+  updateOutfitUI();
 })();
 </script>
 </body>
